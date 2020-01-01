@@ -1,6 +1,6 @@
 import React, {Component}from 'react'
 import './Board.css'
-import Draggable from 'react-draggable'
+//import Draggable from 'react-draggable'
 import  postItNoteLow from "./img/post-it-note-low.png"
 import  postItNoteMed from "./img/post-it-note-med.png"
 import  postItNoteHigh from "./img/post-it-note-high.png"
@@ -20,8 +20,6 @@ const priorityLevels =
         img:postItNoteHigh
     },
 ]
-
-var createReactClass = require('create-react-class')
 
 class Note extends Component{
 
