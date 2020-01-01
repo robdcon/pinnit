@@ -1,0 +1,20 @@
+{
+    "short_name": "Pinnit",
+    "name": "Pinnit",
+    "decription":"A simple notice board for pinning and prioritising your daily tasks.",
+    "icons": [
+     
+      {
+        "src": "pin-144x144.jpg",
+        "sizes": "144x144",
+        "type": "image/jpg"
+      }
+    ],
+    "start_url": "https://pinnit.herokuapp.com/",
+    "display": "standalone",
+    "theme_color": "FFFF33",
+    "orientation": "any",
+    "scope":"/",
+    "background_color": "#ffffff"
+  }
+  
