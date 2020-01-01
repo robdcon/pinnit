@@ -2,6 +2,9 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { StyledBoard } from './Board.styles';
 import Note from '../Note'
+import StickyFooter from '../StickyFooter'
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import MainTheme from '../../themes/MainTheme.config'
 
 class Board extends PureComponent 
 { 
@@ -172,8 +175,8 @@ class Board extends PureComponent
 
   remove = (id) =>
   {
-          var notes = this.state.notes.filter(note => note.id !== id)
-          this.setState({notes})
+      var notes = this.state.notes.filter(note => note.id !== id)
+      this.setState({notes})
   }
 
   clearAllNotes = () =>
@@ -191,28 +194,48 @@ class Board extends PureComponent
 
   eachNote = (note) =>
   {
-          return (
+    return (
 
-              <Note key={note.id} 
-      
-                    id={note.id} 
-                    priorityLevel={note.priorityLevel}
-                    onChange={this.update} 
-                    onRemove={this.remove}
-                    onPriorityChange={this.updatePriority}
-                    >
-                      {
-                          note.note
-                      }
+        <Note key={note.id} 
 
-              </Note>
+              id={note.id} 
+              priorityLevel={note.priorityLevel}
+              onChange={this.update} 
+              onRemove={this.remove}
+              onPriorityChange={this.updatePriority}
+              >
+                {
+                    note.note
+                }
 
-              )
+        </Note>
+
+        )
   }
 
   componentWillMount = () => 
   {
     console.log('Board will mount');
+    const board = JSON.parse(localStorage.getItem('message_board_notes'))
+
+    if(!board) return
+  
+    const notes = board.notes   
+    const id = board.uniqueId
+    
+    if(!notes.length > 0)
+    {
+        console.log('no notes')
+        return
+    }
+    else
+    {
+        console.log(notes)
+    }
+    this.setState({
+        notes:notes,
+        uniqueId:id
+    })
   }
 
   componentDidMount = () => 
@@ -228,9 +251,23 @@ class Board extends PureComponent
     console.log('Board will update', nextProps, nextState);
   }
 
-  componentDidUpdate = () => 
+  componentDidUpdate = (prevState, props) => 
   {
     console.log('Board did update');
+    if(prevState.notes !== this.state.notes)
+        {
+            console.log('updated')
+            this.saveNotesToLocal()
+        }
+        else
+        {
+            console.log('not updated')
+            alert('error, not saved to local')
+        }
+        if(prevState.priorityLevel !== this.state.priorityLevel)
+        {
+            console.log('update priority')
+        }
   }
 
   componentWillUnmount = () => 
@@ -243,7 +280,15 @@ class Board extends PureComponent
       return <h1>Something went wrong.</h1>;
     }
     return (
-      <StyledBoard className="BoardWrapper" />
+
+      <div>
+        <StyledBoard className="BoardWrapper">
+          {(this.state.notes.length > 0) ? this.state.notes.map(this.eachNote) : null}
+          <StickyFooter>
+            <AddCircleIcon  style={{ color: '#ffffff', fontSize:'3em'}} onClick={() => this.add('New Message')} />
+          </StickyFooter>
+        </StyledBoard>
+      </div>
        
     );
   }

@@ -30,6 +30,8 @@ class Note extends PureComponent
 
     this.state = {
       hasError: false,
+      editing: false,
+      priorityLevel:this.props.priorityLevel
     };
   }
 
@@ -150,11 +152,6 @@ class Note extends PureComponent
   componentWillReceiveProps = (nextProps) => 
   {
     console.log('Note will receive props', nextProps);
-  }
-
-  shouldComponentUpdate()
-  {
-    return this.props.children !== this.nextProps || this.state !== this.nextState
   }
 
   componentWillUpdate = (nextProps, nextState) => 
