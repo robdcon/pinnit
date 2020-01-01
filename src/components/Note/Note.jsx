@@ -70,7 +70,6 @@ class Note extends PureComponent
     this.state = {
       hasError: false,
       editing: false,
-      inFocus: false,
       priorityLevel:this.props.priorityLevel
     };
   }
@@ -153,7 +152,7 @@ class Note extends PureComponent
   renderDisplay = () =>
   {
       return ( 
-          <StyledNote className="note">
+          <StyledNote onFocus={() => console.log('hello')} className="note" style={this.style}>
 
               <p>{this.props.children}</p>
 
