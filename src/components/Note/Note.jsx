@@ -1,7 +1,14 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components'
 import { StyledNote } from './Note.styles';
-import Draggable from 'react-draggable'
+import Draggable from 'react-draggable';
+import FlexContainer from '../FlexContainer';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowUp';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import SaveIcon from '@material-ui/icons/Save';
 import  postItNoteLow from "../../img/post-it-note-low.png"
 import  postItNoteMed from "../../img/post-it-note-med.png"
 import  postItNoteHigh from "../../img/post-it-note-high.png"
@@ -22,6 +29,38 @@ const priorityLevels =
     },
 ]
 
+const iconStyles = {
+
+    color:'#000'
+
+}
+
+const StyledControlContainer = styled.span`
+
+  // visibility: ${(props) => props.active ? 'visible' : 'hidden' }
+  width: 100%;
+  height: 60px;
+  background-color: transparent;
+  position: absolute;
+  left: 0;
+  bottom: 1em;
+  opacity:0;
+
+`
+
+const NoteFooter = (props) => 
+{
+  return(
+    
+    <StyledControlContainer>
+      <FlexContainer justify="space-evenly">
+       {props.children}
+      </FlexContainer>
+    </StyledControlContainer>
+
+  )
+}
+
 class Note extends PureComponent 
 { 
   constructor(props) 
@@ -31,6 +70,7 @@ class Note extends PureComponent
     this.state = {
       hasError: false,
       editing: false,
+      inFocus: false,
       priorityLevel:this.props.priorityLevel
     };
   }
@@ -81,8 +121,6 @@ class Note extends PureComponent
       {
           this.props.onPriorityChange(this.state.priorityLevel, this.props.id)
       });
-    
-    
   }
 
   decreasePriority = (id) =>
@@ -106,7 +144,7 @@ class Note extends PureComponent
           <StyledNote className="note" style={this.style}>
             <textarea ref="newText"
                       defaultValue={this.props.children}></textarea>
-            <button onClick={this.save}>SAVE</button>
+            <SaveIcon onClick={this.save}>SAVE</SaveIcon>
           </StyledNote>
       )
   }
@@ -115,16 +153,19 @@ class Note extends PureComponent
   renderDisplay = () =>
   {
       return ( 
-          <StyledNote className="note" style={this.style}>
+          <StyledNote onFocus={() => console.log('hello')} className="note" style={this.style}>
+
               <p>{this.props.children}</p>
-              <span>
-                <button onClick={this.edit}>EDIT</button>
-                <button onClick={this.remove}>X</button>
-              </span>
-              <div>
-                  <button onClick={this.increasePriority}>+</button>
-                  <button onClick={this.decreasePriority}>-</button>
-              </div>
+
+              <NoteFooter className="NoteFooter">
+               
+                  <EditIcon style={iconStyles} onClick={this.edit} />
+                  <DeleteIcon style={iconStyles} onClick={this.remove} />
+                  <KeyboardArrowUpIcon style={iconStyles} onClick={this.increasePriority} />
+                  <KeyboardArrowDownIcon style={iconStyles} onClick={this.decreasePriority} />
+               
+              </NoteFooter>
+
           </StyledNote>
           )
   }
