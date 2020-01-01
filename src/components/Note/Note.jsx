@@ -5,7 +5,7 @@ import { StyledNote } from './Note.styles';
 import Draggable from 'react-draggable';
 import FlexContainer from '../FlexContainer';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SaveIcon from '@material-ui/icons/Save';
@@ -160,7 +160,7 @@ class Note extends PureComponent
                
                   <EditIcon style={iconStyles} onClick={this.edit} />
                   <DeleteIcon style={iconStyles} onClick={this.remove} />
-                  <KeyboardArrowUpIcon style={iconStyles} onClick={this.increasePriority} />
+                  <KeyboardArrowUpIcon style={iconStyles} onClick={this.decreasePriority} />
                   <KeyboardArrowDownIcon style={iconStyles} onClick={this.decreasePriority} />
                
               </NoteFooter>
