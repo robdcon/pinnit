@@ -24,8 +24,8 @@ class Board extends PureComponent
 
   nextId = () =>
   {
-          this.state.uniqueId = this.state.uniqueId || 0
-          return this.state.uniqueId++
+    this.state.uniqueId = this.state.uniqueId || 0
+    return this.state.uniqueId++
   }
 
   // Add a note to the Board

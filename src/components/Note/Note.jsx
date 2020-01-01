@@ -153,7 +153,7 @@ class Note extends PureComponent
   renderDisplay = () =>
   {
       return ( 
-          <StyledNote onFocus={() => console.log('hello')} className="note" style={this.style}>
+          <StyledNote className="note">
 
               <p>{this.props.children}</p>
 
