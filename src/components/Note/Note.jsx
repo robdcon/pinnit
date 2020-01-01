@@ -9,9 +9,9 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowUp';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SaveIcon from '@material-ui/icons/Save';
-import  postItNoteLow from "../../img/post-it-note-low.png"
-import  postItNoteMed from "../../img/post-it-note-med.png"
-import  postItNoteHigh from "../../img/post-it-note-high.png"
+import postItNoteLow from "../../img/post-it-note-low.png"
+import postItNoteMed from "../../img/post-it-note-med.png"
+import postItNoteHigh from "../../img/post-it-note-high.png"
 
 const priorityLevels = 
 [
