@@ -22,7 +22,11 @@
     ],
     "start_url": "/",
     "display": "standalone",
+<<<<<<< HEAD
     "theme_color": "#fffff33",
+=======
+    "theme_color": "#ffff33",
+>>>>>>> 3e70a4433095e2e1af52e374dc907b48d5d431dd
     "orientation": "any",
     "scope":"/",
     "background_color": "#ffffff"
