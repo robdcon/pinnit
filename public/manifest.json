@@ -10,9 +10,9 @@
         "type": "image/jpg"
       }
     ],
-    "start_url": "https://pinnit.herokuapp.com/",
+    "start_url": "/",
     "display": "standalone",
-    "theme_color": "FFFF33",
+    "theme_color": "#ffff33",
     "orientation": "any",
     "scope":"/",
     "background_color": "#ffffff"
