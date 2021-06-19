@@ -1,0 +1,22 @@
+{
+  "name": "pinnit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server/index.js",
+    "build": "cd client && npm install && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/robdcon/pinnit.git"
+  },
+  "keywords": [],
+  "author": "Rob Connolly <rob@robdcon.co.uk> (https://robdcon.co.uk)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/robdcon/pinnit/issues"
+  },
+  "homepage": "https://github.com/robdcon/pinnit#readme"
+}
