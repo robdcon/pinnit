@@ -5,12 +5,22 @@
     "icons": [
      
       {
-        "src": "pin-144x144.jpg",
+        "src": "pin_icon-192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "pin_icon-144.png",
         "sizes": "144x144",
-        "type": "image/jpg"
+        "type": "image/png"
+      },
+      {
+        "src": "pin_icon-512.png",
+        "sizes": "512x512",
+        "type": "image/png"
       }
     ],
-    "start_url": "/",
+    "start_url": "https://pinnit-staging.robdcon.co.uk",
     "display": "standalone",
     "theme_color": "#ffff33",
     "orientation": "any",
