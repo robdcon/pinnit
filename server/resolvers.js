@@ -19,10 +19,20 @@ const typeDefs =  {
 
         note: async (parent, {id}, context, info) => {
             const response = await api.getNote(id, context).then(res => {
+                console.log("Resolver note: ",res)
                 return res;
             });
             return response;
         },
+
+        notes: async (parent, args, context, info) => {
+            const response = await api.getNotes(context).then(res => {
+                console.log("Notes: ", res)
+                return res;
+            });
+            return response;
+        },
+
 
         board: async (parent, {id}, context, info) => {
             const response = await api.getBoard(id, context).then(res => {
@@ -39,14 +49,10 @@ const typeDefs =  {
            return user;
         }, 
 
-        createNote: async (parent, {id, text, zindex, level }, {hmset}) => {
-            try {
-                await hmset(`notes:${id}`, 'text', text, 'zindex', zindex, 'level', level);
-                return true
-            } catch (error) {
-                console.log(error)
-                return false
-            }
+        createNote: async (parent, {text, zindex, level }, context) => {
+            const note = await api.createNote(text, zindex, level, context)
+            .then(res => res);
+            return note;
         },
 
         createBoard: async (parent, {id, notes, users }, {hmset}) => {
@@ -61,7 +67,7 @@ const typeDefs =  {
     },
     
     User: {
-        id: () => (parent, args, context, info) => {
+        id: (parent, args, context, info) => {
             return parent.id;
         },
         username: (parent, args, context, info) => {
@@ -76,16 +82,16 @@ const typeDefs =  {
     },
 
     Note: {
-        id: () => (parent, args, context, info) => {
+        id: (parent, args, context, info) => {
             return parent.id;
         },
-        text: () => (parent, args, context, info) => {
+        text: (parent, args, context, info) => {
             return parent.text;
         },
-        zindex: () => (parent, args, context, info) => {
+        zindex: (parent, args, context, info) => {
             return parent.zindex;
         },
-        level: () => (parent, args, context, info) => {
+        level: (parent, args, context, info) => {
             return parent.level;
         }
     },

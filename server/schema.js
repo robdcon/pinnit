@@ -5,6 +5,7 @@ const schema = gql`
         user(id: String!): User
         users: [User]
         note(id: String!): Note
+        notes: [Note]
         board(id: String!): Board
     }
 

@@ -1,4 +1,21 @@
 const api = {
+    createUser: async (username, email, context) => {
+        try {
+            let id = context.incr('users:id');
+            id.then(res => {
+                // Set user with id
+                const userReq = context.hmset(`users:id:${res}`, 'email', email, 'username', username);
+                const idReq = context.rpush('userIds', `${res}`);
+                return {id: res, userReq, idReq};
+            })
+            return true;
+        } catch (error) {
+            console.log(error)
+            return false
+        }
+        
+    },
+
     getUser: async (id, context) => {
         try {
             const user = await context.hgetall(`users:${id}`)
@@ -21,10 +38,28 @@ const api = {
         const users = Promise.all(promises).then(res => res);
         return users;
     },
+    
+    createNote: async (text, zindex, level, context) => {
+        try {
+            let id = context.incr('notes:id');
+            console.log('Note id:',id)
+            id.then(res => {
+                // Set user with id
+                const note = context.hmset(`notes:id:${res}`, 'text', text, 'zindex', zindex, 'level', level);
+                const setId = context.rpush('noteIds', `${res}`);
+                return {id: res, note, setId};
+            })
+            return true;
+        } catch (error) {
+            console.log(error)
+            return false
+        }
+        
+    },
 
     getNote: async (id, context) => {
         try {
-            const note = await context.hgetall(`notes:${id}`)
+            const note = await context.hgetall(`notes:id:${id}`)
             .then(res => {
                 return res;
             })
@@ -33,6 +68,16 @@ const api = {
             console.log(error)
             return false
         }
+    },
+
+    getNotes: async (context, from=0, to=-1) => {
+        const noteIds = await context.lrange('noteIds', from, to)
+        .then(res => res);
+        const promises = noteIds.map(noteId => {
+            return context.hgetall(`notes:id:${noteId}`);
+        });
+        const notes = Promise.all(promises).then(res => res);
+        return notes;
     },
 
     getBoard: async (id, context) => {
@@ -48,21 +93,7 @@ const api = {
         }
     },
 
-    createUser: async (username, email, context) => {
-        let userId;
-        context.incr('users:id').then(res => {
-            userId = res;
-            context.rpush('users', userId);
-        });
-        try {
-            const req = await context.hmset(`users:${userId}`, 'username', username, 'email', email);
-            return req;
-        } catch (error) {
-            console.log(error)
-            return false
-        }
-        
-    },
+
 
     createBoard: async (notes, users, context) => {
         let boardId;
