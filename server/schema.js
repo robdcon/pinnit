@@ -2,14 +2,20 @@ const { gql } = require('apollo-server-express');
 
 const schema = gql`
     type Query {
-        get(key: String!): String
+        user(id: String!): User
+        users: [User]
+        note(id: String!): Note
+        board(id: String!): Board
     }
 
     type Mutation {
-        set(key: String!, value:  String!): Boolean!
+        createUser(username: String!, email: String!) : String!
+        createNote(text: String!, zindex: Int!, level: Level!): String!
+        createBoard(users: [String]!, notes: [String]!): String!
     }
 
     type User {
+        id: String!
         username: String!
         email: String!
         boards: [String]
@@ -18,10 +24,20 @@ const schema = gql`
     type Note {
         id: String!
         text: String!
+        zindex: Int!
+        level: Level!
     }
 
     type Board {
+        id: String!
         notes: [String]
+        users: [User]!
+    }
+
+    enum Level {
+        HIGH
+        MED
+        LOW
     }
 `;
 
