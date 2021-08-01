@@ -1,51 +1,42 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useEffect } from 'react';
 import { StyledBoard } from './Board.styles';
 import Note from '../Note'
 import StickyFooter from '../StickyFooter'
 import AddCircleIcon from '@material-ui/icons/AddCircle';
-import MainTheme from '../../themes/MainTheme.config'
+import { NotesConsumer } from '../../context/notesContext';
 
-class Board extends PureComponent 
-{ 
-  constructor(props) 
-  {
-    super(props);
-
-    this.state = 
-    {
-      hasError: false,
-      notes: [],
-      count:0
-    };
-  }
-
+const Board = () => { 
+    const [hasError, setHasError] = useState(false);
+    const [notes, setNotes] = useState([]);
+    const [count, setCount] = useState(0);
+    const [uniqueId, setUniqueId] = useState(0);
+  
   //Method for handling unique ID for each note
 
-  nextId = () =>
-  {
-    this.state.uniqueId = this.state.uniqueId || 0
-    return this.state.uniqueId++
+  const nextId = () => {
+    const newId = uniqueId + 1;
+    setUniqueId(newId)
+    return uniqueId;
   }
 
   // Add a note to the Board
 
-  add = (text) =>
+  const add = (text) =>
   {
       //text = "New Note"
       var notes = [
-          ...this.state.notes,
+          ...notes,
           {
-              id:this.nextId(),
+              id:nextId(),
               note:text,
-              priorityLevel:1
-
+              level:1,
+              zindex:1
           }
       ]
-      this.setState({notes})
+    //   setNotes({notes})
   }
 
-  checkLocalStorage = () =>
+  const checkLocalStorage = () =>
   {
       if (typeof localStorage !== 'undefined') {
           try {
@@ -72,12 +63,12 @@ class Board extends PureComponent
       }
   }
 
-  saveNotesToLocal = () =>
+  const saveNotesToLocal = () =>
   {
       const board = 
       {
-          uniqueId: this.state.uniqueId || 0,
-          notes: this.state.notes
+          uniqueId: uniqueId || 0,
+          notes: notes
       }
       const jsonNotes = JSON.stringify(board)
       localStorage.setItem('message_board_notes', jsonNotes);
@@ -91,9 +82,9 @@ class Board extends PureComponent
   // Otherwise return note with its original keys except for 'note' key, which is set to new text
   // Set the state of the Board classs to the new notes variable
 
-  update = (newText, id) =>
+  const update = (newText, id) =>
   {
-      var notes = this.state.notes.map(
+      var notes = notes.map(
 
           note => (note.id !== id) ?
           note : 
@@ -103,84 +94,72 @@ class Board extends PureComponent
               }
 
           )
-      this.setState({notes});
+    //   setNotes({notes});
      
   }
  
 
-  updatePriority = (priorityLevel, id) =>
+  const updatePriority = (level, id) =>
   {
-      const newLevel = priorityLevel--
-      var notes = this.state.notes.map(
+      const newLevel = level--
+      var notes = notes.map(
 
           note => (note.id !== id) ?
           note : 
               {
                   ...note,
-                  priorityLevel:newLevel
+                  level:newLevel
               }
 
           )
-      this.setState({notes});
+    //   setNotes({notes});
      
   }
 
-  componentWillMount()
-  {
+//   useEffect(() =>
+//   {
 
-      const board = JSON.parse(localStorage.getItem('message_board_notes'))
+//       const board = JSON.parse(localStorage.getItem('message_board_notes'))
 
-      if(!board) return
+//       if(!board) return
     
-      const notes = board.notes   
-      const id = board.uniqueId
+//       const notes = board.notes   
+//       const id = board.uniqueId
      
-      if(!notes.length > 0)
-      {
-          console.log('no notes')
-          return
-      }
-      else
-      {
-          console.log(notes)
-      }
-      this.setState({
-          notes:notes,
-          uniqueId:id
-      })
+//       if(!notes.length > 0)
+//       {
+//           console.log('no notes')
+//           return
+//       }
+//       else
+//       {
+//           console.log(notes)
+//       }
+//       setNotes({
+//           notes:notes
+//         })
+//         setUniqueId(id)
      
-  }
+//   }, [])
 
-  componentDidUpdate(prevState, state)
-  {
-      if(prevState.notes !== this.state.notes)
-      {
-          console.log('updated')
-          this.saveNotesToLocal()
-      }
-      else
-      {
-          console.log('not updated')
-          alert('error, not saved to local')
-      }
-      if(prevState.priorityLevel !== this.state.priorityLevel)
-      {
-          console.log('update priority')
-      }
-  }
+//   useEffect(() => {
+      
+//     console.log('updated');
+//     saveNotesToLocal();
+     
+//   }, [notes])
+
   
   // Takes the note's id as an argument
   // Filter through the notes state of Board class
   // Return a new array consisting of all notes whise id does not match the id parameter
 
-  remove = (id) =>
-  {
-      var notes = this.state.notes.filter(note => note.id !== id)
-      this.setState({notes})
+  const remove = (id) => {
+      var notes = notes.filter(note => note.id !== id)
+    //   setNotes({notes})
   }
 
-  clearAllNotes = () =>
-  {
+  const clearAllNotes = () => {
       this.setState({
           notes:[]
       })
@@ -192,114 +171,43 @@ class Board extends PureComponent
   // Set methods to handle updating and removing notes
   // Set the child to the notes text
 
-  eachNote = (note) =>
-  {
+  const eachNote = ({id, text, zindex, level}) => {
     return (
 
-        <Note key={note.id} 
-
-              id={note.id} 
-              priorityLevel={note.priorityLevel}
-              onChange={this.update} 
-              onRemove={this.remove}
-              onPriorityChange={this.updatePriority}
+        <Note key={id} 
+              id={id} 
+              level={level}
+              onChange={update} 
+              onRemove={remove}
+              onPriorityChange={updatePriority}
               >
-                {
-                    note.note
-                }
-
+                { text }
         </Note>
 
         )
-  }
-
-  componentWillMount = () => 
-  {
-    console.log('Board will mount');
-    const board = JSON.parse(localStorage.getItem('message_board_notes'))
-
-    if(!board) return
-  
-    const notes = board.notes   
-    const id = board.uniqueId
-    
-    if(!notes.length > 0)
-    {
-        console.log('no notes')
-        return
     }
-    else
-    {
-        console.log(notes)
-    }
-    this.setState({
-        notes:notes,
-        uniqueId:id
-    })
-  }
 
-  componentDidMount = () => 
-  {
-    console.log('Board mounted');
-  }
-
-  componentWillReceiveProps = (nextProps) => {
-    console.log('Board will receive props', nextProps);
-  }
-
-  componentWillUpdate = (nextProps, nextState) => {
-    console.log('Board will update', nextProps, nextState);
-  }
-
-  componentDidUpdate = (prevState, props) => 
-  {
-    console.log('Board did update');
-    if(prevState.notes !== this.state.notes)
-        {
-            console.log('updated')
-            this.saveNotesToLocal()
-        }
-        else
-        {
-            console.log('not updated')
-            alert('error, not saved to local')
-        }
-        if(prevState.priorityLevel !== this.state.priorityLevel)
-        {
-            console.log('update priority')
-        }
-  }
-
-  componentWillUnmount = () => 
-  {
-    console.log('Board will unmount');
-  }
-
-  render () {
-    if (this.state.hasError) {
-      return <h1>Something went wrong.</h1>;
-    }
     return (
-
-      <div>
-        <StyledBoard className="BoardWrapper">
-          {(this.state.notes.length > 0) ? this.state.notes.map(this.eachNote) : null}
-          <StickyFooter>
-            <AddCircleIcon  style={{ color: '#ffffff', fontSize:'3em'}} onClick={() => this.add('New Message')} />
-          </StickyFooter>
-        </StyledBoard>
-      </div>
+        <NotesConsumer>
+        {
+            ({notes}) => {
+                console.log("Notes form consumer:",notes)
+                return (
+                    <div>
+                    <StyledBoard className="BoardWrapper">
+                        {
+                            notes && (notes.length > 0) ? notes.map(eachNote) : null
+                        }
+                        <StickyFooter>
+                        <AddCircleIcon  style={{ color: '#ffffff', fontSize:'3em'}} onClick={() => this.add('New Message')} />
+                        </StickyFooter>
+                    </StyledBoard>
+                    </div>)
+            }
+        }
        
+        </NotesConsumer>
     );
-  }
 }
-
-Board.propTypes = {
-  // bla: PropTypes.string,
-};
-
-Board.defaultProps = {
-  // bla: 'test',
-};
 
 export default Board;
