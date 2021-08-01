@@ -45,11 +45,11 @@ const api = {
             console.log('Note id:',id)
             id.then(res => {
                 // Set user with id
-                const note = context.hmset(`notes:id:${res}`, 'text', text, 'zindex', zindex, 'level', level);
+                const note = context.hmset(`notes:id:${res}`, 'id', res, 'text', text, 'zindex', zindex, 'level', level);
                 const setId = context.rpush('noteIds', `${res}`);
                 return {id: res, note, setId};
             })
-            return true;
+            return id;
         } catch (error) {
             console.log(error)
             return false

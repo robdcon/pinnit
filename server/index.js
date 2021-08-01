@@ -14,9 +14,13 @@ let hget = util.promisify(client.hget).bind(client);
 let hgetall = util.promisify(client.hgetall).bind(client); 
 let rpush = util.promisify(client.rpush).bind(client);
 let lrange = util.promisify(client.lrange).bind(client);
+let incr = util.promisify(client.incr).bind(client);
+// client.flushall()
+
 
 const resolvers = require('./resolvers');
 const typeDefs = require('./schema');
+
 
 const PORT = process.env.PORT || 3001;
 
@@ -25,7 +29,10 @@ const clientMethods = {
   set,
   hmset,
   hgetall,
-  hget
+  hget,
+  incr,
+  rpush,
+  lrange
 }
 
 async function startApolloServer() {
