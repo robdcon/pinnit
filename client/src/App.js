@@ -1,21 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import Note from "./components/Note"
-import Board from "./components/Board"
+import React from 'react';
+import Board from "./components/Board";
+import { NotesProvider } from './context/notesContext';
 
 const App = () => {
-  const [data, setData] = useState({notes:[{message:'note one'}]});
-
-  useEffect(() => {
-    fetch('/api')
-    .then((res) => res.json())
-    .then((data) => setData(data));
-  }, []);
-
-  return(
-    <div className="Pinnit">
-      <Board />
-    </div>
-  )
+  return (  
+      <NotesProvider>
+        <div className="Pinnit">
+          <Board />
+        </div>
+      </NotesProvider>
+    );
 }
 
 export default App;
