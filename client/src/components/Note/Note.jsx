@@ -1,5 +1,4 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components'
 import { StyledNote } from './Note.styles';
 import Draggable from 'react-draggable';
@@ -13,18 +12,17 @@ import postItNoteLow from "../../img/post-it-note-low.png"
 import postItNoteMed from "../../img/post-it-note-med.png"
 import postItNoteHigh from "../../img/post-it-note-high.png"
 
-const priorityLevels = 
-[
+const priorityLevels = [
     {
-        level:'Low',
+        level:'LOW',
         img:postItNoteLow
     },
     {
-        level:'Med',
+        level:'MED',
         img:postItNoteMed
     },
     {
-        level:'High',
+        level:'HIGH',
         img:postItNoteHigh
     },
 ]
@@ -37,7 +35,7 @@ const iconStyles = {
 
 const StyledControlContainer = styled.span`
 
-  // visibility: ${(props) => props.active ? 'visible' : 'hidden' }
+  visibility: ${(props) => props.active ? 'visible' : 'hidden' }
   width: 100%;
   height: 60px;
   background-color: transparent;
@@ -45,201 +43,133 @@ const StyledControlContainer = styled.span`
   left: 0;
   bottom: 1em;
   opacity:0;
+`;
 
-`
-
-const NoteFooter = (props) => 
-{
-  return(
-    
+const NoteFooter = (props) => {
+  return ( 
     <StyledControlContainer>
       <FlexContainer justify="space-evenly">
        {props.children}
       </FlexContainer>
     </StyledControlContainer>
-
   )
 }
 
-class Note extends PureComponent 
-{ 
-  constructor(props) 
-  {
-    super(props);
+const Note = ({id, children, onChange, onPriorityChange, onRemove}) => { 
+  
+      const [hasError, setHasError] = useState(false);
+      const [editing, setEditing] = useState(false);
+      const [priorityLevel, setPriorityLevel] = useState('LOW');
+      const [backgroundImage, setBackgroundImage] = useState(postItNoteLow);
+      const [styles, setStyles] = useState({});
 
-    this.state = {
-      hasError: false,
-      editing: false,
-      priorityLevel:this.props.priorityLevel
-    };
-  }
+      const newText = useRef();
+  
 
-  background = () =>
-  {
-      const level = this.state.priorityLevel
-      return priorityLevels[level].img
+  const background = () =>{
+    const bgurl = priorityLevels.filter(obj => {
+      return obj.level = priorityLevel;
+    })
+      setBackgroundImage(bgurl)
   }
    // Set random position of each rendered Note
 
-  randomPosition = (x, y, s) =>
-  {
+  const randomPosition = (x, y, s) => {
       return (x + Math.ceil(Math.random() * (y-x))) + s
 
   }
 
   // Change state of Note by setting editing to true
 
-  edit = () =>
-  {
-      this.setState({editing: true})
+  const edit = () => {
+      setEditing(true);
   }
 
   // Fire onChange event taking the value of newText and the id as arguments
 
-  save = () =>
-  {
-      
-      this.props.onChange(this.refs.newText.value, this.props.id)
-      
-      this.setState({editing:false})
+  const save = () => {
+      onChange(newText.current.value, id)
+      setEditing(false);
   }
 
   // Fire onRemove with id of the Note as an argument
 
-  remove = () =>
-  {
-      this.props.onRemove(this.props.id)
+  const remove = () => {
+      onRemove(id)
   }
 
-  increasePriority = (id) =>
-  {
-      this.setState((prevState) => 
-      {
+  const increasePriority = (id) => {
+      setPriorityLevel((prevState) => {
           return {priorityLevel:(prevState.priorityLevel + 1 > 2) ? 0 : prevState.priorityLevel + 1}
-      }, () =>
-      {
-          this.props.onPriorityChange(this.state.priorityLevel, this.props.id)
+      }, () => {
+          onPriorityChange(priorityLevel, id)
       });
   }
 
-  decreasePriority = (id) =>
-  {
-    
-      this.setState((prevState) => 
-      {
+  const decreasePriority = (id) => {
+      setPriorityLevel((prevState) => {
           return {priorityLevel:(prevState.priorityLevel - 1 < 0) ? 2 : prevState.priorityLevel - 1}
-      }, () =>
-      {
-          this.props.onPriorityChange(this.state.priorityLevel, this.props.id)
+      }, () => {
+          onPriorityChange(priorityLevel, id)
       });
-    
   }
 
   // Return a text area input field to add new text to
 
-  renderForm = () => 
-  {
+  const renderForm = () => {
       return (
-          <StyledNote className="note" style={this.style}>
-            <textarea ref="newText"
-                      defaultValue={this.props.children}></textarea>
-            <SaveIcon onClick={this.save}>SAVE</SaveIcon>
+          <StyledNote className="note" style={styles}>
+            <textarea 
+              ref={newText}
+              defaultValue={children}
+            >
+            </textarea>
+            <SaveIcon onClick={save}>SAVE</SaveIcon>
           </StyledNote>
       )
   }
-
-  // Return 
-  renderDisplay = () =>
-  {
+    const renderDisplay = () => {
       return ( 
-          <StyledNote onFocus={() => console.log('hello')} className="note" style={this.style}>
-
-              <p>{this.props.children}</p>
-
+          <StyledNote onFocus={() => console.log('hello')} className="note" style={styles}>
+              <p>{children}</p>
               <NoteFooter className="NoteFooter">
-               
-                  <EditIcon style={iconStyles} onClick={this.edit} />
-                  <DeleteIcon style={iconStyles} onClick={this.remove} />
-                  <KeyboardArrowUpIcon style={iconStyles} onClick={this.decreasePriority} />
-                  <KeyboardArrowDownIcon style={iconStyles} onClick={this.decreasePriority} />
-               
+                  <EditIcon style={iconStyles} onClick={edit} />
+                  <DeleteIcon style={iconStyles} onClick={remove} />
+                  <KeyboardArrowUpIcon style={iconStyles} onClick={decreasePriority} />
+                  <KeyboardArrowDownIcon style={iconStyles} onClick={decreasePriority} />
               </NoteFooter>
-
           </StyledNote>
-          )
-  }
-
-  componentWillMount = () => 
-  {
-    console.log('Note will mount');
-    this.style = 
-    { 
-        // Set random position of each note
-
-        //backgroundImage:"url('./img/post-it-note.png')",
-        backgroundImage : `url(${this.background()})`,
-    
-        right:this.randomPosition(0, window.innerWidth - 150, 'px'),
-        top:this.randomPosition(0, window.innerHeight - 150, 'px')
+        )
     }
-  }
 
-  componentDidMount = () => 
-  {
-    console.log('Note mounted');
-  }
+    useEffect(() => {
+      console.log('Note will mount');
+      setStyles({ 
+          // Set random position of each note
+          //backgroundImage:"url('./img/post-it-note.png')",
+          backgroundImage : `url(${backgroundImage})`,
+          right:randomPosition(0, window.innerWidth - 150, 'px'),
+          top:randomPosition(0, window.innerHeight - 150, 'px')
+      });
+    }, []);
 
-  componentWillReceiveProps = (nextProps) => 
-  {
-    console.log('Note will receive props', nextProps);
-  }
+    useEffect(() => {
+      console.log('Note did update');
+      if(editing) {
+          newText.current.focus()
+          newText.current.select()
+      }
+      // this.style.backgroundImage = `url(${this.background()})`
+    }, [])
 
-  componentWillUpdate = (nextProps, nextState) => 
-  {
-    console.log('Note will update', nextProps, nextState);
-  }
-
-  componentDidUpdate = () => 
-  {
-    console.log('Note did update');
-    if(this.state.editing)
-    {
-        this.refs.newText.focus()
-        this.refs.newText.select()
-    }
-    this.style.backgroundImage = `url(${this.background()})`
-  }
-
-  componentWillUnmount = () => 
-  {
-    console.log('Note will unmount');
-  }
-
-  render () {
-    if (this.state.hasError) 
-    {
-      return <h1>Something went wrong.</h1>;
-    }
     return (
-
       <Draggable enableUserSelectHack={false}>
       {
-        (this.state.editing) ? this.renderForm()
-                             : this.renderDisplay()
+        (editing) ? renderForm()
+                  : renderDisplay()
       }
       </Draggable>
-     
-       
     );
-  }
 }
-
-Note.propTypes = {
-  // bla: PropTypes.string,
-};
-
-Note.defaultProps = {
-  // bla: 'test',
-};
 
 export default Note;

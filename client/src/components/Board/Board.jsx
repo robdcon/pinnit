@@ -1,15 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, createContext } from 'react';
 import { StyledBoard } from './Board.styles';
 import Note from '../Note'
 import StickyFooter from '../StickyFooter'
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { NotesConsumer } from '../../context/notesContext';
+import { GraphQlConsumer } from '../../context/apiContext';
+import { useMutation } from "@apollo/react-hooks";
+import { SET_NOTE } from '../../utils/mutations';
 
 const Board = () => { 
     const [hasError, setHasError] = useState(false);
     const [notes, setNotes] = useState([]);
     const [count, setCount] = useState(0);
     const [uniqueId, setUniqueId] = useState(0);
+    const [createNote, { data, loading, error }] = useMutation(SET_NOTE);
+
+    const logData = () => {
+        console.log("Loading:", loading, "Data:", data, "Error:", error)
+    };
+
+    const addNote = (text) => {
+        console.log("Loading:", loading, "Data:", data, "Error:", error)
+        createNote({variables: {
+            text: text
+        }})
+    }
   
   //Method for handling unique ID for each note
 
@@ -18,50 +33,7 @@ const Board = () => {
     setUniqueId(newId)
     return uniqueId;
   }
-
-  // Add a note to the Board
-
-  const add = (text) =>
-  {
-      //text = "New Note"
-      var notes = [
-          ...notes,
-          {
-              id:nextId(),
-              note:text,
-              level:1,
-              zindex:1
-          }
-      ]
-    //   setNotes({notes})
-  }
-
-  const checkLocalStorage = () =>
-  {
-      if (typeof localStorage !== 'undefined') {
-          try {
-              localStorage.setItem('feature_test', 'yes');
-              if (localStorage.getItem('feature_test') === 'yes') {
-                  localStorage.removeItem('feature_test');
-                  // localStorage is enabled
-                  console.log('Local Enabled')
-                  return true
-              } else {
-                  // localStorage is disabled
-                  console.log('Local Disabled')
-                  return false
-              }
-          } catch(e) {
-              // localStorage is disabled
-              console.log('Local Disabled', e)
-              return false
-          }
-      } else {
-          // localStorage is not available
-          console.log('Local Not Available')
-          return false
-      }
-  }
+  
 
   const saveNotesToLocal = () =>
   {
@@ -188,25 +160,27 @@ const Board = () => {
     }
 
     return (
-        <NotesConsumer>
-        {
-            ({notes}) => {
-                console.log("Notes form consumer:",notes)
-                return (
-                    <div>
-                    <StyledBoard className="BoardWrapper">
-                        {
-                            notes && (notes.length > 0) ? notes.map(eachNote) : null
-                        }
-                        <StickyFooter>
-                        <AddCircleIcon  style={{ color: '#ffffff', fontSize:'3em'}} onClick={() => this.add('New Message')} />
-                        </StickyFooter>
-                    </StyledBoard>
-                    </div>)
+        
+            <NotesConsumer>
+            {
+                ({notes}) => {
+                    console.log("Notes form consumer:",notes)
+                    return (
+                        <div>
+                            <StyledBoard className="BoardWrapper">
+                                {
+                                    notes && (notes.length > 0) ? notes.map(eachNote) : null
+                                }
+                                <StickyFooter>
+                                     <AddCircleIcon style={{ color: '#ffffff', fontSize:'3em'}} onClick={() => addNote("New Message")} />
+                                </StickyFooter>
+                            </StyledBoard>
+                        </div>
+                    )
+                }
             }
-        }
-       
-        </NotesConsumer>
+            </NotesConsumer>
+            
     );
 }
 
