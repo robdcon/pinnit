@@ -22,7 +22,7 @@
   "bugs": {
     "url": "https://github.com/robdcon/pinnit/issues"
   },
-  "homepage": "https://github.com/robdcon/pinnit#readme",
+  "homepage": "https://pinnit.herokuapp.com",
   "engines": {
     "node": "12.14.0"
   },

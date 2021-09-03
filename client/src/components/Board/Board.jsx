@@ -1,31 +1,24 @@
-import React, { useState, useEffect, createContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyledBoard } from './Board.styles';
 import Note from '../Note'
 import StickyFooter from '../StickyFooter'
 import AddCircleIcon from '@material-ui/icons/AddCircle';
-import { NotesConsumer } from '../../context/notesContext';
-import { GraphQlConsumer } from '../../context/apiContext';
-import { useMutation } from "@apollo/react-hooks";
-import { SET_NOTE } from '../../utils/mutations';
+import { getNotes } from '../../api/queries';
+import { setNote } from '../../api/mutations';
 
 const Board = () => { 
     const [hasError, setHasError] = useState(false);
-    const [notes, setNotes] = useState([]);
+    const [notes, setNotes] = useState({notes: []});
     const [count, setCount] = useState(0);
     const [uniqueId, setUniqueId] = useState(0);
-    const [createNote, { data, loading, error }] = useMutation(SET_NOTE);
+    const { loading, data, error } = getNotes();
 
-    const logData = () => {
-        console.log("Loading:", loading, "Data:", data, "Error:", error)
-    };
-
-    const addNote = (text) => {
-        console.log("Loading:", loading, "Data:", data, "Error:", error)
-        createNote({variables: {
-            text: text
-        }})
-    }
-  
+    useEffect(() => {
+        if(data.notes) {
+            setNotes(data.notes);
+        }
+    }, [data])
+    
   //Method for handling unique ID for each note
 
   const nextId = () => {
@@ -159,28 +152,17 @@ const Board = () => {
         )
     }
 
-    return (
-        
-            <NotesConsumer>
-            {
-                ({notes}) => {
-                    console.log("Notes form consumer:",notes)
-                    return (
-                        <div>
-                            <StyledBoard className="BoardWrapper">
-                                {
-                                    notes && (notes.length > 0) ? notes.map(eachNote) : null
-                                }
-                                <StickyFooter>
-                                     <AddCircleIcon style={{ color: '#ffffff', fontSize:'3em'}} onClick={() => addNote("New Message")} />
-                                </StickyFooter>
-                            </StyledBoard>
-                        </div>
-                    )
+    return (          
+        <div>
+            <StyledBoard className="BoardWrapper">
+                {
+                    notes && (notes.length > 0) ? notes.map(eachNote) : null
                 }
-            }
-            </NotesConsumer>
-            
+                <StickyFooter>
+                        <AddCircleIcon style={{ color: '#ffffff', fontSize:'3em'}} onClick={() => createNote("New Message")} />
+                </StickyFooter>
+            </StyledBoard>
+        </div>      
     );
 }
 

@@ -3,11 +3,13 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import './index.css';
 import * as serviceWorker from './registerServiceWorker';
-import ApolloClient from 'apollo-boost'
-import { ApolloProvider } from '@apollo/react-hooks';
+import { ApolloClient, ApolloProvider } from '@apollo/client';
+import { cache } from './cache.js';
 
 const client = new ApolloClient({
-  uri: 'http://localhost:3001/graphiql'
+  cache,
+  uri: 'http://localhost:3001/graphiql',
+  connectToDevTools: true
 })
 
 ReactDOM.render(

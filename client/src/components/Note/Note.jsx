@@ -143,7 +143,6 @@ const Note = ({id, children, onChange, onPriorityChange, onRemove}) => {
     }
 
     useEffect(() => {
-      console.log('Note will mount');
       setStyles({ 
           // Set random position of each note
           //backgroundImage:"url('./img/post-it-note.png')",
@@ -154,7 +153,6 @@ const Note = ({id, children, onChange, onPriorityChange, onRemove}) => {
     }, []);
 
     useEffect(() => {
-      console.log('Note did update');
       if(editing) {
           newText.current.focus()
           newText.current.select()
