@@ -13,6 +13,6 @@ export const GET_NOTES = gql`
 
 export const GET_REACTIVE_NOTES = gql`
   query getReactiveNotes{
-    notesVar @client
+    localNotes @client
   }
 `

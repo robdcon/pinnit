@@ -5,6 +5,7 @@ import StickyFooter from '../StickyFooter'
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { getNotes } from '../../api/queries';
 import { setNote } from '../../api/mutations';
+import { notesVar } from '../../cache';
 
 const Board = () => { 
     const [hasError, setHasError] = useState(false);
@@ -12,12 +13,15 @@ const Board = () => {
     const [count, setCount] = useState(0);
     const [uniqueId, setUniqueId] = useState(0);
     const { loading, data, error } = getNotes();
+    const createNote = setNote();
 
     useEffect(() => {
-        if(data.notes) {
-            setNotes(data.notes);
+        if(data && data.notes) {
+            notesVar(data.notes);
+            setNotes(notesVar());
         }
-    }, [data])
+    }, [data]);
+       
     
   //Method for handling unique ID for each note
 
@@ -159,7 +163,7 @@ const Board = () => {
                     notes && (notes.length > 0) ? notes.map(eachNote) : null
                 }
                 <StickyFooter>
-                        <AddCircleIcon style={{ color: '#ffffff', fontSize:'3em'}} onClick={() => createNote("New Message")} />
+                        <AddCircleIcon style={{ color: '#ffffff', fontSize:'3em'}} onClick={() => createNote({variables:{text: "New Message again"}})} />
                 </StickyFooter>
             </StyledBoard>
         </div>      

@@ -17,7 +17,6 @@ let lrange = util.promisify(client.lrange).bind(client);
 let incr = util.promisify(client.incr).bind(client);
 // client.flushall()
 
-
 const resolvers = require('./resolvers');
 const typeDefs = require('./schema');
 
