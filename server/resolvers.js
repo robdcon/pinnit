@@ -55,6 +55,12 @@ const typeDefs =  {
             return note;
         },
 
+        updateNote: async (parent, {id, text, zindex, level}, context) => {
+            const note = await api.updateNote(id, text, zindex, level, context)
+            .then(res => res);
+            return note;
+        },
+
         createBoard: async (parent, {id, notes, users }, {hmset}) => {
             try {
                 await hmset(`boards:${id}`, 'notes', notes, 'users', users );

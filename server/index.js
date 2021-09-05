@@ -9,6 +9,7 @@ const client = redis.createClient("redis://:p90fa099ef7d06e68a2c6dc1be82483d68be
 
 let get = util.promisify(client.get).bind(client);
 let set = util.promisify(client.set).bind(client);
+let hset = util.promisify(client.hmset).bind(client);
 let hmset = util.promisify(client.hmset).bind(client);
 let hget = util.promisify(client.hget).bind(client);
 let hgetall = util.promisify(client.hgetall).bind(client); 
@@ -29,6 +30,7 @@ const clientMethods = {
   hmset,
   hgetall,
   hget,
+  hset,
   incr,
   rpush,
   lrange

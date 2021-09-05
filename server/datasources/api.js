@@ -57,6 +57,23 @@ const api = {
         
     },
 
+    updateNote: async (id, text, zindex, level, context) => {
+        try {
+            console.table({id, text, zindex, level})
+            let note;
+            if(text) note = context.hset(`notes:id:${id}`, 'text', text);
+            if(zindex) note = context.hset(`notes:id:${id}`, 'zindex', zindex);
+            if(level) note = context.hset(`notes:id:${id}`, 'level', level);
+            note.then(res => res);
+            return note;
+          
+        } catch (error) {
+            console.log(error)
+            return false
+        }
+        
+    },
+
     getNote: async (id, context) => {
         try {
             const note = await context.hgetall(`notes:id:${id}`)
