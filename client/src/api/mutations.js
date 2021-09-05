@@ -1,5 +1,5 @@
 import { useMutation } from "@apollo/client";
-import { SET_NOTE } from '../graphql/mutations';
+import { SET_NOTE, UPDATE_NOTE } from '../graphql/mutations';
 import { GET_NOTES } from '../graphql/queries';
 
 export const setNote = (noteData) => {
@@ -10,4 +10,13 @@ export const setNote = (noteData) => {
         ]
     });
     return(addNote);
+}
+
+export const updateNote = () => {
+  const [updateNoteData, {loading, data, error}] = useMutation(UPDATE_NOTE, {
+        refetchQueries: [
+          GET_NOTES
+        ]
+    });
+    return(updateNoteData);
 }

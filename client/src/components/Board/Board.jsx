@@ -4,7 +4,7 @@ import Note from '../Note'
 import StickyFooter from '../StickyFooter'
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { getNotes } from '../../api/queries';
-import { setNote } from '../../api/mutations';
+import { setNote, updateNote } from '../../api/mutations';
 import { notesVar } from '../../cache';
 
 const Board = () => { 
@@ -14,6 +14,7 @@ const Board = () => {
     const [uniqueId, setUniqueId] = useState(0);
     const { loading, data, error } = getNotes();
     const createNote = setNote();
+    const updateNoteText = updateNote();
 
     useEffect(() => {
         if(data && data.notes) {
@@ -50,23 +51,6 @@ const Board = () => {
   // If the note ID is not equal to the current note return note
   // Otherwise return note with its original keys except for 'note' key, which is set to new text
   // Set the state of the Board classs to the new notes variable
-
-  const update = (newText, id) =>
-  {
-      var notes = notes.map(
-
-          note => (note.id !== id) ?
-          note : 
-              {
-                  ...note,
-                  note:newText
-              }
-
-          )
-    //   setNotes({notes});
-     
-  }
- 
 
   const updatePriority = (level, id) =>
   {
@@ -146,7 +130,7 @@ const Board = () => {
         <Note key={id} 
               id={id} 
               level={level}
-              onChange={update} 
+              onChange={({id, field, value}) => updateNoteText({variables: {id, [field]:value}})}
               onRemove={remove}
               onPriorityChange={updatePriority}
               >
@@ -163,7 +147,7 @@ const Board = () => {
                     notes && (notes.length > 0) ? notes.map(eachNote) : null
                 }
                 <StickyFooter>
-                        <AddCircleIcon style={{ color: '#ffffff', fontSize:'3em'}} onClick={() => createNote({variables:{text: "New Message again"}})} />
+                        <AddCircleIcon style={{ color: '#ffffff', fontSize:'3em'}} onClick={() => createNote({variables:{text: "New Message"}})} />
                 </StickyFooter>
             </StyledBoard>
         </div>      

@@ -34,8 +34,6 @@ const iconStyles = {
 }
 
 const StyledControlContainer = styled.span`
-
-  visibility: ${(props) => props.active ? 'visible' : 'hidden' }
   width: 100%;
   height: 60px;
   background-color: transparent;
@@ -88,7 +86,7 @@ const Note = ({id, children, onChange, onPriorityChange, onRemove}) => {
   // Fire onChange event taking the value of newText and the id as arguments
 
   const save = () => {
-      onChange(newText.current.value, id)
+      onChange({id:id, field:'text', value:newText.current.value})
       setEditing(false);
   }
 
@@ -158,7 +156,7 @@ const Note = ({id, children, onChange, onPriorityChange, onRemove}) => {
           newText.current.select()
       }
       // this.style.backgroundImage = `url(${this.background()})`
-    }, [])
+    }, [editing])
 
     return (
       <Draggable enableUserSelectHack={false}>
