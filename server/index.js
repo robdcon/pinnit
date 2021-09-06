@@ -15,6 +15,7 @@ let hmset = util.promisify(client.hmset).bind(client);
 let hget = util.promisify(client.hget).bind(client);
 let hgetall = util.promisify(client.hgetall).bind(client); 
 let rpush = util.promisify(client.rpush).bind(client);
+let rpop = util.promisify(client.rpop).bind(client);
 let lrange = util.promisify(client.lrange).bind(client);
 let incr = util.promisify(client.incr).bind(client);
 let hdel = util.promisify(client.hdel).bind(client);
@@ -37,6 +38,7 @@ const clientMethods = {
   hdel,
   incr,
   rpush,
+  rpop,
   lrange
 }
 

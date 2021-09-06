@@ -143,8 +143,7 @@ const Board = () => {
         <div>
             <StyledBoard className="BoardWrapper">
                 {
-                    notes && (notes.length > 0) ? notes.map(note => {
-                        console.log(note)
+                    notes && (notes.length > 0) ? notes.map((note, i) => {
                         if(note !== null) return eachNote(note);
                     }) : null
                 }

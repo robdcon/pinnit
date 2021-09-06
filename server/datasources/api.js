@@ -42,8 +42,9 @@ const api = {
     createNote: async (text, zindex, level, context) => {
         try {
             let id = context.incr('notes:id');
-            console.log('Note id:',id)
+            
             id.then(res => {
+                console.log('Note id:',res)
                 // Set user with id
                 const note = context.hmset(`notes:id:${res}`, 'id', res, 'text', text, 'zindex', zindex, 'level', level);
                 const setId = context.rpush('noteIds', `${res}`);
@@ -76,6 +77,8 @@ const api = {
 
     deleteNote: async (id, context) => {
         try {
+            const indexOfId = parseInt(id);
+            context.rpop('noteIds', indexOfId);
             const note = context.del(`notes:id:${id}`)
             .then(res => res);
             return note;
