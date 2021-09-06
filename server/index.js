@@ -19,7 +19,9 @@ let rpop = util.promisify(client.rpop).bind(client);
 let lrange = util.promisify(client.lrange).bind(client);
 let incr = util.promisify(client.incr).bind(client);
 let hdel = util.promisify(client.hdel).bind(client);
-// client.flushall()
+let lpos = util.promisify(client.lpos).bind(client);
+let lrem = util.promisify(client.lrem).bind(client);
+client.flushall()
 
 const resolvers = require('./resolvers');
 const typeDefs = require('./schema');
@@ -39,7 +41,9 @@ const clientMethods = {
   incr,
   rpush,
   rpop,
-  lrange
+  lrange,
+  lpos,
+  lrem
 }
 
 async function startApolloServer() {

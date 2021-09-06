@@ -11,8 +11,8 @@ const schema = gql`
 
     type Mutation {
         createUser(username: String!, email: String!) : String!
-        createNote(text: String!, zindex: Int!, level: Level!): String!
-        updateNote(id: String!, text: String, zindex: Int, level: Level): String!
+        createNote(text: String!, zindex: Int!, level: String!): String!
+        updateNote(id: String!, text: String, zindex: Int, level: String): String!
         deleteNote(id: String!): String!
         createBoard(users: [String]!, notes: [String]!): String!
     }
@@ -28,7 +28,7 @@ const schema = gql`
         id: String!
         text: String!
         zindex: Int!
-        level: Level!
+        level: String!
     }
 
     type Board {

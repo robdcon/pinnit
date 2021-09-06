@@ -14,7 +14,7 @@ const Board = () => {
     const [uniqueId, setUniqueId] = useState(0);
     const { loading, data, error } = getNotes();
     const createNote = setNote();
-    const updateNoteText = updateNote();
+    const updateNoteData = updateNote();
     const removeNote = deleteNote();
 
     useEffect(() => {
@@ -23,90 +23,12 @@ const Board = () => {
             setNotes(notesVar());
         }
     }, [data]);
-       
-    
-  //Method for handling unique ID for each note
 
-  const nextId = () => {
-    const newId = uniqueId + 1;
-    setUniqueId(newId)
-    return uniqueId;
-  }
-  
-
-  const saveNotesToLocal = () =>
-  {
-      const board = 
-      {
-          uniqueId: uniqueId || 0,
-          notes: notes
-      }
-      const jsonNotes = JSON.stringify(board)
-      localStorage.setItem('message_board_notes', jsonNotes);
-      console.log('saved')
+  const updatePriority = (id, level) => {
+    updateNoteData({variables: {id, level}});
   }
 
 
-  // Update the array of notes in the Board class's state
-  // Map through each note using a callback function
-  // If the note ID is not equal to the current note return note
-  // Otherwise return note with its original keys except for 'note' key, which is set to new text
-  // Set the state of the Board classs to the new notes variable
-
-  const updatePriority = (level, id) =>
-  {
-      const newLevel = level--
-      var notes = notes.map(
-
-          note => (note.id !== id) ?
-          note : 
-              {
-                  ...note,
-                  level:newLevel
-              }
-
-          )
-    //   setNotes({notes});
-     
-  }
-
-//   useEffect(() =>
-//   {
-
-//       const board = JSON.parse(localStorage.getItem('message_board_notes'))
-
-//       if(!board) return
-    
-//       const notes = board.notes   
-//       const id = board.uniqueId
-     
-//       if(!notes.length > 0)
-//       {
-//           console.log('no notes')
-//           return
-//       }
-//       else
-//       {
-//           console.log(notes)
-//       }
-//       setNotes({
-//           notes:notes
-//         })
-//         setUniqueId(id)
-     
-//   }, [])
-
-//   useEffect(() => {
-      
-//     console.log('updated');
-//     saveNotesToLocal();
-     
-//   }, [notes])
-
-  
-  // Takes the note's id as an argument
-  // Filter through the notes state of Board class
-  // Return a new array consisting of all notes whise id does not match the id parameter
 
   const remove = (id) => {
       removeNote({variables:{id: id}});
@@ -114,23 +36,16 @@ const Board = () => {
   }
 
   const clearAllNotes = () => {
-      this.setState({
-          notes:[]
-      })
-      localStorage.setItem('message-board-notes', "")
+     console.log('deleted');
   }
-
-  // Return an instance of Note
-  // Set the key and id to note.id
-  // Set methods to handle updating and removing notes
-  // Set the child to the notes text
 
   const eachNote = ({id, text, zindex, level}) => {
     return (
         <Note key={id} 
-              id={id} 
+              id={id}
+              zindex={zindex}
               level={level}
-              onChange={({id, field, value}) => updateNoteText({variables: {id, [field]:value}})}
+              onChange={({id, field, value}) => updateNoteData({variables: {id: id, [field]:value}})}
               onRemove={remove}
               onPriorityChange={updatePriority}
               >
@@ -148,7 +63,10 @@ const Board = () => {
                     }) : null
                 }
                 <StickyFooter>
-                        <AddCircleIcon style={{ color: '#ffffff', fontSize:'3em'}} onClick={() => createNote({variables:{text: "New Message"}})} />
+                    <AddCircleIcon 
+                    style={{ color: '#ffffff', fontSize:'3em'}} 
+                    onClick={() => createNote({variables:{text: "New Message", level: 'MED'}})}
+                    />
                 </StickyFooter>
             </StyledBoard>
         </div>      

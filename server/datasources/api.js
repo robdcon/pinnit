@@ -77,8 +77,13 @@ const api = {
 
     deleteNote: async (id, context) => {
         try {
-            const indexOfId = parseInt(id);
-            context.rpop('noteIds', indexOfId);
+            context.lrem('noteIds', 0, id).then(res => console.log("res:", res))
+            // const indexOfId = context.lpos('noteIds', id)
+            // .then(res => {
+            //     console.log("res:", res)
+            //     context.lrem('noteIds', res, 0)
+            // });
+            
             const note = context.del(`notes:id:${id}`)
             .then(res => res);
             return note;

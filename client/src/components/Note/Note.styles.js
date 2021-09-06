@@ -1,4 +1,7 @@
-import styled from 'styled-components';
+import styled, {css} from 'styled-components';
+import postItNoteLow from "../../img/post-it-note-low.png"
+import postItNoteMed from "../../img/post-it-note-med.png"
+import postItNoteHigh from "../../img/post-it-note-high.png"
 
 export const StyledNote = styled.div`
 
@@ -10,6 +13,18 @@ export const StyledNote = styled.div`
     cursor: -webkit-grab;
     overflow: hidden;
     background-size: cover;
+
+    ${(props) => props.priorityLevel === 'LOW' && css`
+            background-image: url(${postItNoteLow});
+    `}
+
+    ${(props) => props.priorityLevel === 'MED' && css`
+            background-image: url(${postItNoteMed});
+    `}
+
+    ${(props) => props.priorityLevel === 'HIGH' && css`
+            background-image: url(${postItNoteHigh});
+    `}
 
     > span 
     {

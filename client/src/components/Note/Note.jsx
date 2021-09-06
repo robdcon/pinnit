@@ -8,29 +8,11 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SaveIcon from '@material-ui/icons/Save';
-import postItNoteLow from "../../img/post-it-note-low.png"
-import postItNoteMed from "../../img/post-it-note-med.png"
-import postItNoteHigh from "../../img/post-it-note-high.png"
 
-const priorityLevels = [
-    {
-        level:'LOW',
-        img:postItNoteLow
-    },
-    {
-        level:'MED',
-        img:postItNoteMed
-    },
-    {
-        level:'HIGH',
-        img:postItNoteHigh
-    },
-]
+const priorityLevels = ['LOW', 'MED', 'HIGH'];
 
 const iconStyles = {
-
-    color:'#000'
-
+  color: '#000'
 }
 
 const StyledControlContainer = styled.span`
@@ -53,28 +35,17 @@ const NoteFooter = (props) => {
   )
 }
 
-const Note = ({id, children, onChange, onPriorityChange, onRemove}) => { 
+const Note = ({id, zindex, level, children, onChange, onPriorityChange, onRemove}) => { 
   
-      const [hasError, setHasError] = useState(false);
-      const [editing, setEditing] = useState(false);
-      const [priorityLevel, setPriorityLevel] = useState('LOW');
-      const [backgroundImage, setBackgroundImage] = useState(postItNoteLow);
-      const [styles, setStyles] = useState({});
-
-      const newText = useRef();
+  const [editing, setEditing] = useState(false);
+  const [priorityLevel, setPriorityLevel] = useState(level);
+  const [styles, setStyles] = useState({});
+  const newText = useRef();
   
-
-  const background = () =>{
-    const bgurl = priorityLevels.filter(obj => {
-      return obj.level = priorityLevel;
-    })
-      setBackgroundImage(bgurl)
-  }
    // Set random position of each rendered Note
 
   const randomPosition = (x, y, s) => {
       return (x + Math.ceil(Math.random() * (y-x))) + s
-
   }
 
   // Change state of Note by setting editing to true
@@ -96,27 +67,29 @@ const Note = ({id, children, onChange, onPriorityChange, onRemove}) => {
       onRemove(id)
   }
 
-  const increasePriority = (id) => {
-      setPriorityLevel((prevState) => {
-          return {priorityLevel:(prevState.priorityLevel + 1 > 2) ? 0 : prevState.priorityLevel + 1}
-      }, () => {
-          onPriorityChange(priorityLevel, id)
-      });
+  const increasePriority = () => {
+      const indexOfPriorityLevel = priorityLevels.indexOf(priorityLevel);
+      const newIndex = (indexOfPriorityLevel + 1) > 2 ? 0 : indexOfPriorityLevel + 1;
+      setPriorityLevel(priorityLevels[newIndex]);
+      onPriorityChange(id, priorityLevel);
   }
 
-  const decreasePriority = (id) => {
-      setPriorityLevel((prevState) => {
-          return {priorityLevel:(prevState.priorityLevel - 1 < 0) ? 2 : prevState.priorityLevel - 1}
-      }, () => {
-          onPriorityChange(priorityLevel, id)
-      });
+  const decreasePriority = () => {
+    const indexOfPriorityLevel = priorityLevels.indexOf(priorityLevel);
+      const newIndex = (indexOfPriorityLevel - 1) < 0 ? 2 : indexOfPriorityLevel - 1;
+      setPriorityLevel(priorityLevels[newIndex]);
+      onPriorityChange(id, priorityLevel);
   }
 
   // Return a text area input field to add new text to
 
   const renderForm = () => {
       return (
-          <StyledNote className="note" style={styles}>
+          <StyledNote 
+            className="note" 
+            style={styles}
+            priorityLevel={priorityLevel}
+          >
             <textarea 
               ref={newText}
               defaultValue={children}
@@ -128,12 +101,16 @@ const Note = ({id, children, onChange, onPriorityChange, onRemove}) => {
   }
     const renderDisplay = () => {
       return ( 
-          <StyledNote onFocus={() => console.log('hello')} className="note" style={styles}>
+          <StyledNote 
+            className="note" 
+            style={styles}
+            priorityLevel={priorityLevel}
+          >
               <p>{children}</p>
               <NoteFooter className="NoteFooter">
                   <EditIcon style={iconStyles} onClick={edit} />
                   <DeleteIcon style={iconStyles} onClick={remove} />
-                  <KeyboardArrowUpIcon style={iconStyles} onClick={decreasePriority} />
+                  <KeyboardArrowUpIcon style={iconStyles} onClick={increasePriority} />
                   <KeyboardArrowDownIcon style={iconStyles} onClick={decreasePriority} />
               </NoteFooter>
           </StyledNote>
@@ -141,10 +118,7 @@ const Note = ({id, children, onChange, onPriorityChange, onRemove}) => {
     }
 
     useEffect(() => {
-      setStyles({ 
-          // Set random position of each note
-          //backgroundImage:"url('./img/post-it-note.png')",
-          backgroundImage : `url(${backgroundImage})`,
+      setStyles({
           right:randomPosition(0, window.innerWidth - 150, 'px'),
           top:randomPosition(0, window.innerHeight - 150, 'px')
       });
@@ -155,7 +129,6 @@ const Note = ({id, children, onChange, onPriorityChange, onRemove}) => {
           newText.current.focus()
           newText.current.select()
       }
-      // this.style.backgroundImage = `url(${this.background()})`
     }, [editing])
 
     return (
