@@ -15,4 +15,14 @@ export const GET_REACTIVE_NOTES = gql`
   query getReactiveNotes{
     localNotes @client
   }
-`
+`;
+
+export const GET_USERS = gql`
+  query getUser {
+    user {
+      id
+      username
+      email
+    }
+  }
+`;

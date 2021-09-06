@@ -21,7 +21,7 @@ let incr = util.promisify(client.incr).bind(client);
 let hdel = util.promisify(client.hdel).bind(client);
 let lpos = util.promisify(client.lpos).bind(client);
 let lrem = util.promisify(client.lrem).bind(client);
-client.flushall()
+// client.flushall()
 
 const resolvers = require('./resolvers');
 const typeDefs = require('./schema');
