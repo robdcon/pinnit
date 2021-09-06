@@ -61,6 +61,12 @@ const typeDefs =  {
             return note;
         },
 
+        deleteNote: async (parent, {id}, context) => {
+            const note = await api.deleteNote(id, context)
+            .then(res => res);
+            return note;
+        },
+
         createBoard: async (parent, {id, notes, users }, {hmset}) => {
             try {
                 await hmset(`boards:${id}`, 'notes', notes, 'users', users );

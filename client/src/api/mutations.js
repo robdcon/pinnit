@@ -1,9 +1,10 @@
 import { useMutation } from "@apollo/client";
-import { SET_NOTE, UPDATE_NOTE } from '../graphql/mutations';
+import Delete from "@material-ui/icons/Delete";
+import { CREATE_NOTE, UPDATE_NOTE, DELETE_NOTE } from '../graphql/mutations';
 import { GET_NOTES } from '../graphql/queries';
 
 export const setNote = (noteData) => {
-  const [addNote, {loading, data, error}] = useMutation(SET_NOTE, {
+  const [addNote, {loading, data, error}] = useMutation(CREATE_NOTE, {
         noteData,
         refetchQueries: [
           GET_NOTES
@@ -19,4 +20,13 @@ export const updateNote = () => {
         ]
     });
     return(updateNoteData);
+}
+
+export const deleteNote = () => {
+  const [removeNote, {loading, data, error}] = useMutation(DELETE_NOTE, {
+        refetchQueries: [
+          GET_NOTES
+        ]
+    });
+    return(removeNote);
 }

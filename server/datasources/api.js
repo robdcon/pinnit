@@ -74,6 +74,17 @@ const api = {
         
     },
 
+    deleteNote: async (id, context) => {
+        try {
+            const note = context.del(`notes:id:${id}`)
+            .then(res => res);
+            return note;
+        } catch (error) {
+            console.log(error)
+            return false
+        }
+    },
+
     getNote: async (id, context) => {
         try {
             const note = await context.hgetall(`notes:id:${id}`)

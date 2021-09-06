@@ -9,13 +9,15 @@ const client = redis.createClient("redis://:p90fa099ef7d06e68a2c6dc1be82483d68be
 
 let get = util.promisify(client.get).bind(client);
 let set = util.promisify(client.set).bind(client);
-let hset = util.promisify(client.hmset).bind(client);
+let del = util.promisify(client.del).bind(client);
+let hset = util.promisify(client.hset).bind(client);
 let hmset = util.promisify(client.hmset).bind(client);
 let hget = util.promisify(client.hget).bind(client);
 let hgetall = util.promisify(client.hgetall).bind(client); 
 let rpush = util.promisify(client.rpush).bind(client);
 let lrange = util.promisify(client.lrange).bind(client);
 let incr = util.promisify(client.incr).bind(client);
+let hdel = util.promisify(client.hdel).bind(client);
 // client.flushall()
 
 const resolvers = require('./resolvers');
@@ -27,10 +29,12 @@ const PORT = process.env.PORT || 3001;
 const clientMethods = {
   get,
   set,
+  del,
   hmset,
   hgetall,
   hget,
   hset,
+  hdel,
   incr,
   rpush,
   lrange

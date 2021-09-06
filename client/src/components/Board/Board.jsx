@@ -4,7 +4,7 @@ import Note from '../Note'
 import StickyFooter from '../StickyFooter'
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { getNotes } from '../../api/queries';
-import { setNote, updateNote } from '../../api/mutations';
+import { setNote, updateNote, deleteNote } from '../../api/mutations';
 import { notesVar } from '../../cache';
 
 const Board = () => { 
@@ -15,6 +15,7 @@ const Board = () => {
     const { loading, data, error } = getNotes();
     const createNote = setNote();
     const updateNoteText = updateNote();
+    const removeNote = deleteNote();
 
     useEffect(() => {
         if(data && data.notes) {
@@ -108,7 +109,7 @@ const Board = () => {
   // Return a new array consisting of all notes whise id does not match the id parameter
 
   const remove = (id) => {
-      var notes = notes.filter(note => note.id !== id)
+      removeNote({variables:{id: id}});
     //   setNotes({notes})
   }
 
@@ -126,7 +127,6 @@ const Board = () => {
 
   const eachNote = ({id, text, zindex, level}) => {
     return (
-
         <Note key={id} 
               id={id} 
               level={level}
@@ -136,7 +136,6 @@ const Board = () => {
               >
                 { text }
         </Note>
-
         )
     }
 
@@ -144,7 +143,10 @@ const Board = () => {
         <div>
             <StyledBoard className="BoardWrapper">
                 {
-                    notes && (notes.length > 0) ? notes.map(eachNote) : null
+                    notes && (notes.length > 0) ? notes.map(note => {
+                        console.log(note)
+                        if(note !== null) return eachNote(note);
+                    }) : null
                 }
                 <StickyFooter>
                         <AddCircleIcon style={{ color: '#ffffff', fontSize:'3em'}} onClick={() => createNote({variables:{text: "New Message"}})} />
