@@ -2,22 +2,16 @@ const api = {
     createUser: async (username, email, context) => {
         try {
             let id = context.incr('users:id');
-            const promises = [];
             id.then(res => {
                 // Set user with id
-                const userReq = context.hmset(`users:id:${res}`, 'email', email, 'username', username);
-                const idReq = context.rpush('userIds', `${res}`);
-                promises.push(userReq);
-                promises.push(idReq);
-                console.table({id: res, userReq, idReq}) ;
-                Promise.all(promises).then(res => console.log("Response:", res))
+                context.hmset(`users:id:${res}`, 'email', email, 'username', username);
+                context.rpush('userIds', `${res}`);
             })
             return {id, username, email};
         } catch (error) {
             console.log(error)
             return false
         }
-        
     },
 
     getUser: async (id, context) => {
@@ -71,7 +65,6 @@ const api = {
             if(level) note = context.hset(`notes:id:${id}`, 'level', level);
             note.then(res => res);
             return note;
-          
         } catch (error) {
             console.log(error)
             return false
@@ -126,8 +119,6 @@ const api = {
             return false
         }
     },
-
-
 
     createBoard: async (notes, users, context) => {
         let boardId;
