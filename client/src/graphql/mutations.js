@@ -24,6 +24,10 @@ export const DELETE_NOTE = gql`
 
 export const CREATE_USER = gql`
     mutation createUser($username: String!, $email: String!) {
-        createUser(username: $username, email: $email)
+        createUser(username: $username, email: $email) {
+            id
+            email
+            username
+        }
     }
 `;

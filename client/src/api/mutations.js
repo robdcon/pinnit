@@ -1,6 +1,7 @@
-import { useMutation } from "@apollo/client";
+import { useMutation, gql } from "@apollo/client";
 import { CREATE_NOTE, UPDATE_NOTE, DELETE_NOTE, CREATE_USER } from '../graphql/mutations';
 import { GET_NOTES, GET_USERS } from '../graphql/queries';
+import { setToLocalStorage } from '../utils/helpers'; 
 
 // Notes 
 
@@ -34,12 +35,28 @@ export const deleteNote = () => {
 
 // Users
 
-export const createUser = (user) => {
+export const createUser = () => {
   const [createUser, {loading, data, error}] = useMutation(CREATE_USER, {
-        noteData,
-        refetchQueries: [
-          GET_USERS
-        ]
+
+        update: (cache, {data: {createUser}}) => {
+          cache.modify({
+            fields: {
+              users(existingUsers = []) {
+                const newUserRef = cache.writeFragment({
+                  data: createUser,
+                  fragment: gql`
+                    fragment NewUser on User {
+                      id
+                      type
+                    }
+                  `
+                });
+                console.log("Update Data: ", existingUsers, newUserRef);
+                return [...existingUsers, newUserRef];
+              }
+            }
+          })
+        }
     });
     return(createUser);
 }

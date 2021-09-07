@@ -24,3 +24,20 @@ export const checkLocalStorage = () =>
         return false
     }
 }
+
+export const setToLocalStorage = (key, value) => {
+    try {
+        checkLocalStorage();
+        localStorage.setItem(key, value);
+    } catch (error) {
+        alert(`${error} : Please enable local storage`);
+    }
+}
+
+export const getUser = () => {
+    if(!(localStorage.getItem('loggedIn')))  return {};
+    const id = localStorage.getItem('loggedIn')
+    if(!id) return {};
+    const user = localStorage.getItem(id);
+    return user;
+} 
