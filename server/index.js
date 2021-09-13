@@ -1,12 +1,24 @@
+require('dotenv').config();
 const express = require("express");
 const { dirname } = require("path");
 const util = require('util');
 const path = require('path');
 const { promisify } = require("util");
 const { ApolloServer } = require('apollo-server-express');
+const { bootstrap: bootstrapGlobalAgent } = require('global-agent');
 const redis = require("redis");
-const client = redis.createClient("redis://:p90fa099ef7d06e68a2c6dc1be82483d68be0d33bf32b918c9efe1fecc554b329@ec2-52-19-159-143.eu-west-1.compute.amazonaws.com:12189");
+bootstrapGlobalAgent();
+console.log("REDIS CIENT:",process.env.REDIS_URL)
+const client = redis.createClient(process.env.REDIS_URL,
+{
+  tls: {
+      rejectUnauthorized: false
+  }
+});
 
+client.on("error", function (err) {
+  console.log("Error " + err);
+});
 let get = util.promisify(client.get).bind(client);
 let set = util.promisify(client.set).bind(client);
 let del = util.promisify(client.del).bind(client);

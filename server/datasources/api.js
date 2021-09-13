@@ -2,11 +2,17 @@ const api = {
     createUser: async (username, email, context) => {
         try {
             let id = context.incr('users:id');
-            id.then(res => {
+            await id.then(res => {
                 // Set user with id
                 context.hmset(`users:id:${res}`, 'email', email, 'username', username);
                 context.rpush('userIds', `${res}`);
+                context.rpush('userEmails', `${email}`);
+                return res;
             })
+            context.lrange('userEmails', 0, -1).then(res => {
+                console.log(res);
+            })
+            console.log({id, username, email})
             return {id, username, email};
         } catch (error) {
             console.log(error)
@@ -35,6 +41,17 @@ const api = {
         });
         const users = Promise.all(promises).then(res => res);
         return users;
+    },
+
+    getEmail: async (email, context) => {
+        const emailExists = await context.lpos('userEmails', email).then(res => res);
+        if(emailExists === null) return -1;
+        return emailExists;
+    },
+
+    getEmails: async (context) => {
+        const emails = await context.lrange('userEmails', 0, -1).then(res => res);
+        return emails;
     },
     
     createNote: async (text, zindex, level, context) => {

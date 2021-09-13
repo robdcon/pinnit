@@ -4,6 +4,8 @@ const schema = gql`
     type Query {
         user(id: String!): User
         users: [User]
+        email(email: String!): Int
+        emails: [String]
         note(id: String!): Note
         notes: [Note]
         board(id: String!): Board

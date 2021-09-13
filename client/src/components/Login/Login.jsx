@@ -26,10 +26,11 @@ const Login = (props) => {
     <UserContextConsumer>
     {({user, loginUser}) => ( 
       <LoginWrapper className="login-wrapper">
+        <p>LOGIN</p>
         <form onSubmit={(e) => {e.preventDefault(); handleSubmit(loginUser); }}>
           <input id="username" name="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
           <input id="email" name="email" type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <input id="submit" type="submit" value="Create User" />
+          <input id="submit" type="submit" value="Login" />
         </form>
       </LoginWrapper>
     )}

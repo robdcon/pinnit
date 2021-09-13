@@ -10,7 +10,7 @@
     "start-server": "nodemon server",
     "build-dev": "cd client && npm run build",
     "watch-build": "cd client && npm run watch",
-    "start-dev": "npm run watch-build && npm run start-server"
+    "start-dev": "cd client && npm run start"
   },
   "repository": {
     "type": "git",

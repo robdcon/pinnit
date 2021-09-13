@@ -39,6 +39,22 @@ const typeDefs =  {
                 return res;
             });
             return response;
+        }, 
+
+        email: async (parent, {email}, context, info) => {
+            const response = await api.getEmail(email, context).then(res => {
+                console.log("Email:", res)
+                return res;
+            })
+            return response;
+        },
+
+        emails: async (parent, args, context, info) => {
+            const response = await api.getEmails(context).then(res => {
+                console.log("Emails:", res)
+                return res;
+            })
+            return response;
         }
     },
 

@@ -10,8 +10,10 @@
   "author": "Rob Connolly <rob@robdcon.co.uk> (https://robdcon.co.uk)",
   "license": "MIT",
   "dependencies": {
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-graphql": "^0.12.0",
+    "global-agent": "^3.0.0",
     "graphql": "^15.5.0"
   }
 }

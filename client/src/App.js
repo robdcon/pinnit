@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import Board from './components/Board';
 import Login from './components/Login/';
+import Register from './components/Register';
 import { UserContextProvider } from './context/auth';
 import { getUser } from './utils/helpers';
 const user = getUser();
@@ -12,7 +13,7 @@ const App = () => {
       <div className="Pinnit">
         {
           !(localStorage.getItem('loggedIn')) ? (
-            <Login />
+            <Register />
           ) : null
         }
         <Board />
