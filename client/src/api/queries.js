@@ -4,7 +4,9 @@ import { GET_NOTES, GET_REACTIVE_NOTES, CHECK_EMAIL, GET_EMAILS } from '../graph
 import React from "react";
 
 export const getNotes = () => {
-    const { loading, data, error } = useQuery(GET_NOTES);
+    const { loading, data, error } = useQuery(GET_NOTES, {
+        pollInterval: 500
+    });
     return { loading, data, error };
 }
 
