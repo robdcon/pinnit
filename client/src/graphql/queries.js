@@ -36,9 +36,12 @@ export const GET_USERS = gql`
   }
 `;
 
-export const CHECK_EMAIL = gql`
-  query checkEmailExists($email: String!) {
-    email(email: $email)
+export const CHECK_USER = gql`
+  query checkUser($email: String!, $username: String!) {
+    checkUserExists(email: $email, username: $username) {
+      email
+      username
+    }
   }
 `;
 

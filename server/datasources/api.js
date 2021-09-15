@@ -4,14 +4,19 @@ const api = {
             let id = context.incr('users:id');
             await id.then(res => {
                 // Set user with id
-                context.hmset(`users:id:${res}`, 'email', email, 'username', username);
-                context.rpush('userIds', `${res}`);
-                context.rpush('userEmails', `${email}`);
+                context.hmset(`user:${res}`, 'email', email, 'username', username);
+                context.hset(`users`, username, res);
+                context.sadd('userEmails', `${email}`).then(res => {console.log('SADD Email: ', res); return res});
+                context.sadd('userUsernames', `${username}`).then(res => {console.log('SADD Username: ', res); return res});
                 return res;
             })
-            context.lrange('userEmails', 0, -1).then(res => {
-                console.log(res);
-            })
+            // context.smembers('userEmails').then(res => {
+            //     console.log('userEmails:', res);
+            // })
+            // context.smembers('userUsernames').then(res => {
+            //     console.log('userUsernames:', res);
+            // })
+        
             console.log({id, username, email})
             return {id, username, email};
         } catch (error) {
@@ -43,10 +48,15 @@ const api = {
         return users;
     },
 
-    getEmail: async (email, context) => {
-        const emailExists = await context.lpos('userEmails', email).then(res => res);
-        if(emailExists === null) return -1;
-        return emailExists;
+    checkUserExists: async (email, username, context) => {
+        const emailKeyExists = await context.exists('userEmails').then(res => res);
+        const usernameKeyExists = await context.exists('userUsernames').then(res => res);
+        if(emailKeyExists === 0 || usernameKeyExists === 0) {
+            return {email:emailKeyExists, username:usernameKeyExists};
+        }
+        const emailExists = await context.sismember('userEmails', email).then(res => res);
+        const usernameExists = await context.sismember('userUsernames', username).then(res => res);
+        return {email:emailExists, username:usernameExists};
     },
 
     getEmails: async (context) => {

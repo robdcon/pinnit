@@ -1,11 +1,9 @@
-import { useQuery, useLazyQuery, useApolloClient } from "@apollo/client";
-import { useEffect } from 'react';
-import { GET_NOTES, GET_REACTIVE_NOTES, CHECK_EMAIL, GET_EMAILS } from '../graphql/queries';
-import React from "react";
+import { useQuery, useLazyQuery } from "@apollo/client";
+import { GET_NOTES, CHECK_USER, GET_EMAILS } from '../graphql/queries';
 
 export const getNotes = () => {
     const { loading, data, error } = useQuery(GET_NOTES, {
-        pollInterval: 500
+        pollInterval: 0
     });
     return { loading, data, error };
 }
@@ -15,9 +13,9 @@ export const getUser = () => {
     return { loading, data, error };
 }
 
-export const checkEmail = () => {
-    const [checkEmailExists, {loading, data, error}] = useLazyQuery(CHECK_EMAIL);
-    return {checkEmailExists, checkLoading: loading, checkData:data, checkError:error};
+export const checkUser = () => {
+    const [checkUserExists, {loading, data, error}] = useLazyQuery(CHECK_USER);
+    return {checkUserExists, checkLoading: loading, checkData:data, checkError:error};
 }
 
 export const getEmails = () => {

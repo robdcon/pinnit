@@ -17,6 +17,14 @@ const typeDefs =  {
             return response;
         },
 
+        checkUserExists: async (parent, {email, username}, context, info) => {
+            const response = await api.checkUserExists(email, username, context).then(res => {
+                console.log("UserExists res:", res)
+                return res;
+            })
+            return response;
+        },
+
         note: async (parent, {id}, context, info) => {
             const response = await api.getNote(id, context).then(res => {
                 console.log("Resolver note: ",res)
@@ -133,6 +141,15 @@ const typeDefs =  {
         },
         users: () => (parent, args, context, info) => {
             return parent.users;
+        }
+    },
+
+    UserEmail: {
+        username: (parent, args, context, info) => {
+            return parent.username;
+        },
+        email: (parent, args, context, info) => {
+            return parent.email;
         }
     }
 }

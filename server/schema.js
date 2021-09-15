@@ -4,6 +4,7 @@ const schema = gql`
     type Query {
         user(id: String!): User
         users: [User]
+        checkUserExists(email: String!, username: String!): UserEmail
         email(email: String!): Int
         emails: [String]
         note(id: String!): Note
@@ -39,10 +40,9 @@ const schema = gql`
         users: [User]!
     }
 
-    enum Level {
-        HIGH
-        MED
-        LOW
+    type UserEmail {
+        username: Int!
+        email: Int!
     }
 `;
 

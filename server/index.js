@@ -27,12 +27,19 @@ let hmset = util.promisify(client.hmset).bind(client);
 let hget = util.promisify(client.hget).bind(client);
 let hgetall = util.promisify(client.hgetall).bind(client); 
 let rpush = util.promisify(client.rpush).bind(client);
+let lpush = util.promisify(client.lpush).bind(client);
 let rpop = util.promisify(client.rpop).bind(client);
 let lrange = util.promisify(client.lrange).bind(client);
 let incr = util.promisify(client.incr).bind(client);
 let hdel = util.promisify(client.hdel).bind(client);
 let lpos = util.promisify(client.lpos).bind(client);
 let lrem = util.promisify(client.lrem).bind(client);
+let sadd = util.promisify(client.sadd).bind(client);
+let zrange = util.promisify(client.zrange).bind(client);
+let smembers = util.promisify(client.smembers).bind(client);
+let sismember = util.promisify(client.sismember).bind(client);
+let exists = util.promisify(client.exists).bind(client);
+
 // client.flushall()
 
 const resolvers = require('./resolvers');
@@ -55,7 +62,13 @@ const clientMethods = {
   rpop,
   lrange,
   lpos,
-  lrem
+  lrem,
+  lpush,
+  sadd,
+  smembers,
+  sismember,
+  zrange,
+  exists
 }
 
 async function startApolloServer() {
