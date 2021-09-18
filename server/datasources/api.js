@@ -150,9 +150,7 @@ const api = {
     getBoards: async (user, context) => {
         try {
             const userBoards = await context.smembers(`boards:${user}`)
-            .then(res => {
-                return res;
-            })
+            .then(res => res)
             return userBoards
         } catch (error) {
             console.log(error)
