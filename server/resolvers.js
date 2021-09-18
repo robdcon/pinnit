@@ -42,8 +42,15 @@ const typeDefs =  {
         },
 
 
-        board: async (parent, {id}, context, info) => {
-            const response = await api.getBoard(id, context).then(res => {
+        board: async (parent, {id, user}, context, info) => {
+            const response = await api.getBoard(id, user, context).then(res => {
+                return res;
+            });
+            return response;
+        }, 
+
+        boards: async (parent, { user }, context, info) => {
+            const response = await api.getBoards(user, context).then(res => {
                 return res;
             });
             return response;
@@ -91,10 +98,11 @@ const typeDefs =  {
             return note;
         },
 
-        createBoard: async (parent, {id, notes, users }, {hmset}) => {
+        createBoard: async (parent, { user }, context) => {
             try {
-                await hmset(`boards:${id}`, 'notes', notes, 'users', users );
-                return true
+                const board = await api.createBoard(user, context).then(res => res);
+                console.log('board', board);
+                return board;
             } catch (error) {
                 console.log(error)
                 return false
@@ -138,9 +146,6 @@ const typeDefs =  {
         },
         notes: () => (parent, args, context, info) => {
             return parent.notes;
-        },
-        users: () => (parent, args, context, info) => {
-            return parent.users;
         }
     },
 

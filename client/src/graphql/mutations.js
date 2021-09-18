@@ -1,5 +1,14 @@
 import { gql } from "@apollo/client"; 
 
+// Boards
+
+export const CREATE_BOARD = gql`
+    mutation createBoard($user: String!) {
+        createBoard(user:$user)
+    }
+`;
+
+
 // Notes
 
 export const CREATE_NOTE = gql`

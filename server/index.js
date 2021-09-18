@@ -39,6 +39,8 @@ let zrange = util.promisify(client.zrange).bind(client);
 let smembers = util.promisify(client.smembers).bind(client);
 let sismember = util.promisify(client.sismember).bind(client);
 let exists = util.promisify(client.exists).bind(client);
+let zadd = util.promisify(client.zadd).bind(client);
+
 
 // client.flushall()
 
@@ -68,7 +70,8 @@ const clientMethods = {
   smembers,
   sismember,
   zrange,
-  exists
+  exists,
+  zadd
 }
 
 async function startApolloServer() {

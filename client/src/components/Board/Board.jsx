@@ -7,7 +7,8 @@ import { getNotes } from '../../api/queries';
 import { setNote, updateNote, deleteNote } from '../../api/mutations';
 import { notesVar } from '../../cache';
 
-const Board = () => { 
+const Board = (props) => { 
+    const id = props.id;
     const [hasError, setHasError] = useState(false);
     const [notes, setNotes] = useState({notes: []});
     const [count, setCount] = useState(0);
@@ -56,7 +57,8 @@ const Board = () => {
 
     return (          
         <div>
-            <StyledBoard className="BoardWrapper">
+            <StyledBoard id={id} className="BoardWrapper">
+            <h1>{id}</h1>
                 {
                     notes && (notes.length > 0) ? notes.map((note, i) => {
                         if(note !== null) return eachNote(note);

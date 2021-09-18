@@ -5,6 +5,7 @@ import './index.css';
 import * as serviceWorker from './registerServiceWorker';
 import { ApolloClient, ApolloProvider } from '@apollo/client';
 import { cache } from './cache.js';
+import { BrowserRouter } from 'react-router-dom';
 
 const client = new ApolloClient({
   cache,
@@ -13,9 +14,11 @@ const client = new ApolloClient({
 })
 
 ReactDOM.render(
-  <ApolloProvider client={client}>
-      <App />
-  </ApolloProvider>,
+  <BrowserRouter>
+    <ApolloProvider client={client}>
+        <App />
+    </ApolloProvider>
+  </BrowserRouter>,
   document.getElementById('root')
 );
 

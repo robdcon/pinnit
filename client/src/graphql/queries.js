@@ -1,5 +1,11 @@
 import { gql } from "@apollo/client"; 
 
+export const GET_BOARDS = gql`
+    query getBoards($user: String!) {
+        boards(user:$user)
+    }
+`;
+
 export const GET_NOTES = gql`
   query getAllNotes {
     notes {

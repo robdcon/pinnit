@@ -134,7 +134,7 @@ const api = {
         return notes;
     },
 
-    getBoard: async (id, context) => {
+    getBoard: async (id, user, context) => {
         try {
             const board = await context.hgetall(`user:${id}`)
             .then(res => {
@@ -147,14 +147,27 @@ const api = {
         }
     },
 
-    createBoard: async (notes, users, context) => {
-        let boardId;
-        context.incr('boards:id').then(res => {
-            boardId = res;
-        });
+    getBoards: async (user, context) => {
         try {
-            await hmset(`boards:${boardId}`, 'notes', notes, 'users', users );
-            return true
+            const userBoards = await context.smembers(`boards:${user}`)
+            .then(res => {
+                return res;
+            })
+            return userBoards
+        } catch (error) {
+            console.log(error)
+            return false
+        }
+    },
+
+    createBoard: async (user, context) => {
+        const boardId = await context.incr(`${user}boardsIds`).then(res => res);
+        console.log("Board ID: ", boardId)
+        try {
+            const addBoard = await context.sadd(`boards:${user}`, boardId).then(res => res);
+            console.log('Boards added to user boards?:', addBoard);
+            // const result = await context.zadd(`notes:${boardId}`, 'id', id);
+            return `${boardId}`
         } catch (error) {
             console.log(error)
             return false

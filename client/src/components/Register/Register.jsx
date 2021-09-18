@@ -9,6 +9,7 @@ const Register = (props) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [userData, setUserData] = useState({});
+
   const addUser = createUser();
 
   const registerUser = () => {
@@ -17,6 +18,7 @@ const Register = (props) => {
       console.log('submitted:', data)
       const userData = data.createUser;
       const user = JSON.stringify({id: userData.id, username: userData.username, email: userData.email})
+      loginUser(userData);
       setToLocalStorage('currentUser', user );
       setToLocalStorage('loggedIn', true);
     })
@@ -51,7 +53,7 @@ const Register = (props) => {
     {({user, loginUser}) => ( 
       <RegisterWrapper className="register-wrapper">
         <p>Register</p>
-        <form onSubmit={(e) => {e.preventDefault(); handleSubmit(); }}>
+        <form onSubmit={(e) => {e.preventDefault(); handleSubmit(); console.log(user)}}>
           <input id="username" name="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
           <input id="email" name="email" type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
           <input id="submit" type="submit" value="Register" />
