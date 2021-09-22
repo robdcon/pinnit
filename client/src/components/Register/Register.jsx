@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { RegisterWrapper } from './Register.styles';
 import { createUser } from '../../api/mutations';
 import { checkUser } from '../../api/queries';
-import { setToLocalStorage } from '../../utils/helpers';
-import { UserContextConsumer } from '../../context/auth';
+import { loggedInUserVar } from '../../cache';
 
 const Register = (props) => {
   const [username, setUsername] = useState("");
@@ -15,12 +14,7 @@ const Register = (props) => {
   const registerUser = () => {
     addUser({variables: userData})
     .then(({data}) => {
-      console.log('submitted:', data)
-      const userData = data.createUser;
-      const user = JSON.stringify({id: userData.id, username: userData.username, email: userData.email})
-      loginUser(userData);
-      setToLocalStorage('currentUser', user );
-      setToLocalStorage('loggedIn', true);
+      loggedInUserVar(data);   
     })
   }
 
@@ -28,11 +22,9 @@ const Register = (props) => {
 
   useEffect(() => {
     setUserData({username: username, email: email});
-   // console.log(userData, email, username)
   }, [username, email]);
 
   useEffect(() => {
-    console.log(checkData);
     if(checkData === undefined) return;
     if(checkData.checkUserExists.username === 1) {
       console.log('Username registered');
@@ -41,26 +33,21 @@ const Register = (props) => {
     } else {
       registerUser();
     }
-  }, [ checkData ]);
+  }, [checkData]);
   
   const handleSubmit = () => {
-    console.log(userData);
     checkUserExists({variables: userData});
   }
 
   return (
-    <UserContextConsumer>
-    {({user, loginUser}) => ( 
       <RegisterWrapper className="register-wrapper">
         <p>Register</p>
-        <form onSubmit={(e) => {e.preventDefault(); handleSubmit(); console.log(user)}}>
+        <form onSubmit={(e) => {e.preventDefault(); handleSubmit();}}>
           <input id="username" name="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
           <input id="email" name="email" type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
           <input id="submit" type="submit" value="Register" />
         </form>
       </RegisterWrapper>
-    )}
-    </UserContextConsumer>
   )
 };
 

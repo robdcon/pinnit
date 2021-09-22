@@ -1,25 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { LoginWrapper } from './Login.styles';
-import { createUser } from '../../api/mutations';
-import { setToLocalStorage } from '../../utils/helpers';
 import { UserContextConsumer } from '../../context/auth';
+import { loggedInUserVar } from '../../cache';
 
 const Login = (props) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [data, setData] = useState({});
-  // const addUser = createUser();
+
   
   useEffect(() => {
     setData({username: username, email: email});
-    console.log(data)
   }, [username, email]);
   
-  const handleSubmit = (callback) => {
-    // addUser({variables: data})
-    setToLocalStorage('01', username);
-    setToLocalStorage('loggedIn', '01');
-    callback(data);
+  const handleSubmit = () => {
+    loggedInUserVar(data);
   }
 
   return (

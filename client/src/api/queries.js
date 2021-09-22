@@ -2,12 +2,8 @@ import { useQuery, useLazyQuery } from "@apollo/client";
 import { GET_NOTES, CHECK_USER, GET_EMAILS, GET_BOARDS } from '../graphql/queries';
 
 export const getBoards = () => {
-    const { loading, data, error } = useQuery(GET_BOARDS,
-        { variables: {
-            user: "1000"
-        }
-    });
-    return { oardLoading:loading, boardData:data, boardError:error };
+    const [getBoardIds, { loading, data, error }]= useLazyQuery(GET_BOARDS);
+    return { getBoardIds, boardLoading:loading, boardData:data, boardError:error };
 }
 
 export const getNotes = () => {

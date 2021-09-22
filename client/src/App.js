@@ -2,59 +2,90 @@ import React, {useEffect, useState} from 'react';
 import Board from './components/Board';
 import Login from './components/Login/';
 import Register from './components/Register';
-import { UserContextProvider } from './context/auth';
-import { getUser } from './utils/helpers';
-import { getBoards } from './api/queries'; 
+import { getBoards } from './api/queries';
+import CreateBoard from './components/CreateBoard/CreateBoard';
+import { boardsVar, currentBoardVar } from './cache';
+import { useReactiveVar } from '@apollo/client';
+
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Link
 } from "react-router-dom";
-
-const user = getUser();
+import { useQuery } from '@apollo/client';
+import { GET_BOARDS } from './graphql/queries';
 
 const App = () => {
-  const [loggedInUser, setLoggedInUser] = useState("1000");
-  const [boards, setBoards] = useState([]);
-  const [currentBoard, setCurrentBoard] = useState(1);
-  const {boardLoading, boardData, boardError} = getBoards();
+  
+  const [user, setUser] = useState(null)
+  const [boards, setBoards] = useState(null);
+  // const [currentBoard, setCurrentBoard] = useState(null);
+  const {getBoardIds, boardLoading, boardData, boardError} = getBoards();
+  const currentBoard = useReactiveVar(currentBoardVar);
+
+   // Get logged in user
+  useEffect(() => {
+    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+    setUser(loggedInUser);
+  }, [])
+ 
+  useEffect(() => {
+    if(user && user.id) {
+      getBoardIds({ 
+        variables: {user:user.id}
+      });
+    }
+  }, [user]);
 
   useEffect(() => {
-    boardData && setBoards(boardData)
-    console.log(boards.boards)
-  }, [boardData])
+    if(boardLoading) {
+      console.log('Loading...');
+    }
+    if(boardData) {
+      const {boards} = boardData;
+      console.log(boardData);
+      // boardsVar(boardData);
+      setBoards(boards);
+    }
+    if(boardError) {
+      console.log('Error:', boardError);
+    }
+  }, [boardLoading, boardData, boardError])
 
   return (  
     <Router>
-      <UserContextProvider value={{user:loggedInUser, loginUser: (user) => {setLoggedInUser(user)}}} >
-        <div className="pinnit">
-          <nav>
-            {
-              
-              boards && boards.boards.length > 0 && boards.boards.map(board => {
-                return (
-                  <Link key={board} to={`/${board}`} onClick={() => setCurrentBoard(board)}>
-                    {board}
-                  </Link>
-                )
-              })
-            }
-          </nav>
-          <Route path="/login">
-            <Login />
-          </Route>
-          <Route path="/register">
-            <Register />
-          </Route>
-          <Route path="/:boardId">
-            <Board id={currentBoard} />
-          </Route>
-          <Route path="/">
-            <Board id={currentBoard}/>
-          </Route>
+      <div className="pinnit">
+        <nav>
+        {
+          boards && boards.length > 0 && boards.map(board => {
+            return (
+              <Link key={board} to={`/${board}`} onClick={() => currentBoardVar(board)}>
+                {board}
+              </Link>
+            )
+          })
+        }
+        </nav>
+        <div>
+          <CreateBoard userId={user ? user.id : null} />
         </div>
-      </UserContextProvider>
+        <Route path="/login">
+          <Login />
+        </Route>
+        <Route path="/register">
+          <Register />
+        </Route>
+        <Route path="/:boardId">
+          <Board id={currentBoard} />
+        </Route>
+        <Route path="/">
+          {
+            (!user) && <Register />
+          }
+          <Board id={currentBoard}/>
+        </Route>
+      </div>
     </Router>
     );
 }

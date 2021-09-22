@@ -2,22 +2,28 @@ import React from 'react';
 import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 import { CREATE_BOARD } from '../../graphql/mutations';
-
+import { GET_BOARDS } from '../../graphql/queries';
 import { StyledCreateBoardButton } from './CreateBoard.styles';
-const CreateBoard = (props) => {
+import { currentBoardVar } from '../../cache';
+
+const CreateBoard = ({userId}) => {
   const history = useHistory();
   const [createBoard] = useMutation(CREATE_BOARD, {
-    variables: {
-      user: '1000'
-    },
-    onCompleted: () => history.push('/')
+    variables: {user: userId},
+    onCompleted: ({createBoard: id}) => {history.push(`/${id}`); currentBoardVar(id); console.log('Created Board:', id)},
+    refetchQueries: [
+      {
+       query:GET_BOARDS,
+       variables: {
+         user: userId
+       }
+      }
+    ]
   });
-
-  const 
 
   return (
   <StyledCreateBoardButton className="CreateBoardWrapper">
-    <button>CREATE BOARD</button>
+    <button onClick={() => createBoard()}>CREATE BOARD</button>
   </StyledCreateBoardButton>
 )};
 

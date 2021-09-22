@@ -25,20 +25,17 @@ const Board = (props) => {
         }
     }, [data]);
 
-  const updatePriority = (id, level) => {
-    updateNoteData({variables: {id, level}});
-  }
+    const updatePriority = (id, level) => {
+        updateNoteData({variables: {id, level}});
+    }
 
+    const remove = (id) => {
+        removeNote({variables:{id: id}});
+    }
 
-
-  const remove = (id) => {
-      removeNote({variables:{id: id}});
-    //   setNotes({notes})
-  }
-
-  const clearAllNotes = () => {
-     console.log('deleted');
-  }
+    const clearAllNotes = () => {
+        console.log('deleted');
+    }
 
   const eachNote = ({id, text, zindex, level}) => {
     return (

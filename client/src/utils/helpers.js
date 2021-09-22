@@ -26,6 +26,10 @@ export const checkLocalStorage = () =>
 }
 
 export const setToLocalStorage = (key, value) => {
+    console.log(typeof(value));
+    if(typeof(value) !== 'string') {
+        value = JSON.stringify(value);
+    }
     try {
         checkLocalStorage();
         localStorage.setItem(key, value);
