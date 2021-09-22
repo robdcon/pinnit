@@ -6,9 +6,9 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { getNotes } from '../../api/queries';
 import { setNote, updateNote, deleteNote } from '../../api/mutations';
 import { notesVar } from '../../cache';
+import { useParams } from 'react-router-dom';
 
-const Board = (props) => { 
-    const id = props.id;
+const Board = () => { 
     const [hasError, setHasError] = useState(false);
     const [notes, setNotes] = useState({notes: []});
     const [count, setCount] = useState(0);
@@ -17,6 +17,8 @@ const Board = (props) => {
     const createNote = setNote();
     const updateNoteData = updateNote();
     const removeNote = deleteNote();
+    let {boardId} = useParams();
+    console.log(boardId)
 
     useEffect(() => {
         if(data && data.notes) {
@@ -54,8 +56,8 @@ const Board = (props) => {
 
     return (          
         <div>
-            <StyledBoard id={id} className="BoardWrapper">
-            <h1>{id}</h1>
+            <StyledBoard id={boardId} className="BoardWrapper">
+            <h1>{boardId}</h1>
                 {
                     notes && (notes.length > 0) ? notes.map((note, i) => {
                         if(note !== null) return eachNote(note);

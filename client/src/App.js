@@ -11,18 +11,22 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
+  Link,
+  useHistory,
+  useParams
 } from "react-router-dom";
 import { useQuery } from '@apollo/client';
 import { GET_BOARDS } from './graphql/queries';
 
 const App = () => {
-  
+  const history = useHistory();
   const [user, setUser] = useState(null)
   const [boards, setBoards] = useState(null);
   // const [currentBoard, setCurrentBoard] = useState(null);
   const {getBoardIds, boardLoading, boardData, boardError} = getBoards();
-  const currentBoard = useReactiveVar(currentBoardVar);
+  // const currentBoard = useReactiveVar(currentBoardVar);
+ 
+  
 
    // Get logged in user
   useEffect(() => {
@@ -51,7 +55,13 @@ const App = () => {
     if(boardError) {
       console.log('Error:', boardError);
     }
-  }, [boardLoading, boardData, boardError])
+  }, [boardLoading, boardData, boardError]);
+
+  // useEffect(() => {
+  //   if(currentBoard !== undefined) {
+  //     history.push(`/${currentBoard}`)
+  //   }
+  // }, [currentBoard]);
 
   return (  
     <Router>
@@ -77,13 +87,13 @@ const App = () => {
           <Register />
         </Route>
         <Route path="/:boardId">
-          <Board id={currentBoard} />
+          <Board />
         </Route>
         <Route path="/">
           {
             (!user) && <Register />
           }
-          <Board id={currentBoard}/>
+          <Board />
         </Route>
       </div>
     </Router>
