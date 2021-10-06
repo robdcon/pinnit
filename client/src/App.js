@@ -2,8 +2,9 @@ import React, {useEffect, useState} from 'react';
 import Board from './components/Board';
 import Login from './components/Login/';
 import Register from './components/Register';
-import { getBoards } from './api/queries';
+import { getBoards, getBoardNotes } from './api/queries';
 import CreateBoard from './components/CreateBoard/CreateBoard';
+import CreateNote from './components/CreateNote/CreateNote';
 import { boardsVar, currentBoardVar } from './cache';
 import { useReactiveVar } from '@apollo/client';
 
@@ -15,18 +16,19 @@ import {
   useHistory,
   useParams
 } from "react-router-dom";
-import { useQuery } from '@apollo/client';
-import { GET_BOARDS } from './graphql/queries';
+
 
 const App = () => {
-  const history = useHistory();
-  const [user, setUser] = useState(null)
-  const [boards, setBoards] = useState(null);
-  // const [currentBoard, setCurrentBoard] = useState(null);
+  // state
+  const [user, setUser] = useState();
+  const [boards, setBoards] = useState();
+  const [notes, setNotes] = useState();
+  const [currentBoard, setCurrentBoard] = useState();
+  // queries
   const {getBoardIds, boardLoading, boardData, boardError} = getBoards();
+  const { getNotes, notesLoading, notesData, notesError } = getBoardNotes();
+
   // const currentBoard = useReactiveVar(currentBoardVar);
- 
-  
 
    // Get logged in user
   useEffect(() => {
@@ -35,7 +37,7 @@ const App = () => {
   }, [])
  
   useEffect(() => {
-    if(user && user.id) {
+    if(user) {
       getBoardIds({ 
         variables: {user:user.id}
       });
@@ -43,25 +45,24 @@ const App = () => {
   }, [user]);
 
   useEffect(() => {
-    if(boardLoading) {
-      console.log('Loading...');
-    }
     if(boardData) {
       const {boards} = boardData;
-      console.log(boardData);
-      // boardsVar(boardData);
       setBoards(boards);
-    }
-    if(boardError) {
-      console.log('Error:', boardError);
     }
   }, [boardLoading, boardData, boardError]);
 
-  // useEffect(() => {
-  //   if(currentBoard !== undefined) {
-  //     history.push(`/${currentBoard}`)
-  //   }
-  // }, [currentBoard]);
+  useEffect(() => {
+    if(currentBoard) {
+      getNotes({variables:{user: user.id, board:currentBoard}});
+    }
+  }, [currentBoard]);
+
+  useEffect(() => {
+    if(notesData) {
+      const {notes} = notesData;
+      setNotes(notes);
+    }
+  }, [notesData])
 
   return (  
     <Router>
@@ -70,7 +71,7 @@ const App = () => {
         {
           boards && boards.length > 0 && boards.map(board => {
             return (
-              <Link key={board} to={`/${board}`} onClick={() => currentBoardVar(board)}>
+              <Link key={board} to={`/${board}`} onClick={() => setCurrentBoard(board)}>
                 {board}
               </Link>
             )
@@ -78,7 +79,12 @@ const App = () => {
         }
         </nav>
         <div>
-          <CreateBoard userId={user ? user.id : null} />
+        {
+          user && <CreateBoard userId={user.id} />
+        }
+        {
+          user && <CreateNote boardId={currentBoard} userId={user.id} />
+        }
         </div>
         <Route path="/login">
           <Login />
@@ -86,14 +92,16 @@ const App = () => {
         <Route path="/register">
           <Register />
         </Route>
-        <Route path="/:boardId">
-          <Board />
-        </Route>
+        <Route path="/:boardId" render={ (url) => {
+          setCurrentBoard(url.match.params.boardId);
+          return <Board boardId={currentBoard} notes={notes} />
+          } 
+        }/>
         <Route path="/">
           {
             (!user) && <Register />
           }
-          <Board />
+          <h1>Welcome</h1>
         </Route>
       </div>
     </Router>
