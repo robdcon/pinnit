@@ -12,20 +12,20 @@ export const CREATE_BOARD = gql`
 // Notes
 
 export const CREATE_NOTE = gql`
-    mutation createNote($text: String!, $level: String!) {
-        createNote(text: $text, zindex: 0, level: $level)
+    mutation createNote($user: String!, $board: String!, $text: String!, $level: String!) {
+        createNote(user: $user, board: $board, text: $text, zindex: 0, level: $level)
     }
 `;
 
 export const UPDATE_NOTE = gql`
-    mutation updateNote($id: String!, $text: String, $zindex: Int, $level: String) {
-        updateNote(id: $id, text: $text, zindex: $zindex, level: $level)
+    mutation updateNote($user: String!, $board: String!, $id: String!, $text: String, $zindex: Int, $level: String) {
+        updateNote(user: $user, board: $board, id: $id, text: $text, zindex: $zindex, level: $level)
     }
 `;
 
 export const DELETE_NOTE = gql`
-    mutation deleteNote($id: String!) {
-        deleteNote(id: $id)
+    mutation deleteNote($user: String!, $board: String!, $id: String!) {
+        deleteNote(user: $user, board: $board, id: $id)
     }
 `;
 

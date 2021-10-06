@@ -6,8 +6,17 @@ export const getBoards = () => {
     return { getBoardIds, boardLoading:loading, boardData:data, boardError:error };
 }
 
-export const getNotes = () => {
+export const getBoardNotes = () => {
+    const [getNotes, {loading, data, error}] = useLazyQuery(GET_NOTES);
+    return {getNotes, notesLoading: loading, notesData: data, notesError: error };
+}
+
+export const getNotes = (userId, boardId) => {
     const { loading, data, error } = useQuery(GET_NOTES, {
+        variables: {
+            board: `${boardId}`,
+            user: `${userId}`
+        },
         pollInterval: 0
     });
     return { loading, data, error };

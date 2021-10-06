@@ -8,16 +8,16 @@ const schema = gql`
         email(email: String!): Int
         emails: [String]
         note(id: String!): Note
-        notes: [Note]
+        notes(user: String!, board: String!): [Note]
         board(id: String!): Board
         boards(user: String!): [String]
     }
 
     type Mutation {
         createUser(username: String!, email: String!) : User!
-        createNote(text: String!, zindex: Int!, level: String!): String!
-        updateNote(id: String!, text: String, zindex: Int, level: String): String!
-        deleteNote(id: String!): String!
+        createNote(user: String!, board: String!, text: String!, zindex: Int!, level: String!): String!
+        updateNote(user: String!, board: String!, id: String!, text: String, zindex: Int, level: String): String!
+        deleteNote(user: String!, board: String!, id: String!): String!
         createBoard(user: String): String!
     }
 

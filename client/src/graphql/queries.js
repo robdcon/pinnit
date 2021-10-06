@@ -7,8 +7,8 @@ export const GET_BOARDS = gql`
 `;
 
 export const GET_NOTES = gql`
-  query getAllNotes {
-    notes {
+  query getNotes($user: String!, $board: String! ) {
+    notes(user: $user, board: $board) {
       id
       text
       zindex

@@ -4,35 +4,21 @@ import Note from '../Note'
 import StickyFooter from '../StickyFooter'
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { getNotes } from '../../api/queries';
-import { setNote, updateNote, deleteNote } from '../../api/mutations';
-import { notesVar } from '../../cache';
+import { updateNote, deleteNote } from '../../api/mutations';
+import { notesVar, currentBoardVar } from '../../cache';
 import { useParams } from 'react-router-dom';
 
-const Board = () => { 
-    const [hasError, setHasError] = useState(false);
-    const [notes, setNotes] = useState({notes: []});
-    const [count, setCount] = useState(0);
-    const [uniqueId, setUniqueId] = useState(0);
-    const { loading, data, error } = getNotes();
-    const createNote = setNote();
+const Board = ({userId, boardId, notes}) => { 
+    // const [notes, setNotes] = useState([]);
     const updateNoteData = updateNote();
     const removeNote = deleteNote();
-    let {boardId} = useParams();
-    console.log(boardId)
-
-    useEffect(() => {
-        if(data && data.notes) {
-            notesVar(data.notes);
-            setNotes(notesVar());
-        }
-    }, [data]);
 
     const updatePriority = (id, level) => {
         updateNoteData({variables: {id, level}});
     }
 
     const remove = (id) => {
-        removeNote({variables:{id: id}});
+        removeNote({variables:{user: userId, board: boardId, id: id}});
     }
 
     const clearAllNotes = () => {
@@ -41,11 +27,11 @@ const Board = () => {
 
   const eachNote = ({id, text, zindex, level}) => {
     return (
-        <Note key={id} 
+        <Note key={`${boardId}${id}`} 
               id={id}
               zindex={zindex}
               level={level}
-              onChange={({id, field, value}) => updateNoteData({variables: {id: id, [field]:value}})}
+              onChange={({field, value}) => updateNoteData({variables: {user: userId, board:boardId, id: id, [field]:value}})}
               onRemove={remove}
               onPriorityChange={updatePriority}
               >
@@ -63,12 +49,12 @@ const Board = () => {
                         if(note !== null) return eachNote(note);
                     }) : null
                 }
-                <StickyFooter>
+                {/* <StickyFooter>
                     <AddCircleIcon 
                     style={{ color: '#ffffff', fontSize:'3em'}} 
                     onClick={() => createNote({variables:{text: "New Message", level: 'MED'}})}
                     />
-                </StickyFooter>
+                </StickyFooter> */}
             </StyledBoard>
         </div>      
     );

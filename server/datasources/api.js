@@ -64,18 +64,21 @@ const api = {
         return emails;
     },
     
-    createNote: async (text, zindex, level, context) => {
+    createNote: async (user, board, text, zindex, level, context) => {
+        console.log('Board ID:',board);
         try {
-            let id = context.incr('notes:id');
-            
-            id.then(res => {
-                console.log('Note id:',res)
+            let id = context.incr(`${user}:${board}:noteId`);
+            const newId = await id.then(res => {
+                let uniqueId = `${user}${board}${res}`;
+                console.log('Note id:',uniqueId)
                 // Set user with id
-                const note = context.hmset(`notes:id:${res}`, 'id', res, 'text', text, 'zindex', zindex, 'level', level);
-                const setId = context.rpush('noteIds', `${res}`);
-                return {id: res, note, setId};
+                const note = context.hmset(`${user}:${board}:notes:${uniqueId}`, 'id', uniqueId, 'text', text, 'zindex', zindex, 'level', level);
+                const setId = context.rpush(`${user}:${board}:noteIds`, `${uniqueId}`).then(res => {
+                    console.log('ID set:', res)
+                });
+                return uniqueId;
             })
-            return id;
+            return newId;
         } catch (error) {
             console.log(error)
             return false
@@ -83,14 +86,17 @@ const api = {
         
     },
 
-    updateNote: async (id, text, zindex, level, context) => {
+    updateNote: async (user, board, id, text, zindex, level, context) => {
         try {
             console.table({id, text, zindex, level})
             let note;
-            if(text) note = context.hset(`notes:id:${id}`, 'text', text);
-            if(zindex) note = context.hset(`notes:id:${id}`, 'zindex', zindex);
-            if(level) note = context.hset(`notes:id:${id}`, 'level', level);
-            note.then(res => res);
+            if(text) note = context.hset(`${user}:${board}:notes:${id}`, 'text', text);
+            if(zindex) note = context.hset(`${user}:${board}:notes:${id}`, 'zindex', zindex);
+            if(level) note = context.hset(`${user}:${board}:notes:${id}`, 'level', level);
+            note.then(res => {
+                console.log('Updated note', res)
+                return res
+            });
             return note;
         } catch (error) {
             console.log(error)
@@ -99,10 +105,10 @@ const api = {
         
     },
 
-    deleteNote: async (id, context) => {
+    deleteNote: async (user, board, id, context) => {
         try {
-            context.lrem('noteIds', 0, id).then(res => console.log("res:", res));
-            const note = context.del(`notes:id:${id}`)
+            context.lrem(`${user}:${board}:noteIds`, 0, id).then(res => console.log("res:", res));
+            const note = context.del(`${user}:${board}:notes:${id}`)
             .then(res => res);
             return note;
         } catch (error) {
@@ -111,36 +117,27 @@ const api = {
         }
     },
 
-    getNote: async (id, context) => {
-        try {
-            const note = await context.hgetall(`notes:id:${id}`)
-            .then(res => {
-                return res;
-            })
-            return note
-        } catch (error) {
-            console.log(error)
-            return false
-        }
-    },
-
-    getNotes: async (context, from=0, to=-1) => {
-        const noteIds = await context.lrange('noteIds', from, to)
-        .then(res => res);
+    getNotes: async (user, board, context, from=0, to=-1) => {
+        const noteIds = await context.lrange(`${user}:${board}:noteIds`, from, to)
+        .then(res => {
+            console.log(res)
+            return res
+        });
         const promises = noteIds.map(noteId => {
-            return context.hgetall(`notes:id:${noteId}`);
+            return context.hgetall(`${user}:${board}:notes:${noteId}`);
         });
         const notes = Promise.all(promises).then(res => res);
         return notes;
     },
 
-    getBoard: async (id, user, context) => {
+    createBoard: async (user, context) => {
+        const boardId = await context.incr(`${user}boardsIds`).then(res => res);
+        console.log("Board ID: ", boardId)
         try {
-            const board = await context.hgetall(`user:${id}`)
-            .then(res => {
-                return res;
-            })
-            return board
+            const addBoard = await context.sadd(`boards:${user}`, boardId).then(res => res);
+            console.log('Boards added to user boards?:', addBoard);
+            // const result = await context.zadd(`notes:${boardId}`, 'id', id);
+            return `${boardId}`
         } catch (error) {
             console.log(error)
             return false
@@ -152,20 +149,6 @@ const api = {
             const userBoards = await context.smembers(`boards:${user}`)
             .then(res => res)
             return userBoards
-        } catch (error) {
-            console.log(error)
-            return false
-        }
-    },
-
-    createBoard: async (user, context) => {
-        const boardId = await context.incr(`${user}boardsIds`).then(res => res);
-        console.log("Board ID: ", boardId)
-        try {
-            const addBoard = await context.sadd(`boards:${user}`, boardId).then(res => res);
-            console.log('Boards added to user boards?:', addBoard);
-            // const result = await context.zadd(`notes:${boardId}`, 'id', id);
-            return `${boardId}`
         } catch (error) {
             console.log(error)
             return false

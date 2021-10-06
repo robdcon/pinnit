@@ -33,8 +33,8 @@ const typeDefs =  {
             return response;
         },
 
-        notes: async (parent, args, context, info) => {
-            const response = await api.getNotes(context).then(res => {
+        notes: async (parent, {user, board}, context, info) => {
+            const response = await api.getNotes(user, board, context).then(res => {
                 console.log("Notes: ", res)
                 return res;
             });
@@ -80,20 +80,20 @@ const typeDefs =  {
            return user;
         }, 
 
-        createNote: async (parent, {text, zindex, level }, context) => {
-            const note = await api.createNote(text, zindex, level, context)
+        createNote: async (parent, {user, board, text, zindex, level }, context) => {
+            const note = await api.createNote(user, board, text, zindex, level, context)
             .then(res => res);
             return note;
         },
 
-        updateNote: async (parent, {id, text, zindex, level}, context) => {
-            const note = await api.updateNote(id, text, zindex, level, context)
+        updateNote: async (parent, {user, board, id, text, zindex, level}, context) => {
+            const note = await api.updateNote(user, board, id, text, zindex, level, context)
             .then(res => res);
             return note;
         },
 
-        deleteNote: async (parent, {id}, context) => {
-            const note = await api.deleteNote(id, context)
+        deleteNote: async (parent, {user, board, id}, context) => {
+            const note = await api.deleteNote(user, board, id, context)
             .then(res => res);
             return note;
         },

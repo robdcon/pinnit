@@ -94,7 +94,7 @@ const App = () => {
         </Route>
         <Route path="/:boardId" render={ (url) => {
           setCurrentBoard(url.match.params.boardId);
-          return <Board boardId={currentBoard} notes={notes} />
+          return user && <Board boardId={currentBoard} notes={notes} userId={user.id}/>
           } 
         }/>
         <Route path="/">

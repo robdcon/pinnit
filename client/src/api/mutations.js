@@ -6,8 +6,8 @@ import { loggedInUserVar } from "../cache";
 
 // Notes 
 
-export const setNote = (noteData) => {
-  const [addNote, {loading, data, error}] = useMutation(CREATE_NOTE, {
+export const createNote = (noteData) => {
+  const [newNote, {loading, data, error}] = useMutation(CREATE_NOTE, {
         noteData,
         refetchQueries: [
           {
@@ -15,7 +15,7 @@ export const setNote = (noteData) => {
           }
         ]
     });
-    return(addNote);
+    return(newNote);
 }
 
 export const updateNote = () => {
