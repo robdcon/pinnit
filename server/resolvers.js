@@ -11,9 +11,10 @@ const typeDefs =  {
 
         users: async (parent, args, context, info) => {
             const response = await api.getUsers(context).then(res => {
-                console.log("Resolver: ",res)
+               
                 return res;
             });
+            console.log("Resolver: ",response)
             return response;
         },
 
@@ -103,6 +104,15 @@ const typeDefs =  {
                 const board = await api.createBoard(user, context).then(res => res);
                 console.log('board', board);
                 return board;
+            } catch (error) {
+                console.log(error)
+                return false
+            }
+        },
+        shareBoard: async (parent, { user, board }, context) => {
+            try {
+                const result = await api.shareBoard(user, board, context).then(res => res);
+                return result;
             } catch (error) {
                 console.log(error)
                 return false

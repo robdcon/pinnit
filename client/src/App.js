@@ -2,11 +2,16 @@ import React, {useEffect, useState} from 'react';
 import Board from './components/Board';
 import Login from './components/Login/';
 import Register from './components/Register';
-import { getBoards, getBoardNotes } from './api/queries';
+import { getBoards, getBoardNotes, getUsers } from './api/queries';
 import CreateBoard from './components/CreateBoard/CreateBoard';
 import CreateNote from './components/CreateNote/CreateNote';
+import ShareBoard from './components/ShareBoard/ShareBoard';
 import { boardsVar, currentBoardVar } from './cache';
 import { useReactiveVar } from '@apollo/client';
+
+const contacts = [
+  {email: 'robdcon2@gmail.com', id:"1"}
+]
 
 import {
   BrowserRouter as Router,
@@ -24,9 +29,11 @@ const App = () => {
   const [boards, setBoards] = useState();
   const [notes, setNotes] = useState();
   const [currentBoard, setCurrentBoard] = useState();
+  const [allUsers, setAllUsers] = useState([]);
   // queries
-  const {getBoardIds, boardLoading, boardData, boardError} = getBoards();
-  const { getNotes, notesLoading, notesData, notesError } = getBoardNotes();
+  const {getBoardIds, boardLoading, boardData, boardError, startBoardPolling} = getBoards();
+  const { getNotes, notesLoading, notesData, notesError, startNotesPolling } = getBoardNotes();
+  const {usersLoading, usersData, usersError} = getUsers()
 
   // const currentBoard = useReactiveVar(currentBoardVar);
 
@@ -35,6 +42,10 @@ const App = () => {
     const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
     setUser(loggedInUser);
   }, [])
+
+  useEffect(() => {
+    console.log({usersLoading, usersData, usersError})
+  }, [usersLoading, usersData, usersError])
  
   useEffect(() => {
     if(user) {
@@ -45,15 +56,19 @@ const App = () => {
   }, [user]);
 
   useEffect(() => {
+    
     if(boardData) {
       const {boards} = boardData;
       setBoards(boards);
+      // startBoardPolling && startBoardPolling(1000);
     }
-  }, [boardLoading, boardData, boardError]);
+  }, [boardLoading, boardData, boardError, startBoardPolling]);
 
   useEffect(() => {
     if(currentBoard) {
-      getNotes({variables:{user: user.id, board:currentBoard}});
+      getNotes({
+        variables:{user: user.id, board:currentBoard}
+      });
     }
   }, [currentBoard]);
 
@@ -61,8 +76,9 @@ const App = () => {
     if(notesData) {
       const {notes} = notesData;
       setNotes(notes);
+      startNotesPolling && startNotesPolling(1000);
     }
-  }, [notesData])
+  }, [notesData, startNotesPolling])
 
   return (  
     <Router>
@@ -84,6 +100,9 @@ const App = () => {
         }
         {
           user && <CreateNote boardId={currentBoard} userId={user.id} />
+        }
+        {
+          usersData && usersData.users.map(user =>{ return(<ShareBoard key={user.username} boardId={currentBoard} username={user.username} text={user.username} />)})
         }
         </div>
         <Route path="/login">

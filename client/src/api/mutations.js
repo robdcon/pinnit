@@ -1,4 +1,4 @@
-import { useMutation, gql } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { CREATE_NOTE, UPDATE_NOTE, DELETE_NOTE, CREATE_USER } from '../graphql/mutations';
 import { GET_NOTES, GET_USERS, GET_USER } from '../graphql/queries';
 import { setToLocalStorage } from '../utils/helpers'; 
@@ -47,4 +47,13 @@ export const createUser = () => {
     }
   });
   return(createUser);
+}
+
+export const shareBoard = () => {
+  const [shareBoard] = useMutation(SHARE_BOARD, {
+    onCompleted: (data) => {
+      console.log(data)
+    }
+  })
+  return shareBoard;
 }

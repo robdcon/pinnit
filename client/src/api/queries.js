@@ -1,30 +1,32 @@
 import { useQuery, useLazyQuery } from "@apollo/client";
-import { GET_NOTES, CHECK_USER, GET_EMAILS, GET_BOARDS } from '../graphql/queries';
+import { 
+    GET_NOTES, 
+    CHECK_USER, 
+    GET_EMAILS, 
+    GET_BOARDS, 
+    GET_USERS 
+} from '../graphql/queries';
 
 export const getBoards = () => {
-    const [getBoardIds, { loading, data, error }]= useLazyQuery(GET_BOARDS);
-    return { getBoardIds, boardLoading:loading, boardData:data, boardError:error };
+    const [getBoardIds, { loading, data, error, startPolling }] = useLazyQuery(GET_BOARDS);
+    return { getBoardIds, boardLoading:loading, boardData:data, boardError:error, startBoardPolling:startPolling };
 }
 
 export const getBoardNotes = () => {
-    const [getNotes, {loading, data, error}] = useLazyQuery(GET_NOTES);
-    return {getNotes, notesLoading: loading, notesData: data, notesError: error };
+    const [getNotes, {loading, data, error, startPolling}] = useLazyQuery(GET_NOTES);
+    return {getNotes, notesLoading: loading, notesData: data, notesError: error, startNotesPolling: startPolling};
 }
 
-export const getNotes = (userId, boardId) => {
-    const { loading, data, error } = useQuery(GET_NOTES, {
-        variables: {
-            board: `${boardId}`,
-            user: `${userId}`
-        },
-        pollInterval: 0
-    });
-    return { loading, data, error };
-}
 
+// Users
 export const getUser = () => {
     const { loading, data, error } = useQuery(GET_USER);
     return { loading, data, error };
+}
+
+export const getUsers = () => {
+    const { loading, data, error } = useQuery(GET_USERS);
+    return { usersLoading: loading, usersData: data, usersError:error };
 }
 
 export const checkUser = () => {

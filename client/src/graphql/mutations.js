@@ -8,6 +8,12 @@ export const CREATE_BOARD = gql`
     }
 `;
 
+export const SHARE_BOARD = gql`
+    mutation shareBoard($user: String!, $board: String!) {
+        shareBoard(user:$user, board: $board)
+    }
+`;
+
 
 // Notes
 
