@@ -6,16 +6,30 @@ import { loggedInUserVar } from "../cache";
 
 // Notes 
 
-export const createNote = (noteData) => {
-  const [newNote, {loading, data, error}] = useMutation(CREATE_NOTE, {
-        noteData,
-        refetchQueries: [
-          {
-            query:GET_NOTES
-          }
-        ]
-    });
-    return(newNote);
+export const addNote = ({userId, boardId}) => {
+  const [createNote, {loading, data, error}] = useMutation(CREATE_NOTE, {
+    variables: {
+      user: `${userId}`, 
+      board: `${boardId}`, 
+      text: `New Note for ${boardId}`, 
+      level: "HIGH", 
+      zindex: 0
+    },
+    onCompleted: (note) => {
+      console.log('Created Note:', note)
+    },
+    refetchQueries: [
+      {
+       query:GET_NOTES,
+       variables: {
+         user: `${userId}`,
+         board: `${boardId}`
+       }
+      }
+    ]
+  });
+
+  return createNote;
 }
 
 export const updateNote = () => {

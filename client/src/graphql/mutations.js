@@ -14,7 +14,6 @@ export const SHARE_BOARD = gql`
     }
 `;
 
-
 // Notes
 
 export const CREATE_NOTE = gql`
