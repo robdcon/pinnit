@@ -32,13 +32,23 @@ export const addNote = ({userId, boardId}) => {
   return createNote;
 }
 
-export const updateNote = () => {
-  const [updateNoteData, {loading, data, error}] = useMutation(UPDATE_NOTE, {
+export const editNote = ({userId, boardId}) => {
+  const [updateNote, {loading, data, error}] = useMutation(UPDATE_NOTE, {
+        variables: {
+          user: `${userId}`,
+          board: `${boardId}`
+        },
         refetchQueries: [
-          GET_NOTES
+          {
+           query:GET_NOTES,
+           variables: {
+             user: `${userId}`,
+             board: `${boardId}`
+           }
+          }
         ]
     });
-    return(updateNoteData);
+    return(updateNote);
 }
 
 export const deleteNote = () => {

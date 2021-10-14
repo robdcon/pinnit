@@ -4,13 +4,13 @@ import Note from '../Note'
 import StickyFooter from '../StickyFooter'
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { getNotes } from '../../api/queries';
-import { updateNote, deleteNote } from '../../api/mutations';
+import { editNote, deleteNote } from '../../api/mutations';
 import { notesVar, currentBoardVar } from '../../cache';
 import { useParams } from 'react-router-dom';
 
 const Board = ({userId, boardId, notes}) => { 
     // const [notes, setNotes] = useState([]);
-    const updateNoteData = updateNote();
+    const updateNote = editNote({userId, boardId});
     const removeNote = deleteNote();
 
     const updatePriority = (id, level) => {
@@ -31,7 +31,7 @@ const Board = ({userId, boardId, notes}) => {
               id={id}
               zindex={zindex}
               level={level}
-              onChange={({field, value}) => updateNoteData({variables: {user: userId, board:boardId, id: id, [field]:value}})}
+              onChange={({field, value}) => updateNote({variables: {id: id, [field]:value}})}
               onRemove={remove}
               onPriorityChange={updatePriority}
               >
