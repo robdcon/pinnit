@@ -7,55 +7,65 @@ import { loggedInUserVar } from "../cache";
 // Notes 
 
 export const addNote = ({userId, boardId}) => {
-  const [createNote, {loading, data, error}] = useMutation(CREATE_NOTE, {
+  const [createNote, loading, data, error] = useMutation(CREATE_NOTE, {
     variables: {
-      user: `${userId}`, 
-      board: `${boardId}`, 
-      text: `New Note for ${boardId}`, 
-      level: "HIGH", 
-      zindex: 0
+      user:userId, 
+      board:boardId,
+      text: `New Note ${userId}:${boardId}`,
+      zindex: 0,
+      level: 'MED'
     },
-    onCompleted: (note) => {
-      console.log('Created Note:', note)
-    },
-    refetchQueries: [
-      {
-       query:GET_NOTES,
-       variables: {
-         user: `${userId}`,
-         board: `${boardId}`
-       }
+    refetchQueries: [{
+      query: GET_NOTES,
+      variables: {
+        user: userId,
+        board: boardId
       }
-    ]
+    }],
+    onCompleted: (data) => {
+      console.log('Mutation:', data)
+    }
   });
-
   return createNote;
 }
 
 export const editNote = ({userId, boardId}) => {
-  const [updateNote, {loading, data, error}] = useMutation(UPDATE_NOTE, {
+  const [updateNote] = useMutation(UPDATE_NOTE, {
+      variables: {
+        user:userId, 
+        board:boardId
+      },
+      refetchQueries: [{
+        query: GET_NOTES,
         variables: {
-          user: `${userId}`,
-          board: `${boardId}`
-        },
-        refetchQueries: [
-          {
-           query:GET_NOTES,
-           variables: {
-             user: `${userId}`,
-             board: `${boardId}`
-           }
-          }
-        ]
+          user: userId,
+          board: boardId
+        }
+      }],
+        onCompleted: (data) => {
+          console.log('Updated:', data)
+        }
     });
     return(updateNote);
 }
 
-export const deleteNote = () => {
-  const [removeNote, {loading, data, error}] = useMutation(DELETE_NOTE, {
-        refetchQueries: [
-          GET_NOTES
-        ]
+export const deleteNote = ({userId, boardId}) => {
+  console.log({userId, boardId});
+  const [removeNote] = useMutation(DELETE_NOTE, {
+    variables: {
+      user:userId, 
+      board:boardId
+    },
+    refetchQueries: [{
+      query: GET_NOTES,
+      variables: {
+        user: userId,
+        board: boardId
+      }
+    }],
+        onCompleted: (data) => {
+          console.log('Deleted:', data)
+        }
     });
     return(removeNote);
 }

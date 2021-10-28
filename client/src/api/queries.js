@@ -4,7 +4,8 @@ import {
     CHECK_USER, 
     GET_EMAILS, 
     GET_BOARDS, 
-    GET_USERS 
+    GET_USERS,
+    GET_LOGGEDIN_USER
 } from '../graphql/queries';
 
 export const getBoards = () => {
@@ -19,22 +20,27 @@ export const getBoardNotes = () => {
 
 
 // Users
-export const getUser = () => {
-    const { loading, data, error } = useQuery(GET_USER);
-    return { loading, data, error };
+// export const getUser = () => {
+//     const { loading, data, error } = useQuery(GET_USER);
+//     return { loading, data, error };
+// }
+
+export const getLoggedinUser = () => {
+    const { loading, data, error } = useQuery(GET_LOGGEDIN_USER);
+    return { userLoading: loading, userData: data, userError: error };
 }
 
-export const getUsers = () => {
-    const { loading, data, error } = useQuery(GET_USERS);
-    return { usersLoading: loading, usersData: data, usersError:error };
-}
+// export const getUsers = () => {
+//     const { loading, data, error } = useQuery(GET_USERS);
+//     return { usersLoading: loading, usersData: data, usersError:error };
+// }
 
-export const checkUser = () => {
-    const [checkUserExists, {loading, data, error}] = useLazyQuery(CHECK_USER);
-    return {checkUserExists, checkLoading: loading, checkData:data, checkError:error};
-}
+// export const checkUser = () => {
+//     const [checkUserExists, {loading, data, error}] = useLazyQuery(CHECK_USER);
+//     return {checkUserExists, checkLoading: loading, checkData:data, checkError:error};
+// }
 
-export const getEmails = () => {
-    const {loading, data, error} = useQuery(GET_EMAILS);
-    return  {loading, data, error};
-}
+// export const getEmails = () => {
+//     const {loading, data, error} = useQuery(GET_EMAILS);
+//     return  {loading, data, error};
+// }

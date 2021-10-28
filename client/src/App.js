@@ -1,17 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import Board from './components/Board';
-import Login from './components/Login/';
-import Register from './components/Register';
-import { getBoards, getBoardNotes, getUsers } from './api/queries';
+import Note from './components/Note';
+import { getBoards, getBoardNotes, getLoggedinUser } from './api/queries';
+import { editNote, deleteNote } from './api/mutations';
 import CreateBoard from './components/CreateBoard/CreateBoard';
 import CreateNote from './components/CreateNote/CreateNote';
 import ShareBoard from './components/ShareBoard/ShareBoard';
-import { boardsVar, currentBoardVar } from './cache';
-import { useReactiveVar } from '@apollo/client';
-
-const contacts = [
-  {email: 'robdcon2@gmail.com', id:"1"}
-]
 
 import {
   BrowserRouter as Router,
@@ -22,41 +16,54 @@ import {
   useParams
 } from "react-router-dom";
 
+const BoardPanel = ({boardId}) => {
+  const styles = {
+    height: '100px',
+    width: '100px',
+    border: '1px solid black',
+    display: 'flex'
+  }
+  return (
+    <div style={styles}>
+     <Link key={boardId} to={`/boards/${boardId}`} onClick={() => setCurrentBoard(boardId)}>
+        {`Board: ${board}`}
+      </Link>
+    </div>
+  )
+}
+
 
 const App = () => {
   // state
-  const [user, setUser] = useState();
+  const [user, setUser] = useState(null);
   const [boards, setBoards] = useState();
   const [notes, setNotes] = useState();
-  const [currentBoard, setCurrentBoard] = useState();
-  const [allUsers, setAllUsers] = useState([]);
+  const [currentBoard, setCurrentBoard] = useState(null);
   // queries
   const {getBoardIds, boardLoading, boardData, boardError, startBoardPolling} = getBoards();
   const { getNotes, notesLoading, notesData, notesError, startNotesPolling } = getBoardNotes();
-  const {usersLoading, usersData, usersError} = getUsers()
-
-  // const currentBoard = useReactiveVar(currentBoardVar);
+  // Mutations
+  const updateNote = editNote({userId: user, boardId: currentBoard});
+  const removeNote = deleteNote({userId: user, boardId: currentBoard});
+  const {userLoading, userData, userError} = getLoggedinUser();
 
    // Get logged in user
   useEffect(() => {
-    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-    setUser(loggedInUser);
-  }, [])
+    if(userData) {
+      console.log(userData)
+      setUser(userData.user);
+    }
+  }, [userData])
 
-  useEffect(() => {
-    console.log({usersLoading, usersData, usersError})
-  }, [usersLoading, usersData, usersError])
- 
   useEffect(() => {
     if(user) {
       getBoardIds({ 
-        variables: {user:user.id}
+        variables: {user}
       });
     }
   }, [user]);
 
   useEffect(() => {
-    
     if(boardData) {
       const {boards} = boardData;
       setBoards(boards);
@@ -65,9 +72,9 @@ const App = () => {
   }, [boardLoading, boardData, boardError, startBoardPolling]);
 
   useEffect(() => {
-    if(currentBoard) {
+    if(currentBoard && user) {
       getNotes({
-        variables:{user: user.id, board:currentBoard}
+        variables:{user, board:currentBoard}
       });
     }
   }, [currentBoard]);
@@ -76,7 +83,7 @@ const App = () => {
     if(notesData) {
       const {notes} = notesData;
       setNotes(notes);
-      startNotesPolling && startNotesPolling(1000);
+      // startNotesPolling && startNotesPolling(1000);
     }
   }, [notesData, startNotesPolling])
 
@@ -87,7 +94,7 @@ const App = () => {
         {
           boards && boards.length > 0 && boards.map(board => {
             return (
-              <Link key={board} to={`/${board}`} onClick={() => setCurrentBoard(board)}>
+              <Link key={board} to={`/boards/${board}`} onClick={() => setCurrentBoard(board)}>
                 {board}
               </Link>
             )
@@ -96,30 +103,40 @@ const App = () => {
         </nav>
         <div>
         {
-          user && <CreateBoard userId={user.id} />
+          user && <CreateBoard userId={user} />
         }
         {
-          user && <CreateNote boardId={currentBoard} userId={user.id} />
+          user && <CreateNote boardId={currentBoard} userId={user} />
         }
-        {
+        {/* {
           usersData && usersData.users.map(user =>{ return(<ShareBoard key={user.username} boardId={currentBoard} username={user.username} text={user.username} />)})
-        }
+        } */}
         </div>
-        <Route path="/login">
-          <Login />
-        </Route>
-        <Route path="/register">
-          <Register />
-        </Route>
-        <Route path="/:boardId" render={ (url) => {
+        <Route path="/boards/:boardId" render={ (url) => {
           setCurrentBoard(url.match.params.boardId);
-          return user && <Board boardId={currentBoard} notes={notes} userId={user.id}/>
+          return user && (
+          <Board boardId={currentBoard} notes={notes} userId={user}>
+          {
+            notesData && notesData.notes.map(note => {
+              return (
+                <Note 
+                  key={`${currentBoard}${note.id}`} 
+                  id={note.id}
+                  zindex={note.zindex}
+                  level={note.level}
+                  onChange={({field, value}) => updateNote({variables: {id: note.id, [field]:value}})}
+                  onRemove={() => removeNote({variables:{id: note.id}})}
+                  // onPriorityChange={updatePriority}
+                  >
+                    { note.text }
+                </Note>
+              )
+            })
+          }
+          </Board>)
           } 
         }/>
         <Route path="/">
-          {
-            (!user) && <Register />
-          }
           <h1>Welcome</h1>
         </Route>
       </div>

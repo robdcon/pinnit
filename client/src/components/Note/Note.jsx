@@ -64,7 +64,7 @@ const Note = ({id, zindex, level, children, onChange, onPriorityChange, onRemove
   // Fire onRemove with id of the Note as an argument
 
   const remove = () => {
-      onRemove(id)
+      onRemove({id})
   }
 
   const increasePriority = () => {

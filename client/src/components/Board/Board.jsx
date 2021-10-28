@@ -8,47 +8,37 @@ import { editNote, deleteNote } from '../../api/mutations';
 import { notesVar, currentBoardVar } from '../../cache';
 import { useParams } from 'react-router-dom';
 
-const Board = ({userId, boardId, notes}) => { 
+const Board = ({userId, boardId, notes, children}) => { 
     // const [notes, setNotes] = useState([]);
-    const updateNote = editNote({userId, boardId});
-    const removeNote = deleteNote();
 
     const updatePriority = (id, level) => {
         updateNoteData({variables: {id, level}});
-    }
-
-    const remove = (id) => {
-        removeNote({variables:{user: userId, board: boardId, id: id}});
     }
 
     const clearAllNotes = () => {
         console.log('deleted');
     }
 
-  const eachNote = ({id, text, zindex, level}) => {
-    return (
-        <Note key={`${boardId}${id}`} 
-              id={id}
-              zindex={zindex}
-              level={level}
-              onChange={({field, value}) => updateNote({variables: {id: id, [field]:value}})}
-              onRemove={remove}
-              onPriorityChange={updatePriority}
-              >
-                { text }
-        </Note>
-        )
-    }
+//   const eachNote = ({id, text, zindex, level}) => {
+//     return (
+//         <Note key={`${boardId}${id}`} 
+//               id={id}
+//               zindex={zindex}
+//               level={level}
+//               onChange={({field, value}) => updateNote({variables: {id: id, [field]:value}})}
+//               onRemove={({id}) => removeNote({variables:{id}})}
+//               onPriorityChange={updatePriority}
+//               >
+//                 { text }
+//         </Note>
+//         )
+//     }
 
     return (          
         <div>
             <StyledBoard id={boardId} className="BoardWrapper">
             <h1>{boardId}</h1>
-                {
-                    notes && (notes.length > 0) ? notes.map((note, i) => {
-                        if(note !== null) return eachNote(note);
-                    }) : null
-                }
+            {children}
                 {/* <StickyFooter>
                     <AddCircleIcon 
                     style={{ color: '#ffffff', fontSize:'3em'}} 

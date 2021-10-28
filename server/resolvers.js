@@ -2,8 +2,8 @@ const api = require('./datasources/api');
 
 const typeDefs =  {
     Query: {
-        user: async (parent, {id}, context, info) => {
-            const response = await api.getUser(id, context).then(res => {
+        user: async (parent, args, context, info) => {
+            const response = await api.getLoggedinUser(context).then(res => {
                 return res;
             });
             return response;
@@ -28,7 +28,7 @@ const typeDefs =  {
 
         note: async (parent, {id}, context, info) => {
             const response = await api.getNote(id, context).then(res => {
-                console.log("Resolver note: ",res)
+                console.log("Resolver note: ", res)
                 return res;
             });
             return response;

@@ -33,6 +33,12 @@ export const GET_USER = gql`
   }
 `;
 
+export const GET_LOGGEDIN_USER = gql`
+  query getLoggedinUser {
+    user
+  }
+`;
+
 export const GET_USERS = gql`
   query getUsers {
     users {
