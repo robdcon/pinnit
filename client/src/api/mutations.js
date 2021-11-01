@@ -50,7 +50,6 @@ export const editNote = ({userId, boardId}) => {
 }
 
 export const deleteNote = ({userId, boardId}) => {
-  console.log({userId, boardId});
   const [removeNote] = useMutation(DELETE_NOTE, {
     variables: {
       user:userId, 

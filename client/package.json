@@ -1,5 +1,5 @@
 {
-  "homepage": "https://pinnit.herokuapp.com",
+  "homepage": "http://localhost:3001",
   "name": "pinnit",
   "version": "0.1.0",
   "private": true,
@@ -7,6 +7,7 @@
   "dependencies": {
     "@apollo/client": "^3.4.10",
     "@apollo/react-hooks": "^4.0.0",
+    "@auth0/auth0-react": "^1.8.0",
     "@material-ui/core": "^4.8.2",
     "@material-ui/icons": "^4.5.1",
     "apollo-boost": "^0.4.9",

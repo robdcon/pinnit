@@ -5,5 +5,16 @@ export const notesVar = makeVar([]);
 export const boardsVar = makeVar([]);
 export const currentBoardVar = makeVar();
 export const loggedInUserVar = makeVar({});
+export const tokenVar = makeVar(null);
 
-export const cache = new InMemoryCache();
+export const cache = new InMemoryCache({
+    Query: {
+        fields: {
+          token: {
+            read () {
+              return tokenVar();
+            }
+          }
+        }
+      }
+});

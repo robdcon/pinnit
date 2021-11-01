@@ -156,6 +156,9 @@ const typeDefs =  {
         },
         notes: () => (parent, args, context, info) => {
             return parent.notes;
+        },
+        name: () => (parent, args, context, info) => {
+            return parent.name;
         }
     },
 

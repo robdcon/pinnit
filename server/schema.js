@@ -39,6 +39,7 @@ const schema = gql`
 
     type Board {
         id: String!
+        name: String!
         notes: [String]
     }
 

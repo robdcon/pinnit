@@ -10,7 +10,7 @@ const CreateBoard = ({userId}) => {
   const history = useHistory();
   const [createBoard] = useMutation(CREATE_BOARD, {
     variables: {user: userId},
-    onCompleted: ({createBoard: id}) => {history.push(`/${id}`); currentBoardVar(id); console.log('Created Board:', id)},
+    onCompleted: ({createBoard: id}) => {history.push(`/boards/${id}`); currentBoardVar(id); console.log('Created Board:', id)},
     refetchQueries: [
       {
        query:GET_BOARDS,

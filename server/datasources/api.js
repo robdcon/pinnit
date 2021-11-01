@@ -74,9 +74,11 @@ const api = {
     createBoard: async (user, context) => {
         try {
             const boardId = await context.clientMethods.incr(`${user}:boardsIds`).then(res => {
-                return `${user}${res}`
+                console.log(`New board ID for User:${user}:${res}`)
+                return `${res}`
             });
-            await context.clientMethods.sadd(`boards:${user}`, boardId).then(res => res);
+            await context.clientMethods.sadd(`boards:${user}`, boardId).then(res => `Added board to ${user} boards: ${res}`);
+            await context.clientMethods.hset(`board:${user}${boardId}`, 'id', boardId, 'name', boardId, 'user', user).then(res => console.log(`Set Board ${boardId}: ${res}`));
             return `${boardId}`
         } catch (error) {
             console.log(error)
