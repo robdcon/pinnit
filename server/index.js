@@ -1,14 +1,16 @@
-require('dotenv').config();
+// require('dotenv').config();
 const cors = require('cors')
 const express = require("express");
-const { dirname } = require("path");
-const path = require('path');
-const { promisify } = require("util");
+// const { dirname } = require("path");
+// const path = require('path');
+// const { promisify } = require("util");
 const { ApolloServer } = require('apollo-server-express');
-const { bootstrap: bootstrapGlobalAgent } = require('global-agent');
-const redis = require("redis");
-bootstrapGlobalAgent();
-const { auth, requiresAuth  } = require('express-openid-connect');
+const client = require('./datasources/database');
+
+// const { bootstrap: bootstrapGlobalAgent } = require('global-agent');
+// const redis = require("redis");
+// bootstrapGlobalAgent();
+// const { auth, requiresAuth  } = require('express-openid-connect');
 
 // var axios = require("axios").default;
 
@@ -29,63 +31,67 @@ const { auth, requiresAuth  } = require('express-openid-connect');
 //   console.error(error);
 // });
 
-const client = redis.createClient(process.env.REDIS_URL,
-{
-  tls: {
-      rejectUnauthorized: false
-  }
-});
+// const client = redis.createClient(process.env.REDIS_URL,
+// {
+//   tls: {
+//       rejectUnauthorized: false
+//   }
+// });
 
-client.on("error", function (err) {
-  console.log("Error " + err);
-});
+// client.on("error", function (err) {
+//   console.log("Error " + err);
+// });
+
+
+
+          
 
 // Redis client methods
-let get = promisify(client.get).bind(client);
-let set = promisify(client.set).bind(client);
-let del = promisify(client.del).bind(client);
-let hset = promisify(client.hset).bind(client);
-let hmset = promisify(client.hmset).bind(client);
-let hget = promisify(client.hget).bind(client);
-let hgetall = promisify(client.hgetall).bind(client); 
-let rpush = promisify(client.rpush).bind(client);
-let lpush = promisify(client.lpush).bind(client);
-let rpop = promisify(client.rpop).bind(client);
-let lrange = promisify(client.lrange).bind(client);
-let incr = promisify(client.incr).bind(client);
-let hdel = promisify(client.hdel).bind(client);
-let lpos = promisify(client.lpos).bind(client);
-let lrem = promisify(client.lrem).bind(client);
-let sadd = promisify(client.sadd).bind(client);
-let zrange = promisify(client.zrange).bind(client);
-let smembers = promisify(client.smembers).bind(client);
-let sismember = promisify(client.sismember).bind(client);
-let exists = promisify(client.exists).bind(client);
-let zadd = promisify(client.zadd).bind(client);
+// let get = promisify(client.get).bind(client);
+// let set = promisify(client.set).bind(client);
+// let del = promisify(client.del).bind(client);
+// let hset = promisify(client.hset).bind(client);
+// let hmset = promisify(client.hmset).bind(client);
+// let hget = promisify(client.hget).bind(client);
+// let hgetall = promisify(client.hgetall).bind(client); 
+// let rpush = promisify(client.rpush).bind(client);
+// let lpush = promisify(client.lpush).bind(client);
+// let rpop = promisify(client.rpop).bind(client);
+// let lrange = promisify(client.lrange).bind(client);
+// let incr = promisify(client.incr).bind(client);
+// let hdel = promisify(client.hdel).bind(client);
+// let lpos = promisify(client.lpos).bind(client);
+// let lrem = promisify(client.lrem).bind(client);
+// let sadd = promisify(client.sadd).bind(client);
+// let zrange = promisify(client.zrange).bind(client);
+// let smembers = promisify(client.smembers).bind(client);
+// let sismember = promisify(client.sismember).bind(client);
+// let exists = promisify(client.exists).bind(client);
+// let zadd = promisify(client.zadd).bind(client);
 
-const clientMethods = {
-  get,
-  set,
-  del,
-  hmset,
-  hgetall,
-  hget,
-  hset,
-  hdel,
-  incr,
-  rpush,
-  rpop,
-  lrange,
-  lpos,
-  lrem,
-  lpush,
-  sadd,
-  smembers,
-  sismember,
-  zrange,
-  exists,
-  zadd
-}
+// const clientMethods = {
+//   get,
+//   set,
+//   del,
+//   hmset,
+//   hgetall,
+//   hget,
+//   hset,
+//   hdel,
+//   incr,
+//   rpush,
+//   rpop,
+//   lrange,
+//   lpos,
+//   lrem,
+//   lpush,
+//   sadd,
+//   smembers,
+//   sismember,
+//   zrange,
+//   exists,
+//   zadd
+// }
 
 // client.flushall()
 
@@ -114,10 +120,7 @@ const PORT = process.env.PORT || 3001;
 
 async function startApolloServer() {
   
-  const server = new ApolloServer({ typeDefs, resolvers, context: ({req}) => ({ 
-    clientMethods,
-    user: () => 'user'
-  })});
+  const server = new ApolloServer({ typeDefs, resolvers, context: client});
   
   await server.start();
   
@@ -155,6 +158,9 @@ async function startApolloServer() {
   
   console.log(`🚀 Site ready at http://localhost:${PORT}`);
   console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`);
+
+
+
   
   return {server, app}
 }
