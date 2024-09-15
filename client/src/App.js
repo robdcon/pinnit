@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import Board from './components/Board';
 import Note from './components/Note';
-import { getBoards, getBoardNotes, getLoggedinUser } from './api/queries';
-import { editNote, deleteNote } from './api/mutations';
+import { getBoards, getBoardNotes, getLoggedinUser, getUser } from './api/queries';
+import { editNote, deleteNote, createUser } from './api/mutations';
 import CreateBoard from './components/CreateBoard/CreateBoard';
 import CreateNote from './components/CreateNote/CreateNote';
 import ShareBoard from './components/ShareBoard/ShareBoard';
@@ -47,7 +47,6 @@ const BoardPanel = ({boardId, setCurrentBoard}) => {
 
 const LoginButton = () => {
   const { loginWithRedirect } = useAuth0();
-
   return <button onClick={() => loginWithRedirect()}>Log In</button>;
 };
 
@@ -66,15 +65,20 @@ const App = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
   const [uid, setUid] = useState(null)
   const [boards, setBoards] = useState();
-  const [notes, setNotes] = useState();
-  const [currentBoard, setCurrentBoard] = useState(null);
+  // const [notes, setNotes] = useState();
+  // const [currentBoard, setCurrentBoard] = useState(null);
   // queries
-  const {getBoardIds, boardLoading, boardData, boardError, startBoardPolling} = getBoards();
-  const { getNotes, notesLoading, notesData, notesError, startNotesPolling } = getBoardNotes();
+  // const { getBoardIds, boardLoading, boardData, boardError, startBoardPolling } = getBoards();
+  // const { getNotes, notesLoading, notesData, notesError, startNotesPolling } = getBoardNotes();
+  // const { userLoading, userData, userError } = getLoggedinUser();
+  
   // Mutations
-  const updateNote = editNote({userId: uid, boardId: currentBoard});
-  const removeNote = deleteNote({userId: uid, boardId: currentBoard});
+  // const updateNote = editNote({userId: uid, boardId: currentBoard});
+  // const removeNote = deleteNote({userId: uid, boardId: currentBoard});
+  // const getUser = getLoggedinUser({email: uid});
   const { getAccessTokenSilently } = useAuth0();
+  const addUser = createUser({username: uid, email: uid});
+  const fetchUser = getUser({email: user?.email});
 
   useEffect(() => {
     if(user) {
@@ -82,59 +86,74 @@ const App = () => {
       token.then(res => {
         tokenVar(res);
       })
-      setUid(user.email);
+      console.log(user);
+
+      if (user.newUser) {
+        const supabaseUser = addUser({variables: {username: user.email, email: user.email}});
+        console.log(supabaseUser);
+      }
+
+      if(!user.newUser) {
+        const supabaseUser = fetchUser({variables: {email: user.email}})
+        console.log(supabaseUser);
+      }
+
+      // const userId = getUser();
+      // console.log('Loggedin user ', userId);
+      
+      
       "Setting user..."
     }
   }, [user])
 
   useEffect(() => {
     console.log(`User set to ${uid}`)
-    if(uid) {
-      getBoardIds({ 
-        variables: { user: uid }
-      });
-      console.log(`Get Boards for: ${uid}`);
-    }
+    // if(uid) {
+    //   getBoardIds({ 
+    //     variables: { user: uid }
+    //   });
+    //   console.log(`Get Boards for: ${uid}`);
+    // }
   }, [uid]);
 
-  useEffect(() => {
-    console.log(`Finshed getting Boards for: ${uid}`);
-    if(boardData) {
-      const {boards} = boardData;
-      setBoards(boards);
-      console.log(`Setting Boards for ${uid}: ${boardData.boards}`);
-    }
-  }, [boardData]);
+  // useEffect(() => {
+  //   console.log(`Finshed getting Boards for: ${uid}`);
+  //   if(boardData) {
+  //     const {boards} = boardData;
+  //     setBoards(boards);
+  //     console.log(`Setting Boards for ${uid}: ${boardData.boards}`);
+  //   }
+  // }, [boardData]);
 
-  useEffect(() => {
-    if(boards) {
-      console.log(`Finished setting Boards for ${uid}: ${boards}`);
-    }
-  }, [boards])
+  // useEffect(() => {
+  //   if(boards) {
+  //     console.log(`Finished setting Boards for ${uid}: ${boards}`);
+  //   }
+  // }, [boards])
 
-  useEffect(() => {
-    if(currentBoard) {
-      getNotes({
-        variables:{user: uid, board:currentBoard}
-      });
-      console.log(`Getting Notes for Board: ${currentBoard}`);
-    }
-  }, [currentBoard]);
+  // useEffect(() => {
+  //   if(currentBoard) {
+  //     getNotes({
+  //       variables:{user: uid, board:currentBoard}
+  //     });
+  //     console.log(`Getting Notes for Board: ${currentBoard}`);
+  //   }
+  // }, [currentBoard]);
 
-  useEffect(() => {
-    if(notesData) {
-      const {notes} = notesData;
-      setNotes(notes);
-      console.log(`Setting Notes: ${notes}`);
-      // startNotesPolling && startNotesPolling(1000);
-    }
-  }, [notesData]);
+  // useEffect(() => {
+  //   if(notesData) {
+  //     const {notes} = notesData;
+  //     setNotes(notes);
+  //     console.log(`Setting Notes: ${notes}`);
+  //     // startNotesPolling && startNotesPolling(1000);
+  //   }
+  // }, [notesData]);
 
-  useEffect(() => {
-    if(notes) {
-      console.log(`Finished setting notes for ${currentBoard}: ${notes}`);
-    }
-  }, [notes])
+  // useEffect(() => {
+  //   if(notes) {
+  //     console.log(`Finished setting notes for ${currentBoard}: ${notes}`);
+  //   }
+  // }, [notes])
 
   return (  
     <Router>

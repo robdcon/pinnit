@@ -3,7 +3,10 @@ const api = require('./datasources/api');
 const typeDefs =  {
     Query: {
         user: async (parent, args, context, info) => {
-            const response = await api.getLoggedinUser(context).then(res => {
+            const {email} = args;
+            const response = await api.getUser(email, context).then(res => {
+                console.log(res);
+                
                 return res;
             });
             return response;
@@ -11,7 +14,6 @@ const typeDefs =  {
 
         users: async (parent, args, context, info) => {
             const response = await api.getUsers(context).then(res => {
-               
                 return res;
             });
             console.log("Resolver: ",response)
@@ -77,7 +79,10 @@ const typeDefs =  {
     Mutation: {
         createUser: async (parent, {username, email}, context) => {
            const user = await api.createUser(username, email, context)
-           .then(res => res);
+           .then(res => {
+            console.log('resolver:createUser', res);
+            return res
+           });
            return user;
         }, 
 
