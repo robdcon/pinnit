@@ -71,8 +71,12 @@ export const deleteNote = ({userId, boardId}) => {
 
 // Users
 
-export const createUser = () => {
+export const createUser = ({username, email}) => {
   const [createUser] = useMutation(CREATE_USER, {
+    variables: {
+      username, 
+      email
+    },
     onCompleted: ({createUser}) => {
       setToLocalStorage('loggedInUser', createUser);
       loggedInUserVar(createUser);
