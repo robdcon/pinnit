@@ -71,6 +71,7 @@ const App = () => {
   // const { getBoardIds, boardLoading, boardData, boardError, startBoardPolling } = getBoards();
   // const { getNotes, notesLoading, notesData, notesError, startNotesPolling } = getBoardNotes();
   // const { userLoading, userData, userError } = getLoggedinUser();
+  const { fetchUser, userLoading, userData, userError } = getUser({email: user?.email});
   
   // Mutations
   // const updateNote = editNote({userId: uid, boardId: currentBoard});
@@ -78,7 +79,7 @@ const App = () => {
   // const getUser = getLoggedinUser({email: uid});
   const { getAccessTokenSilently } = useAuth0();
   const addUser = createUser({username: uid, email: uid});
-  const fetchUser = getUser({email: user?.email});
+  
 
   useEffect(() => {
     if(user) {
@@ -86,35 +87,30 @@ const App = () => {
       token.then(res => {
         tokenVar(res);
       })
-      console.log(user);
+      console.log(`${user.nickname} logged in`);
 
       if (user.newUser) {
-        const supabaseUser = addUser({variables: {username: user.email, email: user.email}});
-        console.log(supabaseUser);
+        console.log(`Creating new supabase user`);
+        addUser();
       }
 
       if(!user.newUser) {
-        const supabaseUser = fetchUser({variables: {email: user.email}})
-        console.log(supabaseUser);
+        console.log(`Fetching supabase user`);
+        fetchUser();
       }
-
-      // const userId = getUser();
-      // console.log('Loggedin user ', userId);
-      
-      
-      "Setting user..."
     }
   }, [user])
 
   useEffect(() => {
-    console.log(`User set to ${uid}`)
-    // if(uid) {
-    //   getBoardIds({ 
-    //     variables: { user: uid }
-    //   });
-    //   console.log(`Get Boards for: ${uid}`);
-    // }
-  }, [uid]);
+    if(userData) {
+      console.log(`User set to:`, userData);
+      
+      // getBoardIds({ 
+      //   variables: { user: uid }
+      // });
+      // console.log(`Get Boards for: ${uid}`);
+    }
+  }, [userData]);
 
   // useEffect(() => {
   //   console.log(`Finshed getting Boards for: ${uid}`);

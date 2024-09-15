@@ -5,6 +5,7 @@ import {
     GET_EMAILS, 
     GET_BOARDS, 
     GET_USERS,
+    GET_USER,
     GET_LOGGEDIN_USER
 } from '../graphql/queries';
 
@@ -20,10 +21,14 @@ export const getBoardNotes = () => {
 
 
 // Users
-// export const getUser = () => {
-//     const { loading, data, error } = useQuery(GET_USER);
-//     return { loading, data, error };
-// }
+export const getUser = ({email}) => {
+    const [getUser, {loading, data, error}] = useLazyQuery(GET_USER, {
+        variables: {
+          email
+        }
+    });
+    return { fetchUser: getUser, userLoading: loading, userData: data, userError: error };
+}
 
 export const getLoggedinUser = () => {
     const { loading, data, error } = useQuery(GET_LOGGEDIN_USER);

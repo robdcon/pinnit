@@ -2,7 +2,7 @@ const { gql } = require('apollo-server-express');
 
 const schema = gql`
     type Query {
-        user: String
+        user(email: String): User
         users: [User]
         checkUserExists(email: String!, username: String!): UserEmail
         email(email: String!): Int
