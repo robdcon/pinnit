@@ -71,8 +71,11 @@ const api = {
     // Boards
     createBoard: async (user, context) => {
         try {
-            const boardId = genId(user, 'pinnitgraphql');
-            return `${boardId}`
+            const board = await context.addBoard({user}).then(res => {
+                console.log('New Board', res)
+                return res.data[0].id
+            })
+            return `${board}`
         } catch (error) {
             console.log(error)
             return false

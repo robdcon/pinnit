@@ -16,12 +16,23 @@ const client = {
 
   getUser: async (args) => {
     const { email } = args;
-    
+
     const { data, error } = await supabase
       .from('Users')
       .select('*')
-      .eq('email', email )
+      .eq('email', email)
 
+    return { data, error }
+  },
+
+  addBoard: async (args) => {
+    const {user} = args;
+    const { data, error } = await supabase
+      .from('Boards')
+      .insert([
+        { user: user },
+      ])
+      .select()
     return { data, error }
   }
 }
