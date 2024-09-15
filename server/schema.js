@@ -10,7 +10,7 @@ const schema = gql`
         note(id: String!): Note
         notes(user: String!, board: String!): [Note]
         board(id: String!): Board
-        boards(user: String!): [String]
+        boards(user: String!): [Int]
     }
     
     type Mutation {

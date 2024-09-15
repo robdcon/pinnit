@@ -5,20 +5,23 @@ import { CREATE_BOARD } from '../../graphql/mutations';
 import { GET_BOARDS } from '../../graphql/queries';
 import { StyledCreateBoardButton } from './CreateBoard.styles';
 import { currentBoardVar } from '../../cache';
+// const { user, isAuthenticated, isLoading } = useAuth0();
 
 const CreateBoard = ({userId}) => {
-  const history = useHistory();
+  console.log(userId);
+  
+  // const history = useHistory();
   const [createBoard] = useMutation(CREATE_BOARD, {
     variables: {user: userId},
-    onCompleted: ({createBoard: id}) => {history.push(`/boards/${id}`); currentBoardVar(id); console.log('Created Board:', id)},
-    refetchQueries: [
-      {
-       query:GET_BOARDS,
-       variables: {
-         user: userId
-       }
-      }
-    ]
+    // onCompleted: ({createBoard: id}) => {history.push(`/boards/${id}`); currentBoardVar(id); console.log('Created Board:', id)},
+    // refetchQueries: [
+    //   {
+    //    query:GET_BOARDS,
+    //    variables: {
+    //      user: userId
+    //    }
+    //   }
+    // ]
   });
 
   return (

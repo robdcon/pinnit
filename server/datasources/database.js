@@ -26,13 +26,38 @@ const client = {
   },
 
   addBoard: async (args) => {
-    const {user} = args;
+    const { user } = args;
     const { data, error } = await supabase
       .from('Boards')
       .insert([
         { user: user },
       ])
       .select()
+
+    return { data, error }
+  },
+
+  addUserBoardRef: async (args) => {
+    const { user, board } = args;
+    const { data, error } = await supabase
+      .from('UserBoards')
+      .insert([
+        { user_id: user, board_id: board },
+      ])
+      .select()
+
+    return { data, error }
+  },
+
+  getUserBoards: async (args) => {
+    const { user } = args;
+    
+    let { data, error } = await supabase
+    .from('UserBoards')
+    .select('board_id')
+    .eq('user_id', user)
+    console.log(data, error);
+    
     return { data, error }
   }
 }

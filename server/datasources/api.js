@@ -75,6 +75,9 @@ const api = {
                 console.log('New Board', res)
                 return res.data[0].id
             })
+            await context.addUserBoardRef({board, user}).then(res => {
+                console.log('Ref created:', res);
+            })
             return `${board}`
         } catch (error) {
             console.log(error)
@@ -97,9 +100,9 @@ const api = {
 
     getBoards: async (user, context) => {
         try {
-            const userBoards = await context.clientMethods.smembers(`boards:${user}`)
+            const userBoards = await context.getUserBoards({user})
                 .then(res => {
-                    return res === null ? [] : res;
+                    return res.data.map(board => board.board_id);
                 })
             return userBoards
         } catch (error) {

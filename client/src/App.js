@@ -161,7 +161,7 @@ const App = () => {
             <button>BOARDS</button>
         </Link>
         {
-          isAuthenticated && <CreateBoard userId={uid} />
+          isAuthenticated && <CreateBoard userId={user?.email} />
         }
         <Route path="/boards" exact>
           <h1>Dashboard</h1>

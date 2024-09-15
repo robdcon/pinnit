@@ -61,7 +61,6 @@ const typeDefs =  {
 
         email: async (parent, {email}, context, info) => {
             const response = await api.getEmail(email, context).then(res => {
-                console.log("Email:", res)
                 return res;
             })
             return response;
@@ -107,7 +106,7 @@ const typeDefs =  {
         createBoard: async (parent, { user }, context) => {
             try {
                 const board = await api.createBoard(user, context).then(res => res);
-                console.log('board', board);
+                console.log('Created Board:', board);
                 return board;
             } catch (error) {
                 console.log(error)
