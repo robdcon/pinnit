@@ -24,8 +24,8 @@ export const GET_REACTIVE_NOTES = gql`
 `;
 
 export const GET_USER = gql`
-  query getUser($id: String, $email: String, $username: String) {
-    user(id: $id, email: $email, username: $username) {
+  query getUser($email: String) {
+    user(email: $email) {
       id
       username
       email
