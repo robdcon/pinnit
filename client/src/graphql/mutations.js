@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client"; 
+import { gql } from "@apollo/client";
 
 // Boards
 
@@ -27,8 +27,12 @@ export const CREATE_NOTE = gql`
 `;
 
 export const UPDATE_NOTE = gql`
-    mutation updateNote($user: String!, $board: Int!, $id: String!, $text: String, $zindex: Int, $level: String) {
-        updateNote(user: $user, board: $board, id: $id, text: $text, zindex: $zindex, level: $level)
+    mutation updateNote($id: Int!, $text: String, $zindex: Int, $level: String) {
+        updateNote(id: $id, text: $text, zindex: $zindex, level: $level) {
+            id
+            text
+            level
+        }
     }
 `;
 

@@ -53,24 +53,19 @@ export const addNote = ({boardId}) => {
   return createNote;
 }
 
-export const editNote = ({userId, boardId}) => {
+export const editNote = ({id}) => {
   const [updateNote] = useMutation(UPDATE_NOTE, {
-      variables: {
-        user:userId, 
-        board:boardId
-      },
-      refetchQueries: [{
-        query: GET_NOTES,
-        variables: {
-          user: userId,
-          board: boardId
-        }
-      }],
-        onCompleted: (data) => {
-          console.log('Updated:', data)
-        }
+      // refetchQueries: [{
+      //   query: GET_NOTES,
+      //   variables: {
+      //     board: id
+      //   }
+      // }],
+      //   onCompleted: (data) => {
+      //     console.log('Updated:', data)
+      //   }
     });
-    return(updateNote);
+    return({updateNote});
 }
 
 export const deleteNote = ({userId, boardId}) => {
@@ -78,17 +73,7 @@ export const deleteNote = ({userId, boardId}) => {
     variables: {
       user:userId, 
       board:boardId
-    },
-    refetchQueries: [{
-      query: GET_NOTES,
-      variables: {
-        user: userId,
-        board: boardId
-      }
-    }],
-        onCompleted: (data) => {
-          console.log('Deleted:', data)
-        }
+    }
     });
     return(removeNote);
 }

@@ -8,6 +8,13 @@ import CreateNote from './components/CreateNote/CreateNote';
 import ShareBoard from './components/ShareBoard/ShareBoard';
 import { useAuth0 } from "@auth0/auth0-react";
 import { tokenVar } from './cache';
+import { createContext, useContext } from 'react';
+
+export const BoardContext = createContext(null);
+
+<BoardContext.Provider value={null}>
+
+</BoardContext.Provider>
 
 import {
   BrowserRouter as Router,
@@ -105,7 +112,7 @@ const App = () => {
   useEffect(() => {
     if (userData) {
       console.log('Setting UID to:', userData.user.email);
-      
+
       setUid(userData.user.email);
     }
   }, [userData]);
@@ -138,19 +145,16 @@ const App = () => {
   useEffect(() => {
     if (currentBoard) {
       console.log('Current Board:', currentBoard);
-      
-      getNotes({variables: {board: currentBoard}});
 
-      console.log(notes);
-      
+      getNotes({ variables: { board: currentBoard } });
 
       console.log(`Getting Notes for Board: ${currentBoard}`);
     }
   }, [currentBoard]);
 
   useEffect(() => {
-    if(notesData) {
-      const {notes} = notesData;
+    if (notesData) {
+      const { notes } = notesData;
       setNotes(notes);
       console.log(`Setting Notes: ${notes}`);
       // startNotesPolling && startNotesPolling(1000);
@@ -158,7 +162,7 @@ const App = () => {
   }, [notesData]);
 
   useEffect(() => {
-    if(notes) {
+    if (notes) {
       console.log(`Finished setting notes for ${currentBoard}: ${notes}`);
     }
   }, [notes])
@@ -190,33 +194,36 @@ const App = () => {
         <Route path="/boards/:boardId" render={(url) => {
           setCurrentBoard(parseInt(url.match.params.boardId));
           return isAuthenticated && (
-            <Board boardId={currentBoard} notes={notes} userId={uid}>
-              {
-                notes && notes.map(note => {
-                  return (
-                    <Note
-                      key={`${currentBoard}${note.id}`}
-                      id={note.id}
-                      zindex={note.zindex}
-                      level={note.level}
-                      onChange={({ field, value }) => updateNote({ variables: { user: uid, board: currentBoard, id: note.id, [field]: value } })}
-                      onRemove={() => removeNote({ variables: { user: uid, board: currentBoard, id: note.id } })}
-                    // onPriorityChange={updatePriority}
-                    >
-                      {note.text}
-                    </Note>
-                  )
-                })
-              }
-              <div>
+            <BoardContext.Provider value={{board: currentBoard}}>
+              <Board boardId={currentBoard} notes={notes} userId={uid}>
                 {
-                  isAuthenticated && <CreateNote boardId={currentBoard} userId={uid} />
+                  notes && notes.map(note => {
+                    return (
+                      <Note
+                        key={`${currentBoard}${note.id}`}
+                        id={note.id}
+                        zindex={note.zindex}
+                        level={note.level}
+                        onChange={({ field, value }) => updateNote({ variables: { user: uid, board: currentBoard, id: note.id, [field]: value } })}
+                        onRemove={() => removeNote({ variables: { user: uid, board: currentBoard, id: note.id } })}
+                      // onPriorityChange={updatePriority}
+                      >
+                        {note.text}
+                      </Note>
+                    )
+                  })
                 }
-                {/* {
-                usersData && usersData.users.map(user =>{ return(<ShareBoard key={user.username} boardId={currentBoard} username={user.username} text={user.username} />)})
-              } */}
-              </div>
-            </Board>)
+                <div>
+                  {
+                    isAuthenticated && <CreateNote boardId={currentBoard} userId={uid} />
+                  }
+                  {/* {
+                  usersData && usersData.users.map(user =>{ return(<ShareBoard key={user.username} boardId={currentBoard} username={user.username} text={user.username} />)})
+                } */}
+                </div>
+              </Board>
+            </BoardContext.Provider>
+          )
         }
         } />
         <Route path="/" exact>

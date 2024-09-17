@@ -32,17 +32,6 @@ const api = {
         }
     },
 
-    getLoggedinUser: async (email, context) => {
-        try {
-            const user = context.getUser({email});
-            console.log('getLoggedinUser:', user);
-            return user
-        } catch (error) {
-            console.log(error)
-            return false
-        }
-    },
-
     getUsers: async (context) => {
         const userIds = await context.smembers('userUsernames').then(res => {
             return res
@@ -133,26 +122,20 @@ const api = {
             console.log(error)
             return false
         }
-
     },
 
-    updateNote: async (user, board, id, text, zindex, level, context) => {
+    updateNote: async (args, context) => {
         try {
-            console.table({ id, text, zindex, level })
-            let note;
-            if (text) note = context.clientMethods.hset(`${board}:notes:${id}`, 'text', text);
-            if (zindex) note = context.clientMethods.hset(`${board}:notes:${id}`, 'zindex', zindex);
-            if (level) note = context.clientMethods.hset(`${board}:notes:${id}`, 'level', level);
-            note.then(res => {
+            const updatedNote = context.updateNote(args)
+            .then(res => {
                 console.log('Updated note', res)
-                return res
+                return res.data[0]
             });
-            return note;
+            return updatedNote;
         } catch (error) {
             console.log(error)
             return false
         }
-
     },
 
     deleteNote: async (user, board, id, context) => {

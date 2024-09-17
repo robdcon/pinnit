@@ -62,7 +62,7 @@ const client = {
   },
 
   createNote: async (args) => {
-    const { text, board} = args;
+    const { text, board } = args;
     const { data, error } = await supabase
       .from('Notes')
       .insert([
@@ -92,8 +92,20 @@ const client = {
       .select('Notes(id, text, level)')
       .eq('board_id', board)
 
-      return { data, error }
+    return { data, error }
   },
+
+  updateNote: async (args) => {
+    const { user, board, id, text, zindex, level } = args;
+
+    const { data, error } = await supabase
+      .from('Notes')
+      .update({ text: text, level: level, zindex: zindex })
+      .eq('id', id)
+      .select()
+
+    return { data, error }
+  }
 
 }
 

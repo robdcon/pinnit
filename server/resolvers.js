@@ -91,8 +91,8 @@ const typeDefs =  {
             return note;
         },
 
-        updateNote: async (parent, {user, board, id, text, zindex, level}, context) => {
-            const note = await api.updateNote(user, board, id, text, zindex, level, context)
+        updateNote: async (parent, args, context, info) => {
+            const note = await api.updateNote(args, context)
             .then(res => res);
             return note;
         },
