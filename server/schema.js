@@ -17,7 +17,7 @@ const schema = gql`
         createUser(username: String!, email: String!) : User!
         createNote(board: Int!, text: String!, level: String): Note!
         updateNote(user: String, board: Int, id: Int!, text: String, zindex: Int, level: String): Note!
-        deleteNote(user: String!, board: String!, id: String!): String!
+        deleteNote(id: Int!): String!
         createBoard(user: String): Int!
         shareBoard(user: String!, board: String!): String
     }

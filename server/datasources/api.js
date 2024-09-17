@@ -138,12 +138,13 @@ const api = {
         }
     },
 
-    deleteNote: async (user, board, id, context) => {
+    deleteNote: async (args, context) => {
         try {
-            context.clientMethods.lrem(`${board}:noteIds`, 0, id).then(res => console.log("res:", res));
-            const note = context.clientMethods.del(`${board}:notes:${id}`)
-                .then(res => res);
-            return note;
+            const res = context.deleteNote(args).then(res => {
+                console.log("Note deleted?:", res);
+                return res;
+            });
+            return res;
         } catch (error) {
             console.log(error)
             return false

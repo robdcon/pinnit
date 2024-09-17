@@ -97,7 +97,6 @@ const client = {
 
   updateNote: async (args) => {
     const { user, board, id, text, zindex, level } = args;
-
     const { data, error } = await supabase
       .from('Notes')
       .update({ text: text, level: level, zindex: zindex })
@@ -105,8 +104,19 @@ const client = {
       .select()
 
     return { data, error }
-  }
+  },
 
+  deleteNote: async (args) => {
+    const { id } = args;
+    const { error } = await supabase
+      .from('Notes')
+      .delete()
+      .eq('id', id)
+    if(error) {
+      return 'false';
+    }
+    return 'true';
+  }
 }
 
 module.exports = client;

@@ -97,10 +97,10 @@ const typeDefs =  {
             return note;
         },
 
-        deleteNote: async (parent, {user, board, id}, context) => {
-            const note = await api.deleteNote(user, board, id, context)
+        deleteNote: async (parent, args, context) => {
+            const res = await api.deleteNote(args, context)
             .then(res => res);
-            return note;
+            return res;
         },
 
         createBoard: async (parent, { user }, context) => {
