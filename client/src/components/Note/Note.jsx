@@ -9,7 +9,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SaveIcon from '@material-ui/icons/Save';
 import { editNote, deleteNote } from '../../api/mutations.js';
-import {BoardContext} from '../../App.js';
+import { BoardContext } from '../../App.js';
 import { GET_NOTES } from '../../graphql/queries.js';
 
 const priorityLevels = ['LOW', 'MED', 'HIGH'];
@@ -40,14 +40,17 @@ const NoteFooter = (props) => {
 
 const Note = ({ id, zindex, level, children, onChange, onPriorityChange, onRemove }) => {
   const board = useContext(BoardContext);
+  console.log('Current board:', board);
+  
   const [editing, setEditing] = useState(false);
   const [priorityLevel, setPriorityLevel] = useState(level);
   const [styles, setStyles] = useState({});
   const [text, setText] = useState(null);
   const newText = useRef();
-  const {updateNote} = editNote({id});
-  
-  
+  const { updateNote } = editNote({ id: id, board: board.board });
+  const { removeNote } = deleteNote({ id: id, board: board.board })
+
+
 
   // Set random position of each rendered Note
 
@@ -64,7 +67,7 @@ const Note = ({ id, zindex, level, children, onChange, onPriorityChange, onRemov
   // Fire onChange event taking the value of newText and the id as arguments
 
   const save = () => {
-    
+
     setText(newText.current.value);
     // onChange({ id: id, field: 'text', value: newText.current.value })
     setEditing(false);
@@ -73,7 +76,9 @@ const Note = ({ id, zindex, level, children, onChange, onPriorityChange, onRemov
   // Fire onRemove with id of the Note as an argument
 
   const remove = () => {
-    onRemove({ id })
+    removeNote({
+      variables: { id }
+    })
   }
 
   const increasePriority = () => {
@@ -104,6 +109,7 @@ const Note = ({ id, zindex, level, children, onChange, onPriorityChange, onRemov
     }
   }, [editing])
 
+  
   useEffect(() => {
     if (text) {
       updateNote({
@@ -111,15 +117,6 @@ const Note = ({ id, zindex, level, children, onChange, onPriorityChange, onRemov
           id: id,
           text: text,
           level: priorityLevel
-        },
-        refetchQueries: [{
-        query: GET_NOTES,
-        variables: {
-          board: board.id
-        }
-      }],
-        onCompleted: (data) => {
-          console.log('Updated:', data)
         }
       })
     }

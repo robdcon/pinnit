@@ -37,8 +37,8 @@ export const UPDATE_NOTE = gql`
 `;
 
 export const DELETE_NOTE = gql`
-    mutation deleteNote($user: String!, $board: String!, $id: String!) {
-        deleteNote(user: $user, board: $board, id: $id)
+    mutation deleteNote($id: Int!) {
+        deleteNote(id: $id)
     }
 `;
 
