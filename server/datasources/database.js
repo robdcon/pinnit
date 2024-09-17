@@ -51,15 +51,50 @@ const client = {
 
   getUserBoards: async (args) => {
     const { user } = args;
-    
+
     let { data, error } = await supabase
-    .from('UserBoards')
-    .select('board_id')
-    .eq('user_id', user)
+      .from('UserBoards')
+      .select('board_id')
+      .eq('user_id', user)
     console.log(data, error);
-    
+
     return { data, error }
-  }
+  },
+
+  createNote: async (args) => {
+    const { text, board} = args;
+    const { data, error } = await supabase
+      .from('Notes')
+      .insert([
+        { board_id: board, text: text },
+      ])
+      .select()
+
+    return { data, error }
+  },
+
+  addBoardNoteRef: async (args) => {
+    const { note, board } = args;
+    const { data, error } = await supabase
+      .from('BoardNotes')
+      .insert([
+        { note_id: note, board_id: board },
+      ])
+      .select()
+
+    return { data, error }
+  },
+
+  getBoardNotes: async (args) => {
+    const { board } = args;
+    let { data, error } = await supabase
+      .from('BoardNotes')
+      .select('Notes(id, text, level)')
+      .eq('board_id', board)
+
+      return { data, error }
+  },
+
 }
 
 module.exports = client;

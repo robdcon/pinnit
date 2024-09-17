@@ -78,7 +78,7 @@ const api = {
             await context.addUserBoardRef({board, user}).then(res => {
                 console.log('Ref created:', res);
             })
-            return `${board}`
+            return board
         } catch (error) {
             console.log(error)
             return false
@@ -116,11 +116,19 @@ const api = {
         return emails;
     },
 
-    createNote: async (user, board, text, zindex, level, context) => {
-        console.log('Board ID:', board);
+    createNote: async (board, text, context) => { 
         try {
-            let id = genId(user, board);
-            return id;
+            const note = await context.createNote({board, text}).then(res => {
+                return res.data[0];
+            });
+
+            const noteId = note.id;
+
+            await context.addBoardNoteRef({board, note: noteId}).then(res => {
+                console.log('Ref created:', res);
+            })
+            
+            return note;
         } catch (error) {
             console.log(error)
             return false
@@ -159,17 +167,20 @@ const api = {
         }
     },
 
-    getNotes: async (user, board, context, from = 0, to = -1) => {
-        const noteIds = await context.clientMethods.lrange(`${board}:noteIds`, from, to)
+    getNotes: async (board, context) => {
+        const notes = await context.getBoardNotes({board})
             .then(res => {
-                console.log(res)
-                return res
+                return res.data.map(note => {
+                    return note.Notes
+                })
             });
-        const promises = noteIds.map(noteId => {
-            return context.clientMethods.hgetall(`${board}:notes:${noteId}`);
-        });
-        const notes = Promise.all(promises).then(res => res);
+            console.log(`Board ${board} Notes: `, notes);
         return notes;
+        // const promises = noteIds.map(noteId => {
+        //     return context.clientMethods.hgetall(`${board}:notes:${noteId}`);
+        // });
+        // const notes = Promise.all(promises).then(res => res);
+        // return notes;
     }
 
 }

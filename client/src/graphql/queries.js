@@ -7,11 +7,10 @@ export const GET_BOARDS = gql`
 `;
 
 export const GET_NOTES = gql`
-  query getNotes($user: String!, $board: String! ) {
-    notes(user: $user, board: $board) {
+  query getNotes($board: Int!) {
+    notes(board: $board) {
       id
       text
-      zindex
       level
     }
   }

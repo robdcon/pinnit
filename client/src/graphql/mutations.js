@@ -17,13 +17,17 @@ export const SHARE_BOARD = gql`
 // Notes
 
 export const CREATE_NOTE = gql`
-    mutation createNote($user: String!, $board: String!, $text: String!, $level: String!) {
-        createNote(user: $user, board: $board, text: $text, zindex: 0, level: $level)
+    mutation createNote($board: Int!, $text: String!, $level: String) {
+        createNote(board: $board, text: $text, level: $level) {
+            id
+            text
+            level
+        }
     }
 `;
 
 export const UPDATE_NOTE = gql`
-    mutation updateNote($user: String!, $board: String!, $id: String!, $text: String, $zindex: Int, $level: String) {
+    mutation updateNote($user: String!, $board: Int!, $id: String!, $text: String, $zindex: Int, $level: String) {
         updateNote(user: $user, board: $board, id: $id, text: $text, zindex: $zindex, level: $level)
     }
 `;

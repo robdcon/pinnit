@@ -8,17 +8,17 @@ const schema = gql`
         email(email: String!): Int
         emails: [String]
         note(id: String!): Note
-        notes(user: String!, board: String!): [Note]
-        board(id: String!): Board
+        notes(board: Int!): [Note]
+        board(id: Int!): Board
         boards(user: String!): [Int]
     }
     
     type Mutation {
         createUser(username: String!, email: String!) : User!
-        createNote(user: String!, board: String!, text: String!, zindex: Int!, level: String!): String!
+        createNote(board: Int!, text: String!, level: String): Note!
         updateNote(user: String!, board: String!, id: String!, text: String, zindex: Int, level: String): String!
         deleteNote(user: String!, board: String!, id: String!): String!
-        createBoard(user: String): String!
+        createBoard(user: String): Int!
         shareBoard(user: String!, board: String!): String
     }
 
@@ -32,15 +32,16 @@ const schema = gql`
 
     type Note {
         id: String!
+        board_id: String!
         text: String!
-        zindex: Int!
-        level: String!
+        zindex: Int
+        level: String
     }
 
     type Board {
-        id: String!
+        id: Int!
         name: String!
-        notes: [String]
+        notes: [Int]
     }
 
     type UserEmail {

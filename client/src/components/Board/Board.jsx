@@ -3,13 +3,14 @@ import { StyledBoard } from './Board.styles';
 import Note from '../Note'
 import StickyFooter from '../StickyFooter'
 import AddCircleIcon from '@material-ui/icons/AddCircle';
-import { getNotes } from '../../api/queries';
+import { getBoardNotes } from '../../api/queries';
 import { editNote, deleteNote } from '../../api/mutations';
 import { notesVar, currentBoardVar } from '../../cache';
 import { useParams } from 'react-router-dom';
 
 const Board = ({userId, boardId, notes, children}) => { 
     // const [notes, setNotes] = useState([]);
+    // const { notesLoading, notesData, notesError } = getBoardNotes();
 
     const updatePriority = (id, level) => {
         updateNoteData({variables: {id, level}});
@@ -18,6 +19,10 @@ const Board = ({userId, boardId, notes, children}) => {
     const clearAllNotes = () => {
         console.log('deleted');
     }
+
+    useEffect(() => {
+
+    }, [notes])
 
 //   const eachNote = ({id, text, zindex, level}) => {
 //     return (

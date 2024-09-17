@@ -36,14 +36,12 @@ const typeDefs =  {
             return response;
         },
 
-        notes: async (parent, {user, board}, context, info) => {
-            const response = await api.getNotes(user, board, context).then(res => {
-                console.log("Notes: ", res)
+        notes: async (parent, {board}, context, info) => {
+            const response = await api.getNotes(board, context).then(res => {
                 return res;
             });
             return response;
         },
-
 
         board: async (parent, {id, user}, context, info) => {
             const response = await api.getBoard(id, user, context).then(res => {
@@ -85,9 +83,11 @@ const typeDefs =  {
            return user;
         }, 
 
-        createNote: async (parent, {user, board, text, zindex, level }, context) => {
-            const note = await api.createNote(user, board, text, zindex, level, context)
-            .then(res => res);
+        createNote: async (parent, {board, text}, context) => {
+            const note = await api.createNote(board, text, context)
+            .then(res => {
+                return res;
+            });
             return note;
         },
 

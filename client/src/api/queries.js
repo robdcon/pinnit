@@ -10,13 +10,23 @@ import {
 } from '../graphql/queries';
 
 export const getBoards = () => {
-    const [getBoardIds, { loading, data, error, startPolling }] = useLazyQuery(GET_BOARDS);
+    const [getBoardIds, { loading, data, error, startPolling }] = useLazyQuery(GET_BOARDS, {
+        onCompleted: (data) => {
+            console.log('API Query Board IDs:', data);
+            
+        }
+    });
     return { getBoardIds, boardLoading:loading, boardData:data, boardError:error, startBoardPolling:startPolling };
 }
 
 export const getBoardNotes = () => {
-    const [getNotes, {loading, data, error, startPolling}] = useLazyQuery(GET_NOTES);
-    return {getNotes, notesLoading: loading, notesData: data, notesError: error, startNotesPolling: startPolling};
+    const [getNotes, { loading, data, error, startPolling }] = useLazyQuery(GET_NOTES, {
+        onCompleted: (data) => {
+            console.log('API Query Notes:', data);
+            
+        }
+    });
+    return { getNotes, notesLoading:loading, notesData:data, notesError:error, startNotesPolling:startPolling};
 }
 
 

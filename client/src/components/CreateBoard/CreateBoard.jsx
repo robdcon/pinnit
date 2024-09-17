@@ -8,8 +8,6 @@ import { currentBoardVar } from '../../cache';
 // const { user, isAuthenticated, isLoading } = useAuth0();
 
 const CreateBoard = ({userId}) => {
-  console.log(userId);
-  
   // const history = useHistory();
   const [createBoard] = useMutation(CREATE_BOARD, {
     variables: {user: userId},

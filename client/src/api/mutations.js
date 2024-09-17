@@ -3,22 +3,46 @@ import { CREATE_NOTE, UPDATE_NOTE, DELETE_NOTE, CREATE_USER } from '../graphql/m
 import { GET_NOTES, GET_USERS, GET_USER } from '../graphql/queries';
 import { setToLocalStorage } from '../utils/helpers'; 
 import { loggedInUserVar } from "../cache";
+import { 
+  ApolloClient, 
+  ApolloLink,
+  ApolloProvider,
+  gql,
+  useReactiveVar,
+  HttpLink,
+  concat
+} from '@apollo/client';
 
 // Notes 
 
-export const addNote = ({userId, boardId}) => {
-  const [createNote, loading, data, error] = useMutation(CREATE_NOTE, {
+export const addNote = ({boardId}) => {
+  const [createNote] = useMutation(CREATE_NOTE, {
+    // update(cache, { data: { createNote } }) {
+    //   cache.modify({
+    //     fields: {
+    //       notes(existingNotes = []) {
+    //         const newNoteRef = cache.writeFragment({
+    //           data: createNote,
+    //           fragment: gql`
+    //             fragment NewNote on Notes {
+    //               id
+    //               type
+    //             }
+    //           `
+    //         });
+    //         return [...existingNotes, newNoteRef];
+    //       }
+    //     }
+    //   });
+    // },
     variables: {
-      user:userId, 
       board:boardId,
-      text: `New Note ${userId}:${boardId}`,
-      zindex: 0,
+      text: `New Note:${boardId}`,
       level: 'MED'
     },
     refetchQueries: [{
       query: GET_NOTES,
       variables: {
-        user: userId,
         board: boardId
       }
     }],
