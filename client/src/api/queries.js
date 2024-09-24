@@ -4,10 +4,20 @@ import {
     CHECK_USER, 
     GET_EMAILS, 
     GET_BOARDS, 
+    GET_BOARD,
     GET_USERS,
     GET_USER,
     GET_LOGGEDIN_USER
 } from '../graphql/queries';
+
+export const getBoard = () => {
+    const [getBoard, { loading, data, error, startPolling }] = useLazyQuery(GET_BOARD, {
+        onCompleted: (data) => {
+            console.log('API Query Board:', data);
+        }
+    });
+    return { fetchBoard:getBoard , boardLoading:loading, boardData:data, boardError:error, startBoardPolling:startPolling };
+}
 
 export const getBoards = () => {
     const [getBoardIds, { loading, data, error, startPolling }] = useLazyQuery(GET_BOARDS, {
@@ -16,7 +26,7 @@ export const getBoards = () => {
             
         }
     });
-    return { getBoardIds, boardLoading:loading, boardData:data, boardError:error, startBoardPolling:startPolling };
+    return { getBoardIds, boardIdsLoading:loading, boardIdsData:data, boardIdsError:error, startBoardIdsPolling:startPolling };
 }
 
 export const getBoardNotes = () => {

@@ -8,7 +8,7 @@ import { editNote, deleteNote } from '../../api/mutations';
 import { notesVar, currentBoardVar } from '../../cache';
 import { useParams } from 'react-router-dom';
 
-const Board = ({userId, boardId, notes, children}) => { 
+const Board = ({userId, boardId, boardType, notes, children}) => { 
     // const [notes, setNotes] = useState([]);
     // const { notesLoading, notesData, notesError } = getBoardNotes();
 
@@ -41,7 +41,7 @@ const Board = ({userId, boardId, notes, children}) => {
 
     return (          
         <div>
-            <StyledBoard id={boardId} className="BoardWrapper">
+            <StyledBoard id={boardId} className="BoardWrapper" boardType={boardType}>
             <h1>{boardId}</h1>
             {children}
                 {/* <StickyFooter>

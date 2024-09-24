@@ -1,32 +1,29 @@
-import React from 'react';
-import { useMutation } from '@apollo/client';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { CREATE_BOARD } from '../../graphql/mutations';
 import { GET_BOARDS } from '../../graphql/queries';
 import { StyledCreateBoardButton } from './CreateBoard.styles';
 import { currentBoardVar } from '../../cache';
+import BoardForm from '../../components/BoardForm';
+
 // const { user, isAuthenticated, isLoading } = useAuth0();
 
 const CreateBoard = ({userId}) => {
-  // const history = useHistory();
-  const [createBoard] = useMutation(CREATE_BOARD, {
-    variables: {user: userId},
-    // onCompleted: ({createBoard: id}) => {history.push(`/boards/${id}`); currentBoardVar(id); console.log('Created Board:', id)},
-    // refetchQueries: [
-    //   {
-    //    query:GET_BOARDS,
-    //    variables: {
-    //      user: userId
-    //    }
-    //   }
-    // ]
-  });
+  const [boardEditing, setBoardEditing] = useState(false)
 
   return (
-  <StyledCreateBoardButton className="CreateBoardWrapper">
-    <button onClick={() => createBoard()}>CREATE BOARD</button>
-  </StyledCreateBoardButton>
-)};
+    <div>
+      {
+        boardEditing && <BoardForm setBoardEditing={setBoardEditing} />
+      }
+      {
+        !boardEditing && 
+        <StyledCreateBoardButton className="CreateBoardWrapper">
+          <button onClick={() => setBoardEditing(true)}>CREATE BOARD</button>
+        </StyledCreateBoardButton>
+      }
+    </div>
+  )
+};
 
 
 export default CreateBoard;

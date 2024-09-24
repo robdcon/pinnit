@@ -2,6 +2,15 @@ const { createClient } = require('@supabase/supabase-js');
 const supabase = createClient('https://cbumxnppdvzaauikhczt.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNidW14bnBwZHZ6YWF1aWtoY3p0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDY0NDEzMDUsImV4cCI6MjAyMjAxNzMwNX0.AW2mqdrKqZMDEEw2kWodtb3IJvqCYApc-i9aeJoLWO8');
 
 const client = {
+  getUsers: async (args) => {
+    let { data: Users, error } = await supabase
+      .from('Users')
+      .select('*')
+    console.log('Users:', Users);
+    
+    return { Users, error }
+  },
+
   addUser: async (args) => {
     const { username, email } = args;
     const { data, error } = await supabase
@@ -25,12 +34,24 @@ const client = {
     return { data, error }
   },
 
+  getBoard: async (args) => {
+    const {board} = args;
+
+    const { data: Board, error } = await supabase
+      .from('Boards')
+      .select('*')
+      .eq('id', board)
+
+    return { Board, error }
+  },
+
   addBoard: async (args) => {
-    const { user } = args;
+   
+    const { user, boardType } = args;
     const { data, error } = await supabase
       .from('Boards')
       .insert([
-        { user: user },
+        { user: user, board_type: boardType },
       ])
       .select()
 
@@ -38,6 +59,8 @@ const client = {
   },
 
   addUserBoardRef: async (args) => {
+    console.log('User, board', args);
+    
     const { user, board } = args;
     const { data, error } = await supabase
       .from('UserBoards')
@@ -112,7 +135,7 @@ const client = {
       .from('Notes')
       .delete()
       .eq('id', id)
-    if(error) {
+    if (error) {
       return 'false';
     }
     return 'true';

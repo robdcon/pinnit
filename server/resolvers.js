@@ -16,7 +16,7 @@ const typeDefs =  {
             const response = await api.getUsers(context).then(res => {
                 return res;
             });
-            console.log("Resolver: ",response)
+            console.log("Users: ",response)
             return response;
         },
 
@@ -43,11 +43,13 @@ const typeDefs =  {
             return response;
         },
 
-        board: async (parent, {id, user}, context, info) => {
-            const response = await api.getBoard(id, user, context).then(res => {
-                return res;
+        board: async (parent, args, context, info) => {
+            const board = await api.getBoard(args, context).then(({Board}) => {
+                return Board[0];
             });
-            return response;
+            console.log('Board:', board);
+            
+            return board;
         }, 
 
         boards: async (parent, { user }, context, info) => {
@@ -103,10 +105,9 @@ const typeDefs =  {
             return res;
         },
 
-        createBoard: async (parent, { user }, context) => {
+        createBoard: async (parent, args, context) => {
             try {
-                const board = await api.createBoard(user, context).then(res => res);
-                console.log('Created Board:', board);
+                const board = await api.createBoard(args, context).then(res => res);
                 return board;
             } catch (error) {
                 console.log(error)

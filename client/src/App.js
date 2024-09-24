@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Board from './components/Board';
 import Note from './components/Note';
-import { getBoards, getBoardNotes, getLoggedinUser, getUser } from './api/queries';
+import { getBoard, getBoards, getBoardNotes, getLoggedinUser, getUser } from './api/queries';
 import { editNote, deleteNote, createUser } from './api/mutations';
 import CreateBoard from './components/CreateBoard/CreateBoard';
 import CreateNote from './components/CreateNote/CreateNote';
@@ -73,13 +73,14 @@ const App = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
   const [uid, setUid] = useState(null)
   const [boards, setBoards] = useState([]);
-  const [notes, setNotes] = useState([]);
   const [currentBoard, setCurrentBoard] = useState(null);
-  // const [tempNote, setTempNote] = useState({text: "Please enter your text..."});
+  const [board, setBoard] = useState({});
+  const [notes, setNotes] = useState([]);
 
   // queries
   const { fetchUser, userLoading, userData, userError } = getUser({ email: user?.email });
-  const { getBoardIds, boardLoading, boardData, boardError, startBoardPolling } = getBoards();
+  const { getBoardIds, boardIdsLoading, boardIdsData, boardIdsError, startBoardIdsPolling } = getBoards();
+  const { fetchBoard, boardLoading, boardData, boardError, startBoardPolling } = getBoard();
   const { getNotes, notesLoading, notesData, notesError, startNotesPolling } = getBoardNotes();
 
   // Mutations
@@ -127,30 +128,41 @@ const App = () => {
   }, [uid]);
 
   useEffect(() => {
-    if (boardData) {
-      console.log(`Finshed getting Boards for: ${uid}`);
-      const { boards } = boardData;
+    if (boardIdsData) {
+      console.log(`Finished getting Boards for: ${uid}`);
+      const { boards } = boardIdsData;
       setBoards(boards);
-      console.log(`Setting Boards for ${uid}: ${boardData.boards}`);
+      console.log(`Setting Boards for ${uid}: ${boardIdsData.boards}`);
     }
-  }, [boardData]);
-
-  // useEffect(() => {
-  //   if (boards) {
-  //     console.log(`Finished setting Boards for ${uid}: ${boards}`);
-  //   }
-
-  // }, [boards])
+  }, [boardIdsData]);
 
   useEffect(() => {
     if (currentBoard) {
       console.log('Current Board:', currentBoard);
 
       getNotes({ variables: { board: currentBoard } });
+      fetchBoard({ variables: { board: currentBoard } });
 
       console.log(`Getting Notes for Board: ${currentBoard}`);
     }
   }, [currentBoard]);
+  
+  useEffect(() => {
+    if (boardData) {
+      const { board } = boardData;
+      console.log('Board Data:', board);
+      
+      setBoard(board);
+      console.log(`Current Board Details: ${board}`);
+      // startNotesPolling && startNotesPolling(1000);
+    }
+  }, [boardData]);
+  
+  useEffect(() => {
+    if (board) {
+      console.log(`Finished setting board ${board}`);
+    }
+  }, [board])
 
   useEffect(() => {
     if (notesData) {
@@ -160,6 +172,8 @@ const App = () => {
       // startNotesPolling && startNotesPolling(1000);
     }
   }, [notesData]);
+  
+
 
   useEffect(() => {
     if (notes) {
@@ -195,7 +209,7 @@ const App = () => {
           setCurrentBoard(parseInt(url.match.params.boardId));
           return isAuthenticated && (
             <BoardContext.Provider value={{board: currentBoard}}>
-              <Board boardId={currentBoard} notes={notes} userId={uid}>
+              <Board boardId={currentBoard} notes={notes} userId={uid} boardType={board.board_type}>
                 {
                   notes && notes.map(note => {
                     return (

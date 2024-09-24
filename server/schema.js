@@ -9,7 +9,7 @@ const schema = gql`
         emails: [String]
         note(id: String!): Note
         notes(board: Int!): [Note]
-        board(id: Int!): Board
+        board(board: Int!): Board
         boards(user: String!): [Int]
     }
     
@@ -18,8 +18,8 @@ const schema = gql`
         createNote(board: Int!, text: String!, level: String): Note!
         updateNote(user: String, board: Int, id: Int!, text: String, zindex: Int, level: String): Note!
         deleteNote(id: Int!): String!
-        createBoard(user: String): Int!
-        shareBoard(user: String!, board: String!): String
+        createBoard(user: String, name: String!, board_type: String): Int!
+        shareBoard(user: String!, board: Int!): String
     }
 
     type User {
@@ -40,8 +40,10 @@ const schema = gql`
 
     type Board {
         id: Int!
-        name: String!
+        name: String
         notes: [Int]
+        board_type: String
+        user: String!
     }
 
     type UserEmail {

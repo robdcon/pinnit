@@ -33,17 +33,10 @@ const api = {
     },
 
     getUsers: async (context) => {
-        const userIds = await context.smembers('userUsernames').then(res => {
+        const {Users} = await context.getUsers().then(res => {
             return res
         })
-        const promises = userIds.map(username => {
-            const user = context.hget('users', username).then(res => {
-                return context.hgetall(`user:${res}`);
-            });
-            return user
-        });
-        const users = Promise.all(promises).then(res => res);
-        return users;
+        return Users;
     },
 
     checkUserExists: async (email, username, context) => {
@@ -58,13 +51,13 @@ const api = {
     },
 
     // Boards
-    createBoard: async (user, context) => {
+    createBoard: async (args, context) => {
         try {
-            const board = await context.addBoard({user}).then(res => {
+            const board = await context.addBoard(args).then(res => {
                 console.log('New Board', res)
                 return res.data[0].id
             })
-            await context.addUserBoardRef({board, user}).then(res => {
+            await context.addUserBoardRef({...args, board}).then(res => {
                 console.log('Ref created:', res);
             })
             return board
@@ -97,6 +90,18 @@ const api = {
         } catch (error) {
             console.log(error)
             return false
+        }
+    },
+
+    getBoard: async (args, context) => {
+        try {
+            const board = await context.getBoard(args).then(res => {
+                return res;
+            })
+            return board;
+        } catch (error) {
+            console.log(error);
+            throw error
         }
     },
 
