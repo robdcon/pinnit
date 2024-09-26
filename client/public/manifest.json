@@ -20,7 +20,7 @@
         "type": "image/png"
       }
     ],
-    "start_url": "https://pinnit-staging.robdcon.co.uk",
+    "start_url": "https://pinnit.herokuapp.com",
     "display": "standalone",
     "theme_color": "#ffff33",
     "orientation": "any",

@@ -6,7 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server/index.js",
-    "build": "cd server && npm install && cd ../client && npm install && npm run build"
+    "build": "cd server && npm install && cd ../client && npm install && npm run build",
+    "start-server": "nodemon server",
+    "build-dev": "cd client && npm run build",
+    "watch-build": "cd client && npm run watch",
+    "start-dev": "cd client && npm run start"
   },
   "repository": {
     "type": "git",
@@ -18,8 +22,15 @@
   "bugs": {
     "url": "https://github.com/robdcon/pinnit/issues"
   },
-  "homepage": "https://github.com/robdcon/pinnit#readme",
+  "homepage": "https://pinnit.herokuapp.com",
   "engines": {
     "node": "12.14.0"
+  },
+  "dependencies": {
+    "apollo-server-express": "^2.25.2",
+    "body-parser": "^1.19.0",
+    "graphql": "^15.5.1",
+    "graphql-tools": "^7.0.5",
+    "redis": "^3.1.2"
   }
 }
