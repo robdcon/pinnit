@@ -1,22 +1,36 @@
 {
-  "homepage": "https://pinnit-staging.robdcon.co.uk",
   "name": "pinnit",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@material-ui/core": "^4.8.2",
-    "@material-ui/icons": "^4.5.1",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "react-draggable": "^4.2.0",
-    "react-scripts": "0.9.x",
-    "styled-components": "^4.4.1"
-  },
-  "devDependencies": {},
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server/index.js",
+    "build": "cd server && npm install && cd ../client && npm install && npm run build",
+    "start-server": "nodemon server",
+    "build-dev": "cd client && npm run build",
+    "watch-build": "cd client && npm run watch",
+    "start-dev": "cd client && npm run start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/robdcon/pinnit.git"
+  },
+  "keywords": [],
+  "author": "Rob Connolly <rob@robdcon.co.uk> (https://robdcon.co.uk)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/robdcon/pinnit/issues"
+  },
+  "homepage": "https://pinnit.herokuapp.com",
+  "engines": {
+    "node": "12.14.0"
+  },
+  "dependencies": {
+    "apollo-server-express": "^2.25.2",
+    "body-parser": "^1.19.0",
+    "graphql": "^15.5.1",
+    "graphql-tools": "^7.0.5",
+    "redis": "^3.1.2"
   }
 }
