@@ -1,4 +1,4 @@
-require('dotenv').config();
+// require('dotenv').config();
 const { genId } = require('../utils/helpers.js')
 const secret = process.env.SECRET;
 

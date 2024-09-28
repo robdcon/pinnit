@@ -20,6 +20,7 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
+  Routes,
   Link,
   useHistory,
   useParams,
@@ -66,6 +67,32 @@ const LogoutButton = () => {
     </button>
   );
 };
+
+const HomeScreen = ({isAuthenticated}) => {
+  return (
+    <React.Fragment>
+      <h1>Home Screen</h1>
+      {isAuthenticated ? <LogoutButton /> : <LoginButton />}
+    </React.Fragment>
+  )
+}
+
+const Dashboard = ({ boards }) => {
+  return (
+    <React.Fragment>
+      <h1>Dashboard</h1>
+      <div style={boardContainerStyles}>
+        {
+          boards && boards.length > 0 && boards.map(board => {
+            return (
+              <BoardPanel key={board} boardId={board} />
+            )
+          })
+        }
+      </div>
+    </React.Fragment>
+  )
+}
 
 
 const App = () => {
@@ -146,18 +173,18 @@ const App = () => {
       console.log(`Getting Notes for Board: ${currentBoard}`);
     }
   }, [currentBoard]);
-  
+
   useEffect(() => {
     if (boardData) {
       const { board } = boardData;
       console.log('Board Data:', board);
-      
+
       setBoard(board);
       console.log(`Current Board Details: ${board}`);
       // startNotesPolling && startNotesPolling(1000);
     }
   }, [boardData]);
-  
+
   useEffect(() => {
     if (board) {
       console.log(`Finished setting board ${board}`);
@@ -172,7 +199,7 @@ const App = () => {
       // startNotesPolling && startNotesPolling(1000);
     }
   }, [notesData]);
-  
+
 
 
   useEffect(() => {
@@ -182,8 +209,8 @@ const App = () => {
   }, [notes])
 
   return (
-    <Router>
-      <div className="pinnit">
+    <Routes>
+      {/* <div className="pinnit">
         <Link to="/">
           <button>HOME</button>
         </Link>
@@ -192,62 +219,46 @@ const App = () => {
         </Link>
         {
           isAuthenticated && <CreateBoard userId={uid} />
-        }
-        <Route path="/boards" exact>
-          <h1>Dashboard</h1>
-          <div style={boardContainerStyles}>
-            {
-              boards && boards.length > 0 && boards.map(board => {
-                return (
-                  <BoardPanel key={board} boardId={board} />
-                )
-              })
-            }
-          </div>
-        </Route>
-        <Route path="/boards/:boardId" render={(url) => {
-          setCurrentBoard(parseInt(url.match.params.boardId));
-          return isAuthenticated && (
-            <BoardContext.Provider value={{board: currentBoard}}>
-              <Board boardId={currentBoard} notes={notes} userId={uid} boardType={board.board_type}>
+        } */}
+      <Route path="/boards" exact element={<Dashboard board={boards} />} />
+      <Route path="/boards/:boardId" render={(url) => {
+        setCurrentBoard(parseInt(url.match.params.boardId));
+        return isAuthenticated && (
+          <BoardContext.Provider value={{ board: currentBoard }}>
+            <Board boardId={currentBoard} notes={notes} userId={uid} boardType={board.board_type}>
+              {
+                notes && notes.map(note => {
+                  return (
+                    <Note
+                      key={`${currentBoard}${note.id}`}
+                      id={note.id}
+                      zindex={note.zindex}
+                      level={note.level}
+                      onChange={({ field, value }) => updateNote({ variables: { user: uid, board: currentBoard, id: note.id, [field]: value } })}
+                      onRemove={() => removeNote({ variables: { user: uid, board: currentBoard, id: note.id } })}
+                    // onPriorityChange={updatePriority}
+                    >
+                      {note.text}
+                    </Note>
+                  )
+                })
+              }
+              <div>
                 {
-                  notes && notes.map(note => {
-                    return (
-                      <Note
-                        key={`${currentBoard}${note.id}`}
-                        id={note.id}
-                        zindex={note.zindex}
-                        level={note.level}
-                        onChange={({ field, value }) => updateNote({ variables: { user: uid, board: currentBoard, id: note.id, [field]: value } })}
-                        onRemove={() => removeNote({ variables: { user: uid, board: currentBoard, id: note.id } })}
-                      // onPriorityChange={updatePriority}
-                      >
-                        {note.text}
-                      </Note>
-                    )
-                  })
+                  isAuthenticated && <CreateNote boardId={currentBoard} userId={uid} />
                 }
-                <div>
-                  {
-                    isAuthenticated && <CreateNote boardId={currentBoard} userId={uid} />
-                  }
-                  {/* {
+                {/* {
                   usersData && usersData.users.map(user =>{ return(<ShareBoard key={user.username} boardId={currentBoard} username={user.username} text={user.username} />)})
                 } */}
-                </div>
-              </Board>
-            </BoardContext.Provider>
-          )
-        }
-        } />
-        <Route path="/" exact>
-          <h1>Home Screen</h1>
-
-          {isAuthenticated ? <LogoutButton /> : <LoginButton />}
-
-        </Route>
-      </div>
-    </Router>
+              </div>
+            </Board>
+          </BoardContext.Provider>
+        )
+      }
+      } />
+      <Route path="/" exact element={<HomeScreen isAuthenticated />} />
+      {/* </div> */}
+    </Routes>
   );
 }
 

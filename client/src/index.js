@@ -1,11 +1,11 @@
-require('dotenv').config();
+// require('dotenv').config();
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import App from './App';
 import './index.css';
 import * as serviceWorker from './registerServiceWorker';
-import { 
-  ApolloClient, 
+import {
+  ApolloClient,
   ApolloLink,
   ApolloProvider,
   gql,
@@ -39,23 +39,26 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 
 const client = new ApolloClient({
   cache,
-  link : concat(authMiddleware, httpLink),
+  link: concat(authMiddleware, httpLink),
   connectToDevTools: true
 })
 
-ReactDOM.render(
+const container = document.getElementById('root');
+const root = createRoot(container);
+
+
+root.render(
   <Auth0Provider
     domain="auth0-robdcon.eu.auth0.com"
     clientId="7lZI6Q3bw0XwO3jPY1hGCodXFxgLSZNO"
     redirectUri={window.location.origin}
   >
-   <BrowserRouter>
-    <ApolloProvider client={client}>
+    <BrowserRouter>
+      <ApolloProvider client={client}>
         <App />
-    </ApolloProvider>
-  </BrowserRouter>
-  </Auth0Provider>,
-  document.getElementById('root')
+      </ApolloProvider>
+    </BrowserRouter>
+  </Auth0Provider>
 );
 
 // serviceWorker.register();
