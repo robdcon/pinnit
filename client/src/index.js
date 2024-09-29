@@ -1,5 +1,5 @@
 // require('dotenv').config();
-import React from 'react';
+import React, { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import './index.css';
@@ -16,7 +16,7 @@ import {
 import { cache } from './cache.js';
 import { BrowserRouter } from 'react-router-dom';
 import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
-import { setContext } from '@apollo/client/link/context';
+// import { setContext } from '@apollo/client/link/context';
 import { tokenVar } from './cache';
 
 const httpLink = new HttpLink({
