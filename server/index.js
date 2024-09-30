@@ -1,11 +1,8 @@
-// require('dotenv').config();
 const cors = require('cors')
 const express = require("express");
-// const { dirname } = require("path");
-// const path = require('path');
-// const { promisify } = require("util");
 const { ApolloServer } = require('apollo-server-express');
 const client = require('./datasources/database');
+var { createHandler } = require("graphql-http/lib/use/express")
 
 // const { bootstrap: bootstrapGlobalAgent } = require('global-agent');
 // const redis = require("redis");
@@ -111,9 +108,6 @@ async function startApolloServer() {
   console.log(`🚀 Site ready at http://localhost:${PORT}`);
   console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`);
 
-
-
-  
   return {server, app}
 }
 
