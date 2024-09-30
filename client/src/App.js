@@ -20,6 +20,7 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
+  Routes,
   Link,
   useHistory,
   useParams,
@@ -67,11 +68,55 @@ const LogoutButton = () => {
   );
 };
 
+const HomeScreen = () => {
+  return (
+    <>
+      <h1>Home Screen</h1>
+    </>
+  )
+}
+
+const Dashboard = ({ boards }) => {
+  return (
+    <>
+      <h1>Dashboard</h1>
+      <div style={boardContainerStyles}>
+        {
+          boards && boards.length > 0 && boards.map(board => {
+            return (
+              <BoardPanel key={board} boardId={board} />
+            )
+          })
+        }
+      </div>
+    </>
+  )
+}
+
+const  Layout = ({ children, isAuthenticated }) => {
+  return (
+    <div className="pinnit">
+      <Link to="/">
+        <button>HOME</button>
+      </Link>
+      <Link to="/boards">
+        <button>BOARDS</button>
+      </Link>
+      {
+        isAuthenticated && <CreateBoard userId={useAuth0?.user?.email} />
+      }
+      <LogoutButton />
+      <LoginButton />
+      {children}
+    </div>
+  )
+}
+
 
 const App = () => {
   // state
   const { user, isAuthenticated, isLoading } = useAuth0();
-  const [uid, setUid] = useState(null)
+  const [userLoggedIn, setUserLoggedIn] = useState(isAuthenticated);
   const [boards, setBoards] = useState([]);
   const [currentBoard, setCurrentBoard] = useState(null);
   const [board, setBoard] = useState({});
@@ -84,18 +129,20 @@ const App = () => {
   const { getNotes, notesLoading, notesData, notesError, startNotesPolling } = getBoardNotes();
 
   // Mutations
-  // const updateNote = editNote({userId: uid, boardId: currentBoard});
-  // const removeNote = deleteNote({userId: uid, boardId: currentBoard});
-  // const getUser = getLoggedinUser({email: uid});
+  // const updateNote = editNote({userId: user.email, boardId: currentBoard});
+  // const removeNote = deleteNote({userId: user.email, boardId: currentBoard});
+  // const getUser = getLoggedinUser({email: user.email});
   const { getAccessTokenSilently } = useAuth0();
-  const addUser = createUser({ username: uid, email: uid });
+  const addUser = createUser({ username: user?.email, email: user?.email });
 
   useEffect(() => {
     if (user) {
+
       const token = getAccessTokenSilently();
-      token.then(res => {
+      token.then(res => {        
         tokenVar(res);
       })
+
       console.log(`${user.nickname} logged in`);
 
       if (user.newUser) {
@@ -107,32 +154,35 @@ const App = () => {
         console.log(`Fetching supabase user`);
         fetchUser();
       }
+
+      getBoardIds({
+        variables: { user: user.email }
+      });
     }
   }, [user])
 
-  useEffect(() => {
-    if (userData) {
-      console.log('Setting UID to:', userData.user.email);
+  // useEffect(() => {
+  //   if (userData) {
+  //     console.log('Setting user.email to:', userData.user.email);
 
-      setUid(userData.user.email);
-    }
-  }, [userData]);
+  //     setuser.email(userData.user.email);
+  //   }
+  // }, [userData]);
 
-  useEffect(() => {
-    if (uid) {
-      getBoardIds({
-        variables: { user: uid }
-      });
-      console.log(`Get Boards for: ${uid}`);
-    }
-  }, [uid]);
+  // useEffect(() => {
+  //   if (user.email) {
+  //     getBoardIds({
+  //       variables: { user: user.email }
+  //     });
+  //     console.log(`Get Boards for: ${user.email}`);
+  //   }
+  // }, [user.email]);
 
   useEffect(() => {
     if (boardIdsData) {
-      console.log(`Finished getting Boards for: ${uid}`);
+      console.log(`Finished getting Boards for: ${user.nickname}`);
       const { boards } = boardIdsData;
       setBoards(boards);
-      console.log(`Setting Boards for ${uid}: ${boardIdsData.boards}`);
     }
   }, [boardIdsData]);
 
@@ -146,18 +196,18 @@ const App = () => {
       console.log(`Getting Notes for Board: ${currentBoard}`);
     }
   }, [currentBoard]);
-  
+
   useEffect(() => {
     if (boardData) {
       const { board } = boardData;
       console.log('Board Data:', board);
-      
+
       setBoard(board);
       console.log(`Current Board Details: ${board}`);
       // startNotesPolling && startNotesPolling(1000);
     }
   }, [boardData]);
-  
+
   useEffect(() => {
     if (board) {
       console.log(`Finished setting board ${board}`);
@@ -172,7 +222,7 @@ const App = () => {
       // startNotesPolling && startNotesPolling(1000);
     }
   }, [notesData]);
-  
+
 
 
   useEffect(() => {
@@ -182,72 +232,50 @@ const App = () => {
   }, [notes])
 
   return (
-    <Router>
-      <div className="pinnit">
-        <Link to="/">
-          <button>HOME</button>
-        </Link>
-        <Link to="/boards">
-          <button>BOARDS</button>
-        </Link>
-        {
-          isAuthenticated && <CreateBoard userId={uid} />
-        }
-        <Route path="/boards" exact>
-          <h1>Dashboard</h1>
-          <div style={boardContainerStyles}>
-            {
-              boards && boards.length > 0 && boards.map(board => {
-                return (
-                  <BoardPanel key={board} boardId={board} />
-                )
-              })
-            }
-          </div>
-        </Route>
-        <Route path="/boards/:boardId" render={(url) => {
-          setCurrentBoard(parseInt(url.match.params.boardId));
-          return isAuthenticated && (
-            <BoardContext.Provider value={{board: currentBoard}}>
-              <Board boardId={currentBoard} notes={notes} userId={uid} boardType={board.board_type}>
-                {
-                  notes && notes.map(note => {
-                    return (
-                      <Note
-                        key={`${currentBoard}${note.id}`}
-                        id={note.id}
-                        zindex={note.zindex}
-                        level={note.level}
-                        onChange={({ field, value }) => updateNote({ variables: { user: uid, board: currentBoard, id: note.id, [field]: value } })}
-                        onRemove={() => removeNote({ variables: { user: uid, board: currentBoard, id: note.id } })}
-                      // onPriorityChange={updatePriority}
-                      >
-                        {note.text}
-                      </Note>
-                    )
-                  })
-                }
-                <div>
+    <>
+      <Layout isAuthenticated={isAuthenticated}>
+        <Routes>
+          <Route path="/boards" exact element={<Dashboard board={boards} />} />
+          <Route path="/boards/:boardId" render={(url) => {
+            setCurrentBoard(parseInt(url.match.params.boardId));
+            return useAuth0.user && (
+              <BoardContext.Provider value={{ board: currentBoard }}>
+                <Board boardId={currentBoard} notes={notes} userId={user.email} boardType={board.board_type}>
                   {
-                    isAuthenticated && <CreateNote boardId={currentBoard} userId={uid} />
+                    notes && notes.map(note => {
+                      return (
+                        <Note
+                          key={`${currentBoard}${note.id}`}
+                          id={note.id}
+                          zindex={note.zindex}
+                          level={note.level}
+                          onChange={({ field, value }) => updateNote({ variables: { user: user.email, board: currentBoard, id: note.id, [field]: value } })}
+                          onRemove={() => removeNote({ variables: { user: user.email, board: currentBoard, id: note.id } })}
+                        // onPriorityChange={updatePriority}
+                        >
+                          {note.text}
+                        </Note>
+                      )
+                    })
                   }
-                  {/* {
-                  usersData && usersData.users.map(user =>{ return(<ShareBoard key={user.username} boardId={currentBoard} username={user.username} text={user.username} />)})
-                } */}
-                </div>
-              </Board>
-            </BoardContext.Provider>
-          )
-        }
-        } />
-        <Route path="/" exact>
-          <h1>Home Screen</h1>
-
-          {isAuthenticated ? <LogoutButton /> : <LoginButton />}
-
-        </Route>
-      </div>
-    </Router>
+                  <div>
+                    {
+                      user.email && <CreateNote boardId={currentBoard} userId={user.email} />
+                    }
+                    {/* {
+                    usersData && usersData.users.map(user =>{ return(<ShareBoard key={user.username} boardId={currentBoard} username={user.username} text={user.username} />)})
+                  } */}
+                  </div>
+                </Board>
+              </BoardContext.Provider>
+            )
+          }
+          } />
+          <Route path="/" exact element={<HomeScreen />} />
+          {/* </div> */}
+        </Routes>
+      </Layout>
+    </>
   );
 }
 

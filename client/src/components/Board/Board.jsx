@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { StyledBoard } from './Board.styles';
-import Note from '../Note'
-import StickyFooter from '../StickyFooter'
-import AddCircleIcon from '@material-ui/icons/AddCircle';
+import Note from '../Note';
+import StickyFooter from '../StickyFooter';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { getBoardNotes } from '../../api/queries';
 import { editNote, deleteNote } from '../../api/mutations';
 import { notesVar, currentBoardVar } from '../../cache';

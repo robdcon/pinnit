@@ -3,11 +3,11 @@ import styled from 'styled-components'
 import { StyledNote } from './Note.styles';
 import Draggable from 'react-draggable';
 import FlexContainer from '../FlexContainer';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
-import SaveIcon from '@material-ui/icons/Save';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SaveIcon from '@mui/icons-material/Save';
 import { editNote, deleteNote } from '../../api/mutations.js';
 import { BoardContext } from '../../App.js';
 import { GET_NOTES } from '../../graphql/queries.js';

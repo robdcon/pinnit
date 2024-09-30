@@ -43,58 +43,6 @@ const client = require('./datasources/database');
 // });
 
 
-
-          
-
-// Redis client methods
-// let get = promisify(client.get).bind(client);
-// let set = promisify(client.set).bind(client);
-// let del = promisify(client.del).bind(client);
-// let hset = promisify(client.hset).bind(client);
-// let hmset = promisify(client.hmset).bind(client);
-// let hget = promisify(client.hget).bind(client);
-// let hgetall = promisify(client.hgetall).bind(client); 
-// let rpush = promisify(client.rpush).bind(client);
-// let lpush = promisify(client.lpush).bind(client);
-// let rpop = promisify(client.rpop).bind(client);
-// let lrange = promisify(client.lrange).bind(client);
-// let incr = promisify(client.incr).bind(client);
-// let hdel = promisify(client.hdel).bind(client);
-// let lpos = promisify(client.lpos).bind(client);
-// let lrem = promisify(client.lrem).bind(client);
-// let sadd = promisify(client.sadd).bind(client);
-// let zrange = promisify(client.zrange).bind(client);
-// let smembers = promisify(client.smembers).bind(client);
-// let sismember = promisify(client.sismember).bind(client);
-// let exists = promisify(client.exists).bind(client);
-// let zadd = promisify(client.zadd).bind(client);
-
-// const clientMethods = {
-//   get,
-//   set,
-//   del,
-//   hmset,
-//   hgetall,
-//   hget,
-//   hset,
-//   hdel,
-//   incr,
-//   rpush,
-//   rpop,
-//   lrange,
-//   lpos,
-//   lrem,
-//   lpush,
-//   sadd,
-//   smembers,
-//   sismember,
-//   zrange,
-//   exists,
-//   zadd
-// }
-
-// client.flushall()
-
 const resolvers = require('./resolvers');
 const typeDefs = require('./schema');
 
@@ -151,6 +99,10 @@ async function startApolloServer() {
   // app.use('/user-logout', cors(), (req, res, next) => {
   //     res.send('You are logged out.')
   // });
+
+  app.use("/", (res, req) => {
+    res.send("Server is running");
+  })
 
   server.applyMiddleware({app, path:'/graphiql'});
   
