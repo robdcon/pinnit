@@ -51,7 +51,7 @@ root.render(
   <Auth0Provider
     domain={process.env.AUTH0_CLIENT}
     clientId={process.env.AUTH0_SECRET}
-    redirectUri={window.location.origin}
+    redirectUri={process.env.REDIRECT_URI}
   >
     <BrowserRouter>
       <ApolloProvider client={client}>
