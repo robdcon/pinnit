@@ -1,4 +1,4 @@
-require('dotenv').config()
+// require('dotenv').config()
 const cors = require('cors')
 const express = require("express");
 const { ApolloServer } = require('apollo-server-express');
@@ -18,11 +18,11 @@ const corsOptions = {
   credentials: true // <-- REQUIRED backend setting
 };
 
-app.use(cors({corsOptions}));
+app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.send('Hey this is my API running 🥳')
+  res.send(`Hey this is my API running 🥳 ${process.env.TEST_TEXT}`)
 })
 
 const httpServer = http.createServer(app);
