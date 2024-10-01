@@ -49,9 +49,9 @@ const root = createRoot(container);
 
 root.render(
   <Auth0Provider
-    domain={process.env.AUTH0_CLIENT}
-    clientId={process.env.AUTH0_SECRET}
-    redirectUri={process.env.REDIRECT_URI}
+    domain={process.env.REACT_APP_AUTH0_CLIENT}
+    clientId={process.env.REACT_APP_AUTH0_SECRET}
+    redirectUri={process.env.REACT_APP_REDIRECT_URI}
   >
     <BrowserRouter>
       <ApolloProvider client={client}>
