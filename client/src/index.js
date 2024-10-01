@@ -20,7 +20,7 @@ import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
 import { tokenVar } from './cache';
 
 const httpLink = new HttpLink({
-  uri: 'http://localhost:3001/graphiql'
+  uri: 'https://pinnit-server.vercel.app/graphiql'
 });
 
 const authMiddleware = new ApolloLink((operation, forward) => {
