@@ -3,7 +3,6 @@ const express = require("express");
 const { ApolloServer } = require('apollo-server-express');
 const { ApolloServerPluginDrainHttpServer } = require("apollo-server-core");
 const client = require('../datasources/database');
-// var { createHandler } = require("graphql-http/lib/use/express");
 const http = require('http');
 
 const resolvers = require('../resolvers');
@@ -38,14 +37,7 @@ async function startApolloServer(app, httpServer) {
 
   await server.start();
 
-  server.applyMiddleware({ app });
-
-  // await new Promise(resolve => app.listen('5000', resolve));
-
-  // console.log(`🚀 Site ready at http://localhost:${PORT}`);
-  // console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`);
-
-  // return { server, app }
+  server.applyMiddleware({ app, path:'/graphiql' });
 }
 
 startApolloServer(app, httpServer);
