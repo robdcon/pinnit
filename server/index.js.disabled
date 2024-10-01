@@ -1,0 +1,50 @@
+const cors = require('cors')
+const express = require("express");
+const { ApolloServer } = require('apollo-server-express');
+const { ApolloServerPluginDrainHttpServer } = require("apollo-server-core");
+const client = require('./datasources/database');
+// var { createHandler } = require("graphql-http/lib/use/express");
+const http = require('http');
+
+const resolvers = require('./resolvers');
+const typeDefs = require('./schema');
+
+const PORT = process.env.PORT || 5000;
+
+const app = express();
+
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  credentials: true // <-- REQUIRED backend setting
+};
+
+app.use(cors({corsOptions}));
+app.use(express.json());
+
+const httpServer = http.createServer(app);
+
+async function startApolloServer(app, httpServer) {
+
+  const server = new ApolloServer({ 
+    typeDefs, 
+    resolvers, 
+    context: client,
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })]
+  });
+
+  await server.start();
+
+  server.applyMiddleware({ app });
+
+  await new Promise(resolve => app.listen('5000', resolve));
+
+  console.log(`🚀 Site ready at http://localhost:${PORT}`);
+  console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`);
+
+  // return { server, app }
+}
+
+startApolloServer(app, httpServer);
+
+module.exports = httpServer;
+
