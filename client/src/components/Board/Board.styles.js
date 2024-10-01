@@ -12,5 +12,5 @@ export const StyledBoard = styled.div`
     padding: 0;
     background-size:cover;  
     background: ${(props) => (props.boardType === 'PIN') ? `url(${noticeBoardXl})` : "transparent"};
-    ${media.handheld`background: ${(props) => (props.boardType === 'PIN') ? `url(${noticeBoardXs})` : transparent};`}
+    ${media.handheld`background: ${(props) => (props.boardType === 'PIN') ? `url(${noticeBoardXs})` : "transparent"};`}
 `;
