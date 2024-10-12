@@ -8,5 +8,4 @@ export const StyledStickyFooter = styled.div`
     background-color: ${(props) => props.transparent ? 'transparent' : `${MainTheme.primaryColor}`};
     height: 60px;
     width: 100%;
-    background-color: #ddd;
 `;

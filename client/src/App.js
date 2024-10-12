@@ -12,6 +12,7 @@ import { createContext, useContext } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import HomeIcon from '@mui/icons-material/Home';
 import StickyFooter from './components/StickyFooter';
 import TabIcon from '@mui/icons-material/Tab';
 import Drawer from '@mui/material/Drawer';
@@ -165,19 +166,24 @@ const Boards = () => {
           })
         }
       </Board>
-      <StickyFooter>
-        <AddCircleIcon
-          color='primary'
-          style={{ color: '#ffffff', fontSize: '3em', cursor: 'pointer' }}
-          onClick={() => createNote({ variables: { text: "New Message", level: 'MED', boardId: board } })}
-          aria-label="add note"
-          size="medium"
-        />
+      <StickyFooter justify={'space-between'}>
         <TabIcon
           color='primary'
           style={{ color: '#ffffff', fontSize: '3em', cursor: 'pointer' }}
           onClick={() => createBoard({ variables: { text: "New Message", level: 'MED' } })}
           aria-label="add board"
+          size="medium"
+        />
+        <Link to='/'>
+          <HomeIcon 
+            style={{ color: '#ffffff', fontSize: '3em', cursor: 'pointer' }}
+          />
+        </Link>
+        <AddCircleIcon
+          color='primary'
+          style={{ color: '#ffffff', fontSize: '3em', cursor: 'pointer' }}
+          onClick={() => createNote({ variables: { text: "New Message", level: 'MED', boardId: board } })}
+          aria-label="add note"
           size="medium"
         />
       </StickyFooter>

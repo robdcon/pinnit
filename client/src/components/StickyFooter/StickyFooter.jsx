@@ -3,9 +3,9 @@ import { StyledStickyFooter } from './StickyFooter.styles';
 import FlexContainer from '../layout/FlexContainer'
 
 
-const StickyFooter = ({children}) => (
+const StickyFooter = ({justify, children}) => (
   <StyledStickyFooter transparent className="StickyFooterWrapper">
-    <FlexContainer>
+    <FlexContainer justify={justify}>
       {children}
     </FlexContainer>
   </StyledStickyFooter>
