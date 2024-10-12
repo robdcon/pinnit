@@ -1,9 +1,7 @@
 {
-  "homepage": "http://localhost:3001",
   "name": "pinnit",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:3001",
   "scripts": {
     "watch": "npm-watch",
     "start": "react-scripts start",

@@ -14,10 +14,12 @@ import {
   concat
 } from '@apollo/client';
 import { cache } from './cache.js';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, createBrowserRouter } from 'react-router-dom';
 import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
 // import { setContext } from '@apollo/client/link/context';
 import { tokenVar } from './cache';
+import Theme from './themes/Theme';
+import { ThemeProvider } from "styled-components";
 
 const httpLink = new HttpLink({
   uri: 'https://pinnit-server.vercel.app/graphiql'
@@ -46,7 +48,6 @@ const client = new ApolloClient({
 const container = document.getElementById('root');
 const root = createRoot(container);
 
-
 root.render(
   <Auth0Provider
     domain="auth0-robdcon.eu.auth0.com"
@@ -55,7 +56,9 @@ root.render(
   >
     <BrowserRouter>
       <ApolloProvider client={client}>
-        <App />
+        <ThemeProvider theme={Theme}>
+          <App />
+        </ThemeProvider>
       </ApolloProvider>
     </BrowserRouter>
   </Auth0Provider>

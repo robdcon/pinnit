@@ -10,7 +10,6 @@ export const Theme =
         primaryColor:'#fed136',
         highlightColor: '',
         shadowColour:''
-
     }
 
 }

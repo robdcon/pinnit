@@ -1,7 +1,7 @@
 import styled, {css} from 'styled-components';
-import postItNoteLow from "../../img/post-it-note-low.png"
-import postItNoteMed from "../../img/post-it-note-med.png"
-import postItNoteHigh from "../../img/post-it-note-high.png"
+import postItNoteLow from "../../../img/post-it-note-low.png"
+import postItNoteMed from "../../../img/post-it-note-med.png"
+import postItNoteHigh from "../../../img/post-it-note-high.png"
 
 export const StyledNote = styled.div`
 
@@ -9,10 +9,10 @@ export const StyledNote = styled.div`
     width: 160px;
     padding: 2em;
     margin: 2px 0;
-    position: absolute;
     cursor: -webkit-grab;
     overflow: hidden;
     background-size: cover;
+    position: relative;
 
     ${(props) => props.priorityLevel === 'LOW' && css`
             background-image: url(${postItNoteLow});

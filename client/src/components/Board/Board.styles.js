@@ -14,3 +14,17 @@ export const StyledBoard = styled.div`
     background: ${(props) => (props.boardType === 'PIN') ? `url(${noticeBoardXl})` : "transparent"};
     ${media.handheld`background: ${(props) => (props.boardType === 'PIN') ? `url(${noticeBoardXs})` : "transparent"};`}
 `;
+
+export const StyledNoteWrapper = styled.div`
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-rows: max-content;
+    gap: 8px;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1em;
+    overflow-y: auto;
+    height: 100%;
+    ${media.handheld`padding: 0;`}
+`;

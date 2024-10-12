@@ -1,16 +1,16 @@
 import React, { useEffect, useState, useRef, useContext } from 'react';
 import styled from 'styled-components'
-import { StyledNote } from './Note.styles';
+import { StyledNote } from './Note.styles.js';
 import Draggable from 'react-draggable';
-import FlexContainer from '../FlexContainer';
+import FlexContainer from '../../layout/FlexContainer/index.js';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
-import { editNote, deleteNote } from '../../api/mutations.js';
-import { BoardContext } from '../../App.js';
-import { GET_NOTES } from '../../graphql/queries.js';
+import { editNote, deleteNote } from '../../../api/mutations.js';
+import { BoardContext } from '../../../App.js';
+import { GET_NOTES } from '../../../graphql/queries.js';
 
 const priorityLevels = ['LOW', 'MED', 'HIGH'];
 
@@ -95,12 +95,12 @@ const Note = ({ id, zindex, level, children, onChange, onPriorityChange, onRemov
     onPriorityChange(id, priorityLevel);
   }
 
-  useEffect(() => {
-    setStyles({
-      right: randomPosition(0, window.innerWidth - 150, 'px'),
-      top: randomPosition(0, window.innerHeight - 150, 'px')
-    });
-  }, []);
+  // useEffect(() => {
+  //   setStyles({
+  //     right: randomPosition(0, window.innerWidth - 150, 'px'),
+  //     top: randomPosition(0, window.innerHeight - 150, 'px')
+  //   });
+  // }, []);
 
   useEffect(() => {
     if (editing) {
@@ -143,7 +143,7 @@ const Note = ({ id, zindex, level, children, onChange, onPriorityChange, onRemov
   const renderDisplay = () => {
     return (
       <StyledNote
-        className="note"
+        className="Note"
         style={styles}
         priorityLevel={priorityLevel}
       >
@@ -159,12 +159,14 @@ const Note = ({ id, zindex, level, children, onChange, onPriorityChange, onRemov
   }
 
   return (
-    <Draggable enableUserSelectHack={false}>
+    <>
       {
         (editing) ? renderForm()
           : renderDisplay()
       }
-    </Draggable>
+    </>
+    // <Draggable enableUserSelectHack={false}>
+    // </Draggable>
   );
 }
 
