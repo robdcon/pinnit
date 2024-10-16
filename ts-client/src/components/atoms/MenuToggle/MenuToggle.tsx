@@ -1,7 +1,12 @@
-import React from 'react';
+import React, {FC} from 'react';
 import { MenuButton, CloseButton } from './MenuToggle.styles';
 
-const MenuToggle = ({isNavOpen=false, action}) => {
+interface MenuToggleProps {
+  isNavOpen: boolean;
+  action: () => void;
+}
+
+const MenuToggle: FC<MenuToggleProps> = ({isNavOpen=false, action}) => {
   if(isNavOpen) {
       return (
       <CloseButton className={`menu-toggle`} onClick={action} />
