@@ -1,9 +1,24 @@
-import styled, {css} from 'styled-components';
+import styled from '@emotion/styled';
+import { css } from '@emotion/react';
 import postItNoteLow from "../../../img/post-it-note-low.png"
 import postItNoteMed from "../../../img/post-it-note-med.png"
 import postItNoteHigh from "../../../img/post-it-note-high.png"
 
-export const StyledNote = styled.div`
+interface StyledNoteProps {
+    priorityLevel: string
+}
+
+export const StyledControlContainer = styled.span`
+  width: 100%;
+  height: 60px;
+  background-color: transparent;
+  position: absolute;
+  left: 0;
+  bottom: 1em;
+  opacity:0;
+`;
+
+export const StyledNote = styled.div<StyledNoteProps>`
 
     height: 180px;
     width: 160px;
@@ -14,15 +29,15 @@ export const StyledNote = styled.div`
     background-size: cover;
     position: relative;
 
-    ${(props) => props.priorityLevel === 'LOW' && css`
+    ${({priorityLevel}) => priorityLevel === 'LOW' && css`
             background-image: url(${postItNoteLow});
     `}
 
-    ${(props) => props.priorityLevel === 'MED' && css`
+    ${({priorityLevel}) => priorityLevel === 'MED' && css`
             background-image: url(${postItNoteMed});
     `}
 
-    ${(props) => props.priorityLevel === 'HIGH' && css`
+    ${({priorityLevel}) => priorityLevel === 'HIGH' && css`
             background-image: url(${postItNoteHigh});
     `}
 
