@@ -1,14 +1,38 @@
 // require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');
 const supabase = createClient("https://cbumxnppdvzaauikhczt.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNidW14bnBwZHZ6YWF1aWtoY3p0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDY0NDEzMDUsImV4cCI6MjAyMjAxNzMwNX0.AW2mqdrKqZMDEEw2kWodtb3IJvqCYApc-i9aeJoLWO8");
+const pg = require('pg');
+const { Client } = pg
+const pgPool = require('./postgres.js')
+// const cs = `postgres://${process.env.PGUSER}:${process.env.PGPASSWORD}@${process.env.PGHOST}:${process.env.PGPORT}/${process.env.PGDATABASE}`
+
+const pgClient = new Client({
+    user: process.env.PGUSER,
+    password: process.env.PGPASSWORD,
+    host: process.env.PGHOST,
+    port: process.env.PGPORT,
+    database: process.env.PGDATABASE,
+})
 
 const client = {
-  getUsers: async (args) => {
-    let { data: Users, error } = await supabase
-      .from('Users')
-      .select('*')
-    console.log('Users:', Users);
+  // getUsers: async (args) => {
+  //   let { data: Users, error } = await supabase
+  //     .from('Users')
+  //     .select('*')
+  //   console.log('Users:', Users);
     
+  //   return { Users, error }
+  // },
+  getUsers: async (args) => {
+    await pgClient.connect();
+    const { rows: Users, error } = await pgClient.query('SELECT * FROM Users');
+    await pgClient.end();
+    console.log('Users:', Users);
+    if (error) {
+      console.error('Error executing query', error.stack);
+      return { error };
+    }
+
     return { Users, error }
   },
 
