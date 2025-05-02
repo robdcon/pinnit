@@ -51,6 +51,7 @@ const api = {
                 return res[0].id
             })
             await context.addUserBoardRef({user: userId, board}).then(res => {
+                console.log('Ref created:', res);
             })
             return board
         } catch (error) {

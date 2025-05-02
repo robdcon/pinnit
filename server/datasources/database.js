@@ -41,8 +41,8 @@ const client = {
   },
 
   addBoard: async (args) => {
-    let { user, name, boardType } = args;
-    const { rows } = await pgPool.query(`INSERT INTO public.boards("user", name, board_type) VALUES ($1, $2, $3) RETURNING *`, [user, name, boardType]);
+    let { name, boardType } = args;
+    const { rows } = await pgPool.query(`INSERT INTO public.boards(name, board_type) VALUES ($1, $2) RETURNING *`, [name, boardType]);
     const res = rows[0];
     console.log('New Board:', res);
     const data = [res];
@@ -50,26 +50,27 @@ const client = {
   },
 
   addUserBoardRef: async (args) => {
+    console.log('addUserBoardRef', args);
+    
     const { user, board } = args;
-    const rows = await pgPool.query(`INSERT INTO public."user_boards"("user_id", "board_id") VALUES ($1, $2) RETURNING *`, [user, board]);
+    const {rows} = await pgPool.query(`INSERT INTO public."user_boards"("user_id", "board_id") VALUES ($1, $2) RETURNING *`, [user, board]);
     const res = rows[0];
-    console.log('New UserBoard:', res);
-    const data = [res];
-    return data
+    return {
+      data: [res]
+    }
   },
 
   getUserBoards: async (args) => {
-    console.log('getUserBoards', args);
-
     const { user } = args;
-
-    const rows = await pgPool.query('SELECT * FROM user_boards WHERE "user_id" = $1', [user]);
-    const userBoards = rows[0];
-    console.log('User Boards:', userBoards);
+    const req = await pgPool.query('SELECT id FROM users WHERE email = $1', [user]);
+    const { id } = req.rows[0];
+    console.log('userId:', id);
+    
+    const res = await pgPool.query('SELECT * FROM user_boards WHERE "user_id" = $1', [id]);
+    console.log('User boards:', res);
+    const userBoards = res.rows;
     return {
-      data: {
-        userBoards
-      }
+      data: [...userBoards]
     }
   },
 
