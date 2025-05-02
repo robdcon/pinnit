@@ -5,8 +5,6 @@ const typeDefs =  {
         user: async (parent, args, context, info) => {
             const {email} = args;
             const response = await api.getUser(email, context).then(res => {
-                console.log(res);
-                
                 return res;
             });
             return response;
