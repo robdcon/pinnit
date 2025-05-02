@@ -1,4 +1,5 @@
 // require('dotenv').config();
+const e = require('express');
 const { genId } = require('../utils/helpers.js')
 const secret = process.env.SECRET;
 
@@ -9,7 +10,7 @@ const api = {
     createUser: async (username, email, context) => {
         try {
             let user = context.addUser({ username, email }).then(res => {
-                console.log(res.data[0])
+                console.log('User created:', res);
                 return res.data[0] ;
             });
             return user
@@ -23,7 +24,7 @@ const api = {
         try {
             const user = await context.getUser({email})
                 .then(res => {
-                    return res.data[0];
+                    return res;
                 })
             return user
         } catch (error) {
@@ -39,26 +40,17 @@ const api = {
         return Users;
     },
 
-    checkUserExists: async (email, username, context) => {
-        const emailKeyExists = await context.exists('userEmails').then(res => res);
-        const usernameKeyExists = await context.exists('userUsernames').then(res => res);
-        if (emailKeyExists === 0 || usernameKeyExists === 0) {
-            return { email: emailKeyExists, username: usernameKeyExists };
-        }
-        const emailExists = await context.sismember('userEmails', email).then(res => res);
-        const usernameExists = await context.sismember('userUsernames', username).then(res => res);
-        return { email: emailExists, username: usernameExists };
-    },
-
     // Boards
     createBoard: async (args, context) => {
+        const userId = await context.getUser({email: args.user}).then(res => {
+            return res.id
+        })
+        
         try {
             const board = await context.addBoard(args).then(res => {
-                console.log('New Board', res)
-                return res.data[0].id
+                return res[0].id
             })
-            await context.addUserBoardRef({...args, board}).then(res => {
-                console.log('Ref created:', res);
+            await context.addUserBoardRef({user: userId, board}).then(res => {
             })
             return board
         } catch (error) {
@@ -133,7 +125,6 @@ const api = {
         try {
             const updatedNote = context.updateNote(args)
             .then(res => {
-                console.log('Updated note', res)
                 return res.data[0]
             });
             return updatedNote;
@@ -146,7 +137,6 @@ const api = {
     deleteNote: async (args, context) => {
         try {
             const res = context.deleteNote(args).then(res => {
-                console.log("Note deleted?:", res);
                 return res;
             });
             return res;
@@ -165,11 +155,6 @@ const api = {
             });
             console.log(`Board ${board} Notes: `, notes);
         return notes;
-        // const promises = noteIds.map(noteId => {
-        //     return context.clientMethods.hgetall(`${board}:notes:${noteId}`);
-        // });
-        // const notes = Promise.all(promises).then(res => res);
-        // return notes;
     }
 
 }
