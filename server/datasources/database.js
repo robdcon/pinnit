@@ -1,112 +1,76 @@
-// require('dotenv').config();
+require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');
 const supabase = createClient("https://cbumxnppdvzaauikhczt.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNidW14bnBwZHZ6YWF1aWtoY3p0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDY0NDEzMDUsImV4cCI6MjAyMjAxNzMwNX0.AW2mqdrKqZMDEEw2kWodtb3IJvqCYApc-i9aeJoLWO8");
-const pg = require('pg');
-const { Client } = pg
-const pgPool = require('./postgres.js')
-// const cs = `postgres://${process.env.PGUSER}:${process.env.PGPASSWORD}@${process.env.PGHOST}:${process.env.PGPORT}/${process.env.PGDATABASE}`
-
-const pgClient = new Client({
-    user: process.env.PGUSER,
-    password: process.env.PGPASSWORD,
-    host: process.env.PGHOST,
-    port: process.env.PGPORT,
-    database: process.env.PGDATABASE,
-})
+const { pgPool } = require('./postgres.js')
 
 const client = {
-  // getUsers: async (args) => {
-  //   let { data: Users, error } = await supabase
-  //     .from('Users')
-  //     .select('*')
-  //   console.log('Users:', Users);
-    
-  //   return { Users, error }
-  // },
   getUsers: async (args) => {
-    await pgClient.connect();
-    const { rows: Users, error } = await pgClient.query('SELECT * FROM Users');
-    await pgClient.end();
-    console.log('Users:', Users);
+    const { rows: Users, error } = await pgPool.query('SELECT * FROM Users');
     if (error) {
       console.error('Error executing query', error.stack);
       return { error };
     }
-
     return { Users, error }
   },
-
+  // PostgresSQL
   addUser: async (args) => {
-    const { username, email } = args;
-    const { data, error } = await supabase
-      .from('Users')
-      .insert([
-        { username, email },
-      ])
-      .select()
-
-    return { data, error }
+      const { username, email } = args;
+      const { rows } = await pgPool.query(`INSERT INTO public.users(username, email) VALUES ($1, $2) RETURNING *`, [username, email])
+      const user = rows[0];
+      return {
+        data: [user]
+      }
   },
-
+  // PostgresSQL
   getUser: async (args) => {
     const { email } = args;
-
-    const { data, error } = await supabase
-      .from('Users')
-      .select('*')
-      .eq('email', email)
-
-    return { data, error }
+    const { rows } = await pgPool.query('SELECT * FROM public.users WHERE email = $1', [email]);
+    const user = rows[0];
+    return user
   },
 
+  // PostgresSQL
   getBoard: async (args) => {
-    const {board} = args;
-
-    const { data: Board, error } = await supabase
-      .from('Boards')
-      .select('*')
-      .eq('id', board)
-
+    const { board } = args;
+    const { data: Board, error } = await pgPool.query('SELECT * FROM Boards WHERE "id" = $1', [board]);
+    if (error) {
+      console.error('Error executing query', error.stack);
+      return { error };
+    }
     return { Board, error }
   },
 
   addBoard: async (args) => {
-   
-    const { user, boardType } = args;
-    const { data, error } = await supabase
-      .from('Boards')
-      .insert([
-        { user: user, board_type: boardType },
-      ])
-      .select()
-
-    return { data, error }
+    let { user, name, boardType } = args;
+    const { rows } = await pgPool.query(`INSERT INTO public.boards("user", name, board_type) VALUES ($1, $2, $3) RETURNING *`, [user, name, boardType]);
+    const res = rows[0];
+    console.log('New Board:', res);
+    const data = [res];
+    return data
   },
 
   addUserBoardRef: async (args) => {
-    console.log('User, board', args);
-    
     const { user, board } = args;
-    const { data, error } = await supabase
-      .from('UserBoards')
-      .insert([
-        { user_id: user, board_id: board },
-      ])
-      .select()
-
-    return { data, error }
+    const rows = await pgPool.query(`INSERT INTO public."user_boards"("user_id", "board_id") VALUES ($1, $2) RETURNING *`, [user, board]);
+    const res = rows[0];
+    console.log('New UserBoard:', res);
+    const data = [res];
+    return data
   },
 
   getUserBoards: async (args) => {
+    console.log('getUserBoards', args);
+
     const { user } = args;
 
-    let { data, error } = await supabase
-      .from('UserBoards')
-      .select('board_id')
-      .eq('user_id', user)
-    console.log(data, error);
-
-    return { data, error }
+    const rows = await pgPool.query('SELECT * FROM user_boards WHERE "user_id" = $1', [user]);
+    const userBoards = rows[0];
+    console.log('User Boards:', userBoards);
+    return {
+      data: {
+        userBoards
+      }
+    }
   },
 
   createNote: async (args) => {
@@ -123,24 +87,23 @@ const client = {
 
   addBoardNoteRef: async (args) => {
     const { note, board } = args;
-    const { data, error } = await supabase
-      .from('BoardNotes')
-      .insert([
-        { note_id: note, board_id: board },
-      ])
-      .select()
-
-    return { data, error }
+    const rows = await pgPool.query(`INSERT INTO public."board_notes"("board_id", "note_id") VALUES ($1, $2) RETURNING *`, [note, board]);
+    const res = rows[0];
+    console.log('New BoardNote:', res);
+    const data = [res];
+    return data
   },
 
   getBoardNotes: async (args) => {
     const { board } = args;
-    let { data, error } = await supabase
-      .from('BoardNotes')
-      .select('Notes(id, text, level)')
-      .eq('board_id', board)
-
-    return { data, error }
+    const rows = await pgPool.query('SELECT * FROM board_notes WHERE "board_id" = $1', [board]);
+    const boardNotes = rows[0];
+    console.log('Bard notes:', boardNotes);
+    return {
+      data: {
+        boardNotes
+      }
+    }
   },
 
   updateNote: async (args) => {
