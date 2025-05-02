@@ -7,22 +7,6 @@ const { ApolloServerPluginDrainHttpServer } = require("apollo-server-core");
 const client = require('../datasources/database');
 const http = require('http');
 
-const { Pool, Client } = require('pg')
-const connectionString = "postgresql://ujh2dxkwe2aar:fcqqhna5ioz3@robdcon.co.uk:5432/dbkvhbnfgnd7qh"
-
-const pgPool = new Pool({
-  connectionString
-});
-
-const test = async () => {
-  const client = await pgPool.connect();
-  const res = await client.query('SELECT NOW()')
-  console.log('Server time:', res.rows[0].now);
-  client.release()
-}
-
-test().catch(e => console.error(e.stack))
-
 const resolvers = require('../resolvers');
 const typeDefs = require('../schema');
 
