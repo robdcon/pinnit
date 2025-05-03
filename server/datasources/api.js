@@ -103,9 +103,10 @@ const api = {
         return emails;
     },
 
-    createNote: async (board, text, context) => { 
+    createNote: async (board, json, context) => { 
         try {
-            const note = await context.createNote({board, text}).then(res => {
+            const note = await context.createNote({json}).then(res => {
+                
                 return res.data[0];
             });
 
@@ -114,7 +115,6 @@ const api = {
             await context.addBoardNoteRef({board, note: noteId}).then(res => {
                 console.log('Ref created:', res);
             })
-            
             return note;
         } catch (error) {
             console.log(error)

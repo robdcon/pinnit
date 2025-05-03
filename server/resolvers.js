@@ -18,14 +18,6 @@ const typeDefs =  {
             return response;
         },
 
-        checkUserExists: async (parent, {email, username}, context, info) => {
-            const response = await api.checkUserExists(email, username, context).then(res => {
-                console.log("UserExists res:", res)
-                return res;
-            })
-            return response;
-        },
-
         note: async (parent, {id}, context, info) => {
             const response = await api.getNote(id, context).then(res => {
                 console.log("Resolver note: ", res)
@@ -83,9 +75,10 @@ const typeDefs =  {
            return user;
         }, 
 
-        createNote: async (parent, {board, text}, context) => {
-            const note = await api.createNote(board, text, context)
+        createNote: async (parent, {board, content}, context) => {
+            const note = await api.createNote(board, content, context)
             .then(res => {
+                res.content = JSON.stringify(res.content);
                 return res;
             });
             return note;
@@ -93,7 +86,10 @@ const typeDefs =  {
 
         updateNote: async (parent, args, context, info) => {
             const note = await api.updateNote(args, context)
-            .then(res => res);
+            .then(res => {
+                return res;
+            });
+
             return note;
         },
 
@@ -142,8 +138,8 @@ const typeDefs =  {
         id: (parent, args, context, info) => {
             return parent.id;
         },
-        text: (parent, args, context, info) => {
-            return parent.text;
+        content: (parent, args, context, info) => {
+            return parent.content;
         },
         zindex: (parent, args, context, info) => {
             return parent.zindex;

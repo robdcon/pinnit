@@ -75,22 +75,19 @@ const client = {
   },
 
   createNote: async (args) => {
-    const { text, board } = args;
-    const { data, error } = await supabase
-      .from('Notes')
-      .insert([
-        { board_id: board, text: text },
-      ])
-      .select()
-
-    return { data, error }
+    const { json } = args;
+    const {rows} = await pgPool.query(`INSERT INTO public.notes(content) VALUES ($1) RETURNING *`, [json]);
+    const note = rows[0]
+    
+    return {
+      data: [note]
+    };
   },
 
   addBoardNoteRef: async (args) => {
     const { note, board } = args;
-    const rows = await pgPool.query(`INSERT INTO public."board_notes"("board_id", "note_id") VALUES ($1, $2) RETURNING *`, [note, board]);
+    const {rows} = await pgPool.query(`INSERT INTO public."board_notes"("board_id", "note_id") VALUES ($1, $2) RETURNING *`, [board, note]);
     const res = rows[0];
-    console.log('New BoardNote:', res);
     const data = [res];
     return data
   },
@@ -99,7 +96,7 @@ const client = {
     const { board } = args;
     const rows = await pgPool.query('SELECT * FROM board_notes WHERE "board_id" = $1', [board]);
     const boardNotes = rows[0];
-    console.log('Bard notes:', boardNotes);
+    console.log('Board notes:', boardNotes);
     return {
       data: {
         boardNotes
