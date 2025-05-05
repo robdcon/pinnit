@@ -44,14 +44,11 @@ const client = {
     let { name, boardType } = args;
     const { rows } = await pgPool.query(`INSERT INTO public.boards(name, board_type) VALUES ($1, $2) RETURNING *`, [name, boardType]);
     const res = rows[0];
-    console.log('New Board:', res);
     const data = [res];
     return data
   },
 
   addUserBoardRef: async (args) => {
-    console.log('addUserBoardRef', args);
-    
     const { user, board } = args;
     const {rows} = await pgPool.query(`INSERT INTO public."user_boards"("user_id", "board_id") VALUES ($1, $2) RETURNING *`, [user, board]);
     const res = rows[0];
@@ -64,10 +61,7 @@ const client = {
     const { user } = args;
     const req = await pgPool.query('SELECT id FROM users WHERE email = $1', [user]);
     const { id } = req.rows[0];
-    console.log('userId:', id);
-    
     const res = await pgPool.query('SELECT * FROM user_boards WHERE "user_id" = $1', [id]);
-    console.log('User boards:', res);
     const userBoards = res.rows;
     return {
       data: [...userBoards]
@@ -84,6 +78,15 @@ const client = {
     };
   },
 
+  getNote: async (args) => {
+    const id  = args;
+    console.log(id);
+    const { rows } = await pgPool.query('SELECT * FROM notes WHERE id = $1', [id]);
+    const note = rows[0];
+    note.content = JSON.stringify(note.content);
+    return note
+  },
+
   addBoardNoteRef: async (args) => {
     const { note, board } = args;
     const {rows} = await pgPool.query(`INSERT INTO public."board_notes"("board_id", "note_id") VALUES ($1, $2) RETURNING *`, [board, note]);
@@ -94,13 +97,11 @@ const client = {
 
   getBoardNotes: async (args) => {
     const { board } = args;
-    const rows = await pgPool.query('SELECT * FROM board_notes WHERE "board_id" = $1', [board]);
-    const boardNotes = rows[0];
-    console.log('Board notes:', boardNotes);
+    const {rows} = await pgPool.query('SELECT * FROM board_notes WHERE "board_id" = $1', [board]);
+    const boardNotes = rows.map(note => note.note_id);
     return {
-      data: {
-        boardNotes
-      }
+      data: 
+        [...boardNotes] 
     }
   },
 

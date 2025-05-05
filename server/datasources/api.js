@@ -11,7 +11,7 @@ const api = {
         try {
             let user = context.addUser({ username, email }).then(res => {
                 console.log('User created:', res);
-                return res.data[0] ;
+                return res.data[0];
             });
             return user
         } catch (error) {
@@ -22,7 +22,7 @@ const api = {
 
     getUser: async (email, context) => {
         try {
-            const user = await context.getUser({email})
+            const user = await context.getUser({ email })
                 .then(res => {
                     return res;
                 })
@@ -34,7 +34,7 @@ const api = {
     },
 
     getUsers: async (context) => {
-        const {Users} = await context.getUsers().then(res => {
+        const { Users } = await context.getUsers().then(res => {
             return res
         })
         return Users;
@@ -42,15 +42,15 @@ const api = {
 
     // Boards
     createBoard: async (args, context) => {
-        const userId = await context.getUser({email: args.user}).then(res => {
+        const userId = await context.getUser({ email: args.user }).then(res => {
             return res.id
         })
-        
+
         try {
             const board = await context.addBoard(args).then(res => {
                 return res[0].id
             })
-            await context.addUserBoardRef({user: userId, board}).then(res => {
+            await context.addUserBoardRef({ user: userId, board }).then(res => {
                 console.log('Ref created:', res);
             })
             return board
@@ -75,7 +75,7 @@ const api = {
 
     getBoards: async (user, context) => {
         try {
-            const userBoards = await context.getUserBoards({user})
+            const userBoards = await context.getUserBoards({ user })
                 .then(res => {
                     return res.data.map(board => board.board_id);
                 })
@@ -103,16 +103,16 @@ const api = {
         return emails;
     },
 
-    createNote: async (board, json, context) => { 
+    createNote: async (board, json, context) => {
         try {
-            const note = await context.createNote({json}).then(res => {
-                
+            const note = await context.createNote({ json }).then(res => {
+
                 return res.data[0];
             });
 
             const noteId = note.id;
 
-            await context.addBoardNoteRef({board, note: noteId}).then(res => {
+            await context.addBoardNoteRef({ board, note: noteId }).then(res => {
                 console.log('Ref created:', res);
             })
             return note;
@@ -125,9 +125,9 @@ const api = {
     updateNote: async (args, context) => {
         try {
             const updatedNote = context.updateNote(args)
-            .then(res => {
-                return res.data[0]
-            });
+                .then(res => {
+                    return res.data[0]
+                });
             return updatedNote;
         } catch (error) {
             console.log(error)
@@ -148,13 +148,18 @@ const api = {
     },
 
     getNotes: async (board, context) => {
-        const notes = await context.getBoardNotes({board})
+        const notesPromise = await context.getBoardNotes({ board })
             .then(res => {
-                return res.data.map(note => {
-                    return note.Notes
+                console.log('Board Notes:', res);
+                
+                return res.data.map(noteId => {
+                    return context.getNote(noteId)
                 })
             });
-            console.log(`Board ${board} Notes: `, notes);
+        const notes = await Promise.all(notesPromise)
+        console.log(notes);
+        
+        console.log(`Board ${board} Notes: `, notes);
         return notes;
     }
 

@@ -27,9 +27,7 @@ const typeDefs =  {
         },
 
         notes: async (parent, {board}, context, info) => {
-            const response = await api.getNotes(board, context).then(res => {
-                return res;
-            });
+            const response = await api.getNotes(board, context);
             return response;
         },
 
