@@ -22,7 +22,8 @@ import Theme from './themes/Theme';
 import { ThemeProvider } from "styled-components";
 
 const httpLink = new HttpLink({
-  uri: 'https://pinnit-server.vercel.app/graphiql'
+  uri: 'http://localhost:3001/graphiql'
+  // uri: 'https://pinnit-server.vercel.app/graphiql'
 });
 
 const authMiddleware = new ApolloLink((operation, forward) => {

@@ -58,6 +58,8 @@ const client = {
   },
 
   getUserBoards: async (args) => {
+    console.log('getUserBoards', args);
+    
     const { user } = args;
     const req = await pgPool.query('SELECT id FROM users WHERE email = $1', [user]);
     const { id } = req.rows[0];

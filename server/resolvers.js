@@ -41,6 +41,8 @@ const typeDefs =  {
         }, 
 
         boards: async (parent, { user }, context, info) => {
+            console.log('Resolver says getting boards for user:', user);
+            
             const response = await api.getBoards(user, context).then(res => {
                 return res;
             });

@@ -150,6 +150,7 @@ const Boards = () => {
       <Board boardId={boardId} notes={notes} userId={user.email} boardType={board.board_type}>
         {
           notes && notes.map(note => {
+            console.log(note);
             return (
               <Note
                 key={`${boardId}${note.id}`}
@@ -160,7 +161,7 @@ const Boards = () => {
                 onRemove={() => removeNote({ variables: { user: user.email, board: boardId, id: note.id } })}
               // onPriorityChange={updatePriority}
               >
-                {note.text}
+                {JSON.parse(note.content).text}
               </Note>
             )
           })
@@ -296,7 +297,7 @@ const App = () => {
           isAuthenticated && <h1>{user.given_name}'s Board</h1>
         }
         {
-          isAuthenticated ? <Image width='48' height='48' borderRadius="50 " src={user.picture} /> : <Button text={`Login`} action={loginWithRedirect} />
+          isAuthenticated ? <Image width='48' height='48' src={user.picture} /> : <Button text={`Login`} action={loginWithRedirect} />
         }
       </Header>
       <Routes>

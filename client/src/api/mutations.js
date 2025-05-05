@@ -10,7 +10,7 @@ export const addNote = ({ boardId }) => {
   const [createNote] = useMutation(CREATE_NOTE, {
     variables: {
       board: boardId,
-      text: `New Note:${boardId}`,
+      content: `New Note:${boardId}`,
       level: 'MED'
     },
     refetchQueries: [{

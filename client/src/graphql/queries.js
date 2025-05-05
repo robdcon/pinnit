@@ -19,7 +19,7 @@ export const GET_NOTES = gql`
   query getNotes($board: Int!) {
     notes(board: $board) {
       id
-      text
+      content
       level
     }
   }

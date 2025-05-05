@@ -18,19 +18,19 @@ export const SHARE_BOARD = gql`
 
 export const CREATE_NOTE = gql`
     mutation createNote($board: Int!, $text: String!, $level: String) {
-        createNote(board: $board, text: $text, level: $level) {
+        createNote(board: $board, content: $content, level: $level) {
             id
-            text
+            content
             level
         }
     }
 `;
 
 export const UPDATE_NOTE = gql`
-    mutation updateNote($id: Int!, $text: String, $zindex: Int, $level: String) {
-        updateNote(id: $id, text: $text, zindex: $zindex, level: $level) {
+    mutation updateNote($id: Int!, $content: String, $zindex: Int, $level: String) {
+        updateNote(id: $id, content: $content, zindex: $zindex, level: $level) {
             id
-            text
+            content
             level
         }
     }
