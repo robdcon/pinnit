@@ -5,14 +5,15 @@ import postItNoteHigh from "../../../img/post-it-note-high.png"
 
 export const StyledNote = styled.div`
 
-    height: 180px;
-    width: 160px;
+    height: max-content;
+    width: max-content;
     padding: 2em;
     margin: 2px 0;
     cursor: -webkit-grab;
-    overflow: hidden;
     background-size: cover;
     position: relative;
+    border: 1px solid #ddd;
+    border-radius: 5px;
 
     ${(props) => props.priorityLevel === 'LOW' && css`
             background-image: url(${postItNoteLow});

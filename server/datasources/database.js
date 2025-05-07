@@ -108,26 +108,20 @@ const client = {
   },
 
   updateNote: async (args) => {
-    const { user, board, id, text, zindex, level } = args;
-    const { data, error } = await supabase
-      .from('Notes')
-      .update({ text: text, level: level, zindex: zindex })
-      .eq('id', id)
-      .select()
+    const { user, board, id, content, zindex, level } = args;
+    const {rows} = await pgPool.query(`UPDATE public.notes SET content = $1 WHERE id = $2 RETURNING *`, [content, id]);
+    const note = rows[0];
+    note.content = JSON.stringify(note.content)
+    return {
+      data: [rows[0]]
+    }
 
-    return { data, error }
   },
 
   deleteNote: async (args) => {
     const { id } = args;
-    const { error } = await supabase
-      .from('Notes')
-      .delete()
-      .eq('id', id)
-    if (error) {
-      return 'false';
-    }
-    return 'true';
+    const {rowCount: deletedRef} = await pgPool.query('DELETE FROM board_notes WHERE note_id = $1', [id]);
+    return 'true'
   }
 }
 
