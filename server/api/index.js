@@ -15,11 +15,11 @@ const PORT = process.env.PORT || 5000;
 const app = express();
 
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: process.env.NODE_ENV === 'development' ? 'http://localhost:3000': 'https://pinnit-client.vercel.app' ,
   credentials: true // <-- REQUIRED backend setting
 };
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.get('/', (req, res) => {
