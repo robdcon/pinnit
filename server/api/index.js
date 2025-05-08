@@ -10,12 +10,15 @@ const http = require('http');
 const resolvers = require('../resolvers');
 const typeDefs = require('../schema');
 
+console.log(process.env);
+
+
 const PORT = process.env.PORT || 5000;
 
 const app = express();
 
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'development' ? 'http://localhost:3000': 'https://pinnit-client.vercel.app' ,
+  origin: process.env.NODE_ENV === 'production' ? 'https://pinnit-client.vercel.app' : 'http://localhost:3000',
   credentials: true // <-- REQUIRED backend setting
 };
 
