@@ -22,6 +22,9 @@ const corsOptions = {
   credentials: true // <-- REQUIRED backend setting
 };
 
+console.log(`CORS: ${corsOptions.origin}`);
+
+
 app.use(cors(corsOptions));
 app.use(express.json());
 
