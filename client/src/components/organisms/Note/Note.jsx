@@ -112,10 +112,11 @@ const Note = ({ id, zindex, level, children, onChange, onPriorityChange, onRemov
   
   useEffect(() => {
     if (text) {
+      const content = JSON.stringify({ text: text });
       updateNote({
         variables: {
           id: id,
-          text: text,
+          content: content,
           level: priorityLevel
         }
       })
