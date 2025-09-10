@@ -48,12 +48,14 @@ const client = new ApolloClient({
 
 const container = document.getElementById('root');
 const root = createRoot(container);
+const redirect_uri = process.env.NODE_ENV === "development" ? 'http://localhost:3000':'https://pinnit-server.vercel.app';
+console.log(`Redirect URI: ${redirect_uri}`);
 
 root.render(
   <Auth0Provider
     domain="dev-wta4nz2703n60c6d.us.auth0.com"
     clientId="xpNzC1OIKRgIM0VwMhMuXQXz2agLqGn1"
-    redirectUri={process.env.NODE_ENV === "development" ? 'http://localhost:3000':'https://pinnit-server.vercel.app'}
+    redirectUri={redirect_uri}
   >
     <BrowserRouter>
       <ApolloProvider client={client}>
