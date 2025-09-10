@@ -48,7 +48,7 @@ const client = new ApolloClient({
 
 const container = document.getElementById('root');
 const root = createRoot(container);
-const redirect_uri = process.env.NODE_ENV === "development" ? 'http://localhost:3000':'https://pinnit-server.vercel.app';
+const redirect_uri = process.env.NODE_ENV === "development" ? 'http://localhost:3000':'https://pinnit-client.vercel.app';
 console.log(`Redirect URI: ${redirect_uri}`);
 
 root.render(
