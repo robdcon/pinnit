@@ -1,4 +1,4 @@
-// require('dotenv').config();
+// import 'dotenv/config';
 import React, { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
@@ -51,8 +51,8 @@ const root = createRoot(container);
 
 root.render(
   <Auth0Provider
-    domain="auth0-robdcon.eu.auth0.com"
-    clientId="7lZI6Q3bw0XwO3jPY1hGCodXFxgLSZNO"
+    domain="dev-wta4nz2703n60c6d.us.auth0.com"
+    clientId="xpNzC1OIKRgIM0VwMhMuXQXz2agLqGn1"
     redirectUri={window.location.origin}
   >
     <BrowserRouter>
