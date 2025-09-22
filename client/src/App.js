@@ -3,19 +3,19 @@ import Board from './components/Board';
 import Note from './components/organisms/Note';
 import { getBoard, getBoards, getBoardNotes, getUser } from './api/queries';
 import { editNote, deleteNote, createUser, addNote } from './api/mutations';
-import CreateBoard from './components/CreateBoard/CreateBoard';
-import CreateNote from './components/CreateNote/CreateNote';
-import ShareBoard from './components/ShareBoard/ShareBoard';
+// import CreateBoard from './components/CreateBoard/CreateBoard';
+// import CreateNote from './components/CreateNote/CreateNote';
+// import ShareBoard from './components/ShareBoard/ShareBoard';
 import { useAuth0 } from "@auth0/auth0-react";
 import { tokenVar } from './cache';
 import { createContext, useContext } from 'react';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
+// import Card from '@mui/material/Card';
+// import CardContent from '@mui/material/CardContent';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import HomeIcon from '@mui/icons-material/Home';
 import StickyFooter from './components/StickyFooter';
 import TabIcon from '@mui/icons-material/Tab';
-import Drawer from '@mui/material/Drawer';
+// import Drawer from '@mui/material/Drawer';
 // import Button from '@mui/material/Button';
 import Layout from './components/layout/Layout/Layout';
 import Dashboard from './components/layout/Dashboard/Dashboard';
@@ -111,7 +111,7 @@ const Boards = () => {
   const [items, setItems] = useState([]);
   const { user, isAuthenticated } = useAuth0();
 
-  const { getNotes, notesLoading, notesData, notesError, startNotesPolling } = getBoardNotes();
+  // const { getNotes, notesLoading, notesData, notesError, startNotesPolling } = getBoardNotes();
   const { fetchBoard, boardLoading, boardData, boardError, startBoardPolling } = getBoard();
   
 
@@ -119,18 +119,18 @@ const Boards = () => {
   boardId = parseInt(boardId);
   const createNote = addNote({boardId});
 
-  useEffect(() => {
-    getNotes({ variables: { board: boardId } });
-    fetchBoard({ variables: { board: boardId } });
-  }, []);
+  // useEffect(() => {
+  //   getNotes({ variables: { board: boardId } });
+  //   fetchBoard({ variables: { board: boardId } });
+  // }, []);
 
-  useEffect(() => {
-    if (notesData) {
-      const { notes } = notesData;
-      setNotes(notes);
-      // startNotesPolling && startNotesPolling(1000);
-    }
-  }, [notesData]);
+  // useEffect(() => {
+  //   if (notesData) {
+  //     const { notes } = notesData;
+  //     setNotes(notes);
+  //     // startNotesPolling && startNotesPolling(1000);
+  //   }
+  // }, [notesData]);
 
   useEffect(() => {
     if (boardData) {
