@@ -17,7 +17,7 @@ export const SHARE_BOARD = gql`
 // Notes
 
 export const CREATE_NOTE = gql`
-    mutation createNote($board: Int!, $text: String!, $level: String) {
+    mutation createNote($board: Int!, $content: String!, $level: String) {
         createNote(board: $board, content: $content, level: $level) {
             id
             content

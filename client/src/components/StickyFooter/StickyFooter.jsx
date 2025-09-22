@@ -4,7 +4,7 @@ import FlexContainer from '../layout/FlexContainer'
 
 
 const StickyFooter = ({justify, children}) => (
-  <StyledStickyFooter transparent className="StickyFooterWrapper">
+  <StyledStickyFooter transparent={'true'} className="StickyFooterWrapper">
     <FlexContainer justify={justify}>
       {children}
     </FlexContainer>

@@ -56,6 +56,7 @@ const BoardForm = ({setBoardEditing}) => {
           <option value="">Please select</option>
           <option value="PIN">Pin Board</option>
           <option value="PLAIN">Plain Board</option>
+          <option value="CHECKLIST">Plain Board</option>
         </select>
       </div>
       <button type="submit">Create Board</button>

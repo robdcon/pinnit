@@ -14,20 +14,20 @@ const typeDefs =  {
             const response = await api.getUsers(context).then(res => {
                 return res;
             });
-            console.log("Users: ",response)
             return response;
         },
 
         note: async (parent, {id}, context, info) => {
-            const response = await api.getNote(id, context).then(res => {
-                console.log("Resolver note: ", res)
-                return res;
-            });
+            const response = await api.getNote(id, context);
             return response;
         },
 
         notes: async (parent, {board}, context, info) => {
-            const response = await api.getNotes(board, context);
+            const response = await api.getNotes(board, context)
+            .then(res => {
+                console.log('Notes fetched:', res);
+                return res;
+            });
             return response;
         },
 
@@ -35,14 +35,10 @@ const typeDefs =  {
             const board = await api.getBoard(args, context).then(({Board}) => {
                 return Board[0];
             });
-            console.log('Board:', board);
-            
             return board;
         }, 
 
         boards: async (parent, { user }, context, info) => {
-            console.log('Resolver says getting boards for user:', user);
-            
             const response = await api.getBoards(user, context).then(res => {
                 return res;
             });
@@ -57,27 +53,22 @@ const typeDefs =  {
         },
 
         emails: async (parent, args, context, info) => {
-            const response = await api.getEmails(context).then(res => {
-                console.log("Emails:", res)
-                return res;
-            })
+            const response = await api.getEmails(context);
             return response;
         }
     },
 
     Mutation: {
         createUser: async (parent, {username, email}, context) => {
-           const user = await api.createUser(username, email, context)
-           .then(res => {
-            console.log('resolver:createUser', res);
-            return res
-           });
+           const user = await api.createUser(username, email, context);
            return user;
         }, 
 
         createNote: async (parent, {board, content}, context) => {
             const note = await api.createNote(board, content, context)
             .then(res => {
+                console.log('Note Created:', res);
+                
                 res.content = JSON.stringify(res.content);
                 return res;
             });
@@ -89,7 +80,6 @@ const typeDefs =  {
             .then(res => {
                 return res;
             });
-
             return note;
         },
 

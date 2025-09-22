@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { StyledFlexContainer } from './FlexContainer.styles';
 
 const FlexContainer = (props) => (
@@ -7,13 +6,5 @@ const FlexContainer = (props) => (
    {props.children}
   </StyledFlexContainer>
 );
-
-FlexContainer.propTypes = {
-  // bla: PropTypes.string,
-};
-
-FlexContainer.defaultProps = {
-  // bla: 'test',
-};
 
 export default FlexContainer;

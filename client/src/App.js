@@ -108,8 +108,8 @@ const HomeScreen = () => {
 const Boards = () => {
   const [notes, setNotes] = useState([]);
   const [board, setBoard] = useState({});
+  const [items, setItems] = useState([]);
   const { user, isAuthenticated } = useAuth0();
-  console.log('Board User Details', user);
 
   const { getNotes, notesLoading, notesData, notesError, startNotesPolling } = getBoardNotes();
   const { fetchBoard, boardLoading, boardData, boardError, startBoardPolling } = getBoard();
@@ -128,7 +128,6 @@ const Boards = () => {
     if (notesData) {
       const { notes } = notesData;
       setNotes(notes);
-      console.log(`Setting Notes: ${notes}`);
       // startNotesPolling && startNotesPolling(1000);
     }
   }, [notesData]);
@@ -136,37 +135,16 @@ const Boards = () => {
   useEffect(() => {
     if (boardData) {
       const { board } = boardData;
-      console.log('Board Data:', board);
+
 
       setBoard(board);
-      console.log(`Current Board Details: ${board}`);
       // startNotesPolling && startNotesPolling(1000);
     }
   }, [boardData]);
-  console.log('Current Board:', boardId);
 
   return isAuthenticated && (
     <BoardContext.Provider value={{ board: boardId }}>
-      <Board boardId={boardId} notes={notes} userId={user.email} boardType={board.board_type}>
-        {
-          notes && notes.map(note => {
-            console.log(note);
-            return (
-              <Note
-                key={`${boardId}${note.id}`}
-                id={note.id}
-                zindex={note.zindex}
-                level={note.level}
-                onChange={({ field, value }) => updateNote({ variables: { user: user.email, board: boardId, id: note.id, [field]: value } })}
-                onRemove={() => removeNote({ variables: { user: user.email, board: boardId, id: note.id } })}
-              // onPriorityChange={updatePriority}
-              >
-                {JSON.parse(note.content).text}
-              </Note>
-            )
-          })
-        }
-      </Board>
+      <Board boardId={boardId} items={notes} userId={user.email} boardType={board.board_type} />
       <StickyFooter justify={'space-between'}>
         <TabIcon
           color='primary'
@@ -183,7 +161,7 @@ const Boards = () => {
         <AddCircleIcon
           color='primary'
           style={{ color: '#ffffff', fontSize: '3em', cursor: 'pointer' }}
-          onClick={() => createNote({ variables: { text: "New Message", level: 'MED', boardId: board } })}
+          onClick={() => createNote({ variables: { level: 'MED', boardId: board } })}
           aria-label="add note"
           size="medium"
         />
@@ -222,15 +200,11 @@ const App = () => {
         tokenVar(res);
       })
 
-      console.log(`${user.nickname} logged in`);
-
       if (user.newUser) {
-        console.log(`Creating new supabase user`);
         addUser();
       }
 
       if (!user.newUser) {
-        console.log(`Fetching supabase user`);
         fetchUser();
       }
 
@@ -259,7 +233,6 @@ const App = () => {
 
   useEffect(() => {
     if (boardIdsData) {
-      console.log(`Finished getting Boards for: ${user.nickname}`);
       const { boards } = boardIdsData;
       setBoards(boards);
     }

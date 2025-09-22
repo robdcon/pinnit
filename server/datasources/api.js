@@ -9,10 +9,7 @@ const api = {
     // Users
     createUser: async (username, email, context) => {
         try {
-            let user = context.addUser({ username, email }).then(res => {
-                console.log('User created:', res);
-                return res.data[0];
-            });
+            let user = context.addUser({ username, email });
             return user
         } catch (error) {
             console.log(error)
@@ -50,9 +47,7 @@ const api = {
             const board = await context.addBoard(args).then(res => {
                 return res[0].id
             })
-            await context.addUserBoardRef({ user: userId, board }).then(res => {
-                console.log('Ref created:', res);
-            })
+            await context.addUserBoardRef({ user: userId, board });
             return board
         } catch (error) {
             console.log(error)
@@ -65,7 +60,7 @@ const api = {
             const userId = await context.hget('users', user).then(res => {
                 return res
             })
-            await context.sadd(`boards:${userId}`, board).then(res => { console.log('Boards added to user boards?:', res) });
+            await context.sadd(`boards:${userId}`, board);
             return `Board shared with ${user}`;
         } catch (error) {
             console.log(error)
@@ -112,9 +107,7 @@ const api = {
 
             const noteId = note.id;
 
-            await context.addBoardNoteRef({ board, note: noteId }).then(res => {
-                console.log('Ref created:', res);
-            })
+            await context.addBoardNoteRef({ board, note: noteId });
             return note;
         } catch (error) {
             console.log(error)
@@ -150,16 +143,11 @@ const api = {
     getNotes: async (board, context) => {
         const notesPromise = await context.getBoardNotes({ board })
             .then(res => {
-                console.log('Board Notes:', res);
-                
                 return res.data.map(noteId => {
                     return context.getNote(noteId)
                 })
             });
         const notes = await Promise.all(notesPromise)
-        console.log(notes);
-        
-        console.log(`Board ${board} Notes: `, notes);
         return notes;
     }
 

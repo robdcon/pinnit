@@ -4,12 +4,11 @@ import { GET_NOTES } from '../../graphql/queries';
 import { StyledCreateNoteButton } from './CreateNote.styles';
 
 
-const CreateNote = ({boardId, text}) => {
-  const createNote = addNote({boardId, text});
+const CreateNote = ({boardId, content}) => {
+  const createNote = addNote({boardId, content});
   return (
   <StyledCreateNoteButton className="CreateNoteWrapper">
     <button onClick={() => {
-      console.log('Creating:', {boardId, text})
       createNote()
     }} disabled={(typeof(boardId) === 'undefined')}>CREATE NOTE</button>
   </StyledCreateNoteButton>

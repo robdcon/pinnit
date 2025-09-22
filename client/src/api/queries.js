@@ -13,7 +13,7 @@ import {
 export const getBoard = () => {
     const [getBoard, { loading, data, error, startPolling }] = useLazyQuery(GET_BOARD, {
         onCompleted: (data) => {
-            console.log('API Query Board:', data);
+            console.log('getBoard:', data);
         }
     });
     return { fetchBoard:getBoard , boardLoading:loading, boardData:data, boardError:error, startBoardPolling:startPolling };
@@ -22,8 +22,7 @@ export const getBoard = () => {
 export const getBoards = () => {
     const [getBoardIds, { loading, data, error, startPolling }] = useLazyQuery(GET_BOARDS, {
         onCompleted: (data) => {
-            console.log('API Query Board IDs:', data);
-            
+            console.log('getBoards:', data); 
         }
     });
     return { getBoardIds, boardIdsLoading:loading, boardIdsData:data, boardIdsError:error, startBoardIdsPolling:startPolling };
@@ -32,8 +31,7 @@ export const getBoards = () => {
 export const getBoardNotes = () => {
     const [getNotes, { loading, data, error, startPolling }] = useLazyQuery(GET_NOTES, {
         onCompleted: (data) => {
-            console.log('API Query Notes:', data);
-            
+            console.log('getBoardNotes:', data); 
         }
     });
     return { getNotes, notesLoading:loading, notesData:data, notesError:error, startNotesPolling:startPolling};

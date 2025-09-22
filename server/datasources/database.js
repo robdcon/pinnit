@@ -58,8 +58,6 @@ const client = {
   },
 
   getUserBoards: async (args) => {
-    console.log('getUserBoards', args);
-    
     const { user } = args;
     const req = await pgPool.query('SELECT id FROM users WHERE email = $1', [user]);
     const { id } = req.rows[0];
@@ -82,7 +80,6 @@ const client = {
 
   getNote: async (args) => {
     const id  = args;
-    console.log(id);
     const { rows } = await pgPool.query('SELECT * FROM notes WHERE id = $1', [id]);
     const note = rows[0];
     note.content = JSON.stringify(note.content);

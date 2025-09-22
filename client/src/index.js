@@ -20,7 +20,6 @@ import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
 import { tokenVar } from './cache';
 import Theme from './themes/Theme';
 import { ThemeProvider } from "styled-components";
-console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
 
 const httpLink = new HttpLink({
   uri: process.env.NODE_ENV === "development" ? 'http://localhost:3001/graphiql':'https://pinnit-server.vercel.app/graphiql'
@@ -28,7 +27,6 @@ const httpLink = new HttpLink({
 
 const authMiddleware = new ApolloLink((operation, forward) => {
   const token = tokenVar();
-  console.log(`Token: ${token}`);
   // add the authorization to the headers
   operation.setContext(({ headers = {} }) => ({
     headers: {
@@ -49,7 +47,6 @@ const client = new ApolloClient({
 const container = document.getElementById('root');
 const root = createRoot(container);
 const redirect_uri = process.env.NODE_ENV === "development" ? 'http://localhost:3000':'https://pinnit-client.vercel.app';
-console.log(`Redirect URI: ${redirect_uri}`);
 
 root.render(
   <Auth0Provider

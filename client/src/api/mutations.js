@@ -10,7 +10,7 @@ export const addNote = ({ boardId }) => {
   const [createNote] = useMutation(CREATE_NOTE, {
     variables: {
       board: boardId,
-      content: `New Note:${boardId}`,
+      content: "{\"text\":\"new note 1`\"}",
       level: 'MED'
     },
     refetchQueries: [{
@@ -20,15 +20,16 @@ export const addNote = ({ boardId }) => {
       }
     }],
     onCompleted: (data) => {
-      console.log('Mutation:', data)
+      console.log('addNote:', data)
     }
   });
+
+  // if (loading) return "Submitting...";
+  // if (error) return `Submission error! ${error.message}`;
   return createNote;
 }
 
 export const editNote = ({ id, board }) => {
-  console.log('params:', id, board);
-  
   const [updateNote] = useMutation(UPDATE_NOTE);
   return ({ updateNote });
 }
@@ -62,7 +63,6 @@ export const createUser = ({ username, email }) => {
     onCompleted: ({ createUser }) => {
       setToLocalStorage('loggedInUser', createUser);
       loggedInUserVar(createUser);
-      console.log("Created User: ", createUser);
     }
   });
   return (createUser);
