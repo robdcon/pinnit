@@ -111,34 +111,16 @@ const Boards = () => {
   const [items, setItems] = useState([]);
   const { user, isAuthenticated } = useAuth0();
 
-  // const { getNotes, notesLoading, notesData, notesError, startNotesPolling } = getBoardNotes();
   const { fetchBoard, boardLoading, boardData, boardError, startBoardPolling } = getBoard();
   
-
   let { boardId } = useParams();
   boardId = parseInt(boardId);
   const createNote = addNote({boardId});
 
-  // useEffect(() => {
-  //   getNotes({ variables: { board: boardId } });
-  //   fetchBoard({ variables: { board: boardId } });
-  // }, []);
-
-  // useEffect(() => {
-  //   if (notesData) {
-  //     const { notes } = notesData;
-  //     setNotes(notes);
-  //     // startNotesPolling && startNotesPolling(1000);
-  //   }
-  // }, [notesData]);
-
   useEffect(() => {
     if (boardData) {
       const { board } = boardData;
-
-
       setBoard(board);
-      // startNotesPolling && startNotesPolling(1000);
     }
   }, [boardData]);
 
