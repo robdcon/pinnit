@@ -1,22 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import Board from './components/Board';
-import Note from './components/organisms/Note';
 import { getBoard, getBoards, getBoardNotes, getUser } from './api/queries';
-import { editNote, deleteNote, createUser, addNote } from './api/mutations';
-// import CreateBoard from './components/CreateBoard/CreateBoard';
-// import CreateNote from './components/CreateNote/CreateNote';
-// import ShareBoard from './components/ShareBoard/ShareBoard';
+import { createUser, addNote } from './api/mutations';
 import { useAuth0 } from "@auth0/auth0-react";
 import { tokenVar } from './cache';
 import { createContext, useContext } from 'react';
-// import Card from '@mui/material/Card';
-// import CardContent from '@mui/material/CardContent';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import HomeIcon from '@mui/icons-material/Home';
 import StickyFooter from './components/StickyFooter';
 import TabIcon from '@mui/icons-material/Tab';
-// import Drawer from '@mui/material/Drawer';
-// import Button from '@mui/material/Button';
 import Layout from './components/layout/Layout/Layout';
 import Dashboard from './components/layout/Dashboard/Dashboard';
 import Header from './components/organisms/Header/Header';
@@ -53,57 +45,6 @@ const LogoutButton = () => {
     </button>
   );
 };
-
-const HomeScreen = () => {
-  return (
-    <>
-      <h1>Home Screen</h1>
-    </>
-  )
-}
-
-// const Layout = ({ children, isAuthenticated }) => {
-//   const [open, setOpen] = useState('false')
-//   const toggleDrawer = (anchor, open) =>
-//       (event) => {
-//         if (
-//           event.type === 'keydown' &&
-//           ((event).key === 'Tab' ||
-//             (event).key === 'Shift')
-//         ) {
-//           return;
-//         }
-
-//         setOpen(!open);
-//       };
-//   return (
-//     <div className="pinnit">
-//       {children}
-//       <React.Fragment>
-//         <Button onClick={toggleDrawer('bottom', true)}>{"MENU"}</Button>
-//         <Drawer
-//           anchor={'bottom'}
-//           open={open}
-//           onClose={toggleDrawer('bottom', false)}
-//         >
-
-//           <Link to="/">
-//             <button>HOME</button>
-//           </Link>
-//           <Link to="/boards">
-//             <button>BOARDS</button>
-//           </Link>
-//           {
-//             isAuthenticated && <CreateBoard userId={useAuth0?.user?.email} />
-//           }
-//           {
-//             isAuthenticated ? <LogoutButton /> : <LoginButton />
-//           }
-//         </Drawer>
-//       </React.Fragment>
-//     </div>
-//   )
-// }
 
 const Boards = () => {
   const [notes, setNotes] = useState([]);
