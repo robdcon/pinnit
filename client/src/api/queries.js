@@ -10,8 +10,11 @@ import {
     GET_LOGGEDIN_USER
 } from '../graphql/queries';
 
-export const getBoard = () => {
+export const getBoard = (boardId) => {
+    console.log('getBoard called with boardId:', boardId);
+    
     const [getBoard, { loading, data, error, startPolling }] = useLazyQuery(GET_BOARD, {
+        variables: { board: boardId },
         onCompleted: (data) => {
             console.log('getBoard:', data);
         }

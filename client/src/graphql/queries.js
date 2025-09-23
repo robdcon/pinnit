@@ -3,7 +3,8 @@ import { gql } from "@apollo/client";
 export const GET_BOARD = gql`
     query getBoard($board: Int!) {
         board(board:$board) {
-          user
+          id
+          name
           board_type
         }
     }

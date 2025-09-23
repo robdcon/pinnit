@@ -14,12 +14,12 @@ import { GET_NOTES } from '../../../graphql/queries.js';
 import { StyledCheckListItem } from './CheckListItem.styles.js';
 
 const CheckListItem = ({ id, text, checked, onChange, onRemove }) => {
-    const [isChecked, setIsChecked] = useState(checked);
+    // const [isChecked, setIsChecked] = useState(checked);
     
-    const handleCheckboxChange = () => {
-        setIsChecked(!isChecked);
-        onChange(id, !isChecked);
-    };
+    // const handleCheckboxChange = () => {
+    //     setIsChecked(!isChecked);
+    //     onChange(id, !isChecked);
+    // };
 
     return (
         <StyledCheckListItem>
@@ -29,7 +29,7 @@ const CheckListItem = ({ id, text, checked, onChange, onRemove }) => {
                 onChange={handleCheckboxChange}
             />
             <span className={isChecked ? 'checked' : ''}>{text}</span>
-            <button onClick={() => onRemove(id)}>Delete</button>
+            {/* <button onClick={() => onRemove(id)}>Delete</button> */}
         </StyledCheckListItem>
     );
 }

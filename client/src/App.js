@@ -52,11 +52,19 @@ const Boards = () => {
   const [items, setItems] = useState([]);
   const { user, isAuthenticated } = useAuth0();
 
-  const { fetchBoard, boardLoading, boardData, boardError, startBoardPolling } = getBoard();
   
   let { boardId } = useParams();
   boardId = parseInt(boardId);
+  const { fetchBoard, boardLoading, boardData, boardError, startBoardPolling } = getBoard(boardId);
+
   const createNote = addNote({boardId});
+
+  useEffect(() => {
+    if(boardId) {
+      console.log(`Fetching board ${boardId}`);
+      fetchBoard();
+    }
+  }, []);
 
   useEffect(() => {
     if (boardData) {
@@ -67,7 +75,7 @@ const Boards = () => {
 
   return isAuthenticated && (
     <BoardContext.Provider value={{ board: boardId }}>
-      <Board boardId={boardId} items={notes} userId={user.email} boardType={board.board_type} />
+      <Board boardId={boardId} items={notes} userId={user.email} boardType={board.board_type} name={board.name} />
       <StickyFooter justify={'space-between'}>
         <TabIcon
           color='primary'
@@ -189,9 +197,9 @@ const App = () => {
       <GlobalStyles />
       <Header>
         <MenuToggle />
-        {
+        {/* {
           isAuthenticated && <h1>{user.given_name}'s Board</h1>
-        }
+        } */}
         {
           isAuthenticated ? <Image width='48' height='48' src={user.picture} /> : <Button text={`Login`} action={loginWithRedirect} />
         }
