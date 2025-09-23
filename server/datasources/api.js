@@ -81,11 +81,9 @@ const api = {
         }
     },
 
-    getBoard: async (args, context) => {
+    getBoard: async (boardId, context) => {
         try {
-            const board = await context.getBoard(args).then(res => {
-                return res;
-            })
+            const board = await context.getBoard(boardId);
             return board;
         } catch (error) {
             console.log(error);

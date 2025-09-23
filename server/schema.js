@@ -1,6 +1,6 @@
 const { gql } = require('apollo-server-express');
 
-const schema = gql`
+const typeDefs = gql`
     type Query {
         user(email: String): User
         users: [User]
@@ -18,7 +18,7 @@ const schema = gql`
         createNote(board: Int!, content: String!, level: String): Note!
         updateNote(user: String, board: Int, id: Int!, content: String, zindex: Int, level: String): Note!
         deleteNote(id: Int!): String!
-        createBoard(user: String, name: String!, board_type: String): Int!
+        createBoard(user: String!, name: String!, board_type: String): Int!
         shareBoard(user: String!, board: Int!): String
     }
 
@@ -40,9 +40,7 @@ const schema = gql`
     type Board {
         id: Int!
         name: String
-        notes: [Int]
         board_type: String
-        user: String!
     }
 
     type UserEmail {
@@ -51,4 +49,4 @@ const schema = gql`
     }
 `;
 
-module.exports = schema;
+module.exports = typeDefs;

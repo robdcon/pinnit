@@ -1,6 +1,6 @@
 const api = require('./datasources/api');
 
-const typeDefs =  {
+const resolvers =  {
     Query: {
         user: async (parent, args, context, info) => {
             const {email} = args;
@@ -25,17 +25,20 @@ const typeDefs =  {
         notes: async (parent, {board}, context, info) => {
             const response = await api.getNotes(board, context)
             .then(res => {
-                console.log('Notes fetched:', res);
                 return res;
             });
+            console.log(response);
+            
             return response;
         },
 
-        board: async (parent, args, context, info) => {
-            const board = await api.getBoard(args, context).then(({Board}) => {
-                return Board[0];
+        board: async (parent, { board }, context, info) => {  
+            console.log(context);
+            
+            const response = await api.getBoard(board, context).then(res => {
+                return res;
             });
-            return board;
+            return response;
         }, 
 
         boards: async (parent, { user }, context, info) => {
@@ -67,8 +70,6 @@ const typeDefs =  {
         createNote: async (parent, {board, content}, context) => {
             const note = await api.createNote(board, content, context)
             .then(res => {
-                console.log('Note Created:', res);
-                
                 res.content = JSON.stringify(res.content);
                 return res;
             });
@@ -92,6 +93,8 @@ const typeDefs =  {
         createBoard: async (parent, args, context) => {
             try {
                 const board = await api.createBoard(args, context).then(res => res);
+                console.log(board);
+                
                 return board;
             } catch (error) {
                 console.log(error)
@@ -107,58 +110,7 @@ const typeDefs =  {
                 return false
             }
         }
-    },
-    
-    User: {
-        id: (parent, args, context, info) => {
-            return parent.id;
-        },
-        username: (parent, args, context, info) => {
-            return parent.username;
-        },
-        email: (parent, args, context, info) => {
-            return parent.email;
-        },
-        boards: (parent, args, context, info) => {
-            return parent.boards;
-        }
-    },
-
-    Note: {
-        id: (parent, args, context, info) => {
-            return parent.id;
-        },
-        content: (parent, args, context, info) => {
-            return parent.content;
-        },
-        zindex: (parent, args, context, info) => {
-            return parent.zindex;
-        },
-        level: (parent, args, context, info) => {
-            return parent.level;
-        }
-    },
-
-    Board: {
-        id: () => (parent, args, context, info) => {
-            return parent.id;
-        },
-        notes: () => (parent, args, context, info) => {
-            return parent.notes;
-        },
-        name: () => (parent, args, context, info) => {
-            return parent.name;
-        }
-    },
-
-    UserEmail: {
-        username: (parent, args, context, info) => {
-            return parent.username;
-        },
-        email: (parent, args, context, info) => {
-            return parent.email;
-        }
     }
 }
 
-module.exports = typeDefs;
+module.exports = resolvers;

@@ -31,18 +31,17 @@ const client = {
 
   // PostgresSQL
   getBoard: async (args) => {
-    const { board } = args;
-    const { data: Board, error } = await pgPool.query('SELECT * FROM Boards WHERE "id" = $1', [board]);
-    if (error) {
-      console.error('Error executing query', error.stack);
-      return { error };
-    }
-    return { Board, error }
+    const boardId = args;    
+    const { rows } = await pgPool.query('SELECT id, name, board_type FROM public.boards WHERE "id" = $1', [boardId]);
+    const board = rows[0];
+    // Convert id to integer
+    board.id = parseInt(board.id, 10);
+    return board;
   },
 
   addBoard: async (args) => {
     let { name, boardType } = args;
-    const { rows } = await pgPool.query(`INSERT INTO public.boards(name, board_type) VALUES ($1, $2) RETURNING *`, [name, boardType]);
+    const { rows } = await pgPool.query(`INSERT INTO public.boards(name, board_type) VALUES ($1, $2) RETURNING *`, [name, board_type]);
     const res = rows[0];
     const data = [res];
     return data
