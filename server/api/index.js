@@ -6,10 +6,34 @@ const { ApolloServer } = require('apollo-server-express');
 const { ApolloServerPluginDrainHttpServer } = require("apollo-server-core");
 const client = require('../datasources/database');
 const http = require('http');
+const { bulkCreateFromJson, readFileFromFolder, } = require('../utils/helpers.js');
+const path = require('path');
+
+const getJsonData = () => {
+  const folder = process.env.JSON_FOLDER;
+  console.log(__dirname);
+  console.log(process.cwd());
+  const filePath = path.resolve(process.cwd(), folder);
+  console.log(`Reading JSON files from folder: ${filePath}`);
+  let jsonData = readFileFromFolder(folder);
+  jsonData = JSON.parse(jsonData);
+  return jsonData;
+}
+
+const executeBulkCreate = async () => {
+  const data = getJsonData();
+  console.log(`Seeding database with ${data.length} records...`);
+  data.forEach(element => {
+    const category = Object.keys(element)[0];
+    element[category].forEach(element => {
+      element.category = category;
+      console.log('Inserting:', element);
+    })
+  });
+}
 
 const resolvers = require('../resolvers');
 const typeDefs = require('../schema');
-
 
 const PORT = process.env.PORT || 5000;
 
@@ -19,7 +43,7 @@ const corsOptions = {
   origin: process.env.NODE_ENV === 'production' ? 'https://pinnit-client.vercel.app' : '*',
   credentials: true // <-- REQUIRED backend setting
 };
-    
+
 console.log(`CORS: ${corsOptions.origin}`);
 
 
@@ -34,22 +58,24 @@ const httpServer = http.createServer(app);
 
 async function startApolloServer(app, httpServer) {
 
-  const server = new ApolloServer({ 
-    typeDefs, 
-    resolvers, 
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
     context: client,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })]
   });
 
   await server.start();
-  
-  server.applyMiddleware({ app, path:'/graphiql' });
-  
+
+  server.applyMiddleware({ app, path: '/graphiql' });
+
   await new Promise((resolve) =>
     httpServer.listen({ port: PORT }, resolve),
   ).then(() => {
     console.log('USER:', process.env.PGUSER)
     console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`);
+  }).then(() => {
+
   });
 }
 

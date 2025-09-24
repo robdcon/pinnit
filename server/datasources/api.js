@@ -147,6 +147,16 @@ const api = {
             });
         const notes = await Promise.all(notesPromise)
         return notes;
+    },
+    getItems: async (board, context) => {
+        const itemsPromise = await context.getBoardItems({ board })
+            .then(res => {
+                return res.data.map(itemId => {
+                    return context.getItem(itemId)
+                })
+            });
+        const items = await Promise.all(itemsPromise)
+        return items;
     }
 
 }

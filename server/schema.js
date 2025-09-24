@@ -9,14 +9,16 @@ const typeDefs = gql`
         emails: [String]
         note(id: String!): Note
         notes(board: Int!): [Note]
+        item(id: String!): Item
+        items(board: Int!): [Item]
         board(board: Int!): Board
         boards(user: String!): [Int]
     }
     
     type Mutation {
         createUser(username: String!, email: String!) : User!
-        createNote(board: Int!, content: String!, level: String): Note!
-        updateNote(user: String, board: Int, id: Int!, content: String, zindex: Int, level: String): Note!
+        createNote(board: Int!, content: String!, level: String, checked: Boolean, category: String): Note!
+        updateNote(user: String, board: Int, id: Int!, content: String, zindex: Int, level: String, checked: Boolean, category: String): Note!
         deleteNote(id: Int!): String!
         createBoard(user: String!, name: String!, board_type: String): Int!
         shareBoard(user: String!, board: Int!): String
@@ -35,6 +37,16 @@ const typeDefs = gql`
         content: String!
         zindex: Int
         level: String
+        checked: Boolean
+        category: String
+    }
+
+    type Item {
+        id: Int!
+        name: String!
+        priority: String
+        checked: Boolean
+        category: String
     }
 
     type Board {

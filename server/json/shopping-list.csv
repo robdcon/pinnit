@@ -1,0 +1,78 @@
+name,checked,category
+strawberries,false,fruit
+blueberry,false,fruit
+blackberry,false,fruit
+melon,true,fruit
+limes,false,fruit
+lemons,true,fruit
+oranges,false,fruit
+bananas,true,fruit
+white onions,false,veg
+red onions,true,veg
+red peppers,false,veg
+aubergine,true,veg
+red cabbage,false,veg
+white cabbage,true,veg
+carrots,true,veg
+mange tout,false,veg
+sugar snaps,true,veg
+green beans,false,veg
+potatoes,false,veg
+celery,true,veg
+leek,false,veg
+rocket,true,salad
+spinach,true,salad
+kale,true,salad
+tomatoes,false,salad
+cucumber,true,salad
+spring onions,true,salad
+chicken thighs,false,meat
+pork belly strips,false,meat
+sausages,false,meat
+chorizo,true,meat
+beef mince,true,meat
+milk,true,dairy
+double cream,true,dairy
+goats cheese,true,dairy
+cheddar cheese,true,dairy
+mozzarella,true,dairy
+salmon,true,fish
+prawns,true,fish
+mackerel,true,fish
+chopped tomatoes,false,tinned
+red kidney beans,false,tinned
+chickpeas,false,tinned
+coconut milk,false,tinned
+fish fingers,true,frozen
+peas,true,frozen
+lasagne sheets,true,rice_grains_pasta
+linguine,true,rice_grains_pasta
+fusilli,true,rice_grains_pasta
+basmati rice,true,rice_grains_pasta
+jasmine rice,true,rice_grains_pasta
+egg noodles,false,rice_grains_pasta
+rice noodles,false,rice_grains_pasta
+porridge,false,cereals
+muesli,false,cereals
+weetabix,false,cereals
+dijon mustard,true,condiments
+english mustard,true,condiments
+mayo,true,condiments
+ketchup,true,condiments
+bbq sauce,true,condiments
+sweet chilli sauce,true,condiments
+soy sauce,true,condiments
+oyster sauce,false,condiments
+fish sauce,true,condiments
+cider vinegar,true,condiments
+balsamic vinegar,true,condiments
+honey,true,condiments
+passata,true,condiments
+mouthwash,true,toiletries
+toothpaste,true,toiletries
+shower gel,true,toiletries
+deodorant,false,toiletries
+toilet paper,true,domestic
+glass cleaner,true,domestic
+washing powder,false,domestic
+kitchen roll,false,domestic

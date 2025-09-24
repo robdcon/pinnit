@@ -26,6 +26,18 @@ export const GET_NOTES = gql`
   }
 `;
 
+export const GET_ITEMS = gql`
+  query getItems($board: Int!) {
+    items(board: $board) {
+      id
+      name
+      category
+      priority
+      checked
+    }
+  }
+`;
+
 export const GET_REACTIVE_NOTES = gql`
   query getReactiveNotes{
     localNotes @client

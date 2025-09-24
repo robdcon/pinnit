@@ -1,6 +1,7 @@
 import { useQuery, useLazyQuery } from "@apollo/client";
 import { 
     GET_NOTES, 
+    GET_ITEMS, 
     CHECK_USER, 
     GET_EMAILS, 
     GET_BOARDS, 
@@ -38,6 +39,15 @@ export const getBoardNotes = () => {
         }
     });
     return { getNotes, notesLoading:loading, notesData:data, notesError:error, startNotesPolling:startPolling};
+}
+
+export const getBoardItems = () => {
+    const [getItems, { loading, data, error, startPolling }] = useLazyQuery(GET_ITEMS, {
+        onCompleted: (data) => {
+            console.log('getBoardItems:', data); 
+        }
+    });
+    return { getItems, itemsLoading:loading, itemsData:data, itemsError:error, startItemsPolling:startPolling};
 }
 
 

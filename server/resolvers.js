@@ -22,6 +22,11 @@ const resolvers =  {
             return response;
         },
 
+        item: async (parent, {id}, context, info) => {
+            const response = await api.getItem(id, context);
+            return response;
+        },
+
         notes: async (parent, {board}, context, info) => {
             const response = await api.getNotes(board, context)
             .then(res => {
@@ -29,6 +34,11 @@ const resolvers =  {
             });
             console.log(response);
             
+            return response;
+        },
+
+        items: async (parent, {board}, context, info) => {
+            const response = await api.getItems(board, context)
             return response;
         },
 

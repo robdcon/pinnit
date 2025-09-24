@@ -85,6 +85,13 @@ const client = {
     return note
   },
 
+  getItem: async (args) => {
+    const id  = args;
+    const { rows } = await pgPool.query('SELECT * FROM items WHERE id = $1', [id]);
+    const item = rows[0];
+    return item
+  },
+
   addBoardNoteRef: async (args) => {
     const { note, board } = args;
     const {rows} = await pgPool.query(`INSERT INTO public."board_notes"("board_id", "note_id") VALUES ($1, $2) RETURNING *`, [board, note]);
@@ -97,6 +104,15 @@ const client = {
     const { board } = args;
     const {rows} = await pgPool.query('SELECT * FROM board_notes WHERE "board_id" = $1', [board]);
     const boardNotes = rows.map(note => note.note_id);
+    return {
+      data: 
+        [...boardNotes] 
+    }
+  },
+  getBoardItems: async (args) => {
+    const { board } = args;
+    const {rows} = await pgPool.query('SELECT * FROM board_items WHERE "board_id" = $1', [board]);
+    const boardNotes = rows.map(item => item.item_id);
     return {
       data: 
         [...boardNotes] 

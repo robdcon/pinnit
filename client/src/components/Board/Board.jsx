@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { StyledBoard, StyledNoteWrapper } from './Board.styles';
 import Note from '../organisms/Note';
-import CheckListItem from '../organisms/CheckListItem';
+import CheckListItem from '../organisms/CheckListItem/CheckListItem';
+import FlexContainer from '../layout/FlexContainer';
 
 // GraphQL
-import { getBoardNotes } from '../../api/queries';
+import { getBoardNotes, getBoardItems } from '../../api/queries';
 import { editNote, deleteNote, createUser, addNote } from '../../api/mutations';
 
 
 const Board = ({ boardId, boardType, name, items }) => {
+    const [boardItems, setBoardItems] = useState(items || []);
     const { getNotes, notesLoading, notesData, notesError } = getBoardNotes();
-    const [boardItems, setBoardItems] = useState([...items]);
+    const { getItems, itemsLoading, itemsData, itemsError } = getBoardItems();
 
     useEffect(() => {
-        getNotes({ variables: { board: boardId } });
+        // getNotes({ variables: { board: boardId } });
+        getItems({ variables: { board: boardId } });
     }, []);
 
     useEffect(() => {
@@ -23,12 +26,23 @@ const Board = ({ boardId, boardType, name, items }) => {
         }
     }, [notesData]);
 
-    if(notesLoading) return <p>Loading...</p>
-    if(notesError) return <p>Error: {notesError.message}</p>
+    useEffect(() => {
+        if (itemsData) {
+            const { items } = itemsData;
+            setBoardItems(items);
+        }
+    }, [itemsData]);
+
+    // if(notesLoading) return <p>Loading...</p>
+    // if(notesError) return <p>Error: {notesError.message}</p>
+    if(itemsLoading) return <p>Loading...</p>
+    if(itemsError) return <p>Error: {notesError.message}</p>
 
     return (
         <div>
-            <h1>{name}</h1>
+            <FlexContainer justifyContent="center" alignItems="center" padding="10px">
+                <h1>{name}</h1>
+            </FlexContainer>
             <StyledBoard id={boardId} className="BoardWrapper" boardType={boardType}>
                 {boardType === 'PIN' && (
                     <StyledNoteWrapper>
@@ -44,11 +58,17 @@ const Board = ({ boardId, boardType, name, items }) => {
                 {boardType === 'CHECKLIST' && (
                     <StyledNoteWrapper>
                         {
-                            boardItems.map(item => {
-                                return (
-                                    <CheckListItem key={item.id} >{item.content}</CheckListItem>
-                                )
-                            })
+                            [...new Set(boardItems.map(item => item.category))].map(category => (
+                                <div key={category}>
+                                    <h3>{category}</h3>
+                                    {
+                                        boardItems.filter(item => item.category === category).map(item => (
+                                            <CheckListItem key={item.id} checked={item.checked} text={item.name} />
+                                            // <div key={item.id}>{item.name}</div>
+                                        ))
+                                    }
+                                </div>
+                            ))
                         }
                     </StyledNoteWrapper>
                 )}
