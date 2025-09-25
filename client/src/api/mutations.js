@@ -1,6 +1,6 @@
 import { useMutation } from "@apollo/client";
-import { CREATE_NOTE, UPDATE_NOTE, DELETE_NOTE, CREATE_USER } from '../graphql/mutations';
-import { GET_NOTES } from '../graphql/queries';
+import { CREATE_NOTE, UPDATE_NOTE, DELETE_NOTE, CREATE_USER, UPDATE_ITEM } from '../graphql/mutations';
+import { GET_NOTES, GET_ITEMS } from '../graphql/queries';
 import { setToLocalStorage } from '../utils/helpers';
 import { loggedInUserVar } from "../cache";
 
@@ -30,8 +30,27 @@ export const addNote = ({ boardId }) => {
 }
 
 export const editNote = ({ id, board }) => {
-  const [updateNote] = useMutation(UPDATE_NOTE);
+  const [updateNote, { data, loading, error }] = useMutation(UPDATE_NOTE);
   return ({ updateNote });
+}
+
+// edit item
+export const editItem = ({id, board}) => {
+  const [updateItem, { data, loading, error }] = useMutation(UPDATE_ITEM, {
+    variables: {
+      id: id
+    },
+    refetchQueries: [{
+      query: GET_ITEMS,
+      variables: {
+        board: board
+      }
+    }],
+    onCompleted: (data) => {
+      console.log('Item updated:', data);
+    }
+  });
+  return ({ updateItem });
 }
 
 export const deleteNote = ({ id, board }) => {

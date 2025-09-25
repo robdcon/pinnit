@@ -36,6 +36,32 @@ export const UPDATE_NOTE = gql`
     }
 `;
 
+// Items
+
+export const CREATE_ITEM = gql`
+    mutation createItem($board: Int!, $name: String!, $priority: String, $checked: Boolean, $category: String) {
+        createItem(board: $board, name: $name, priority: $priority, checked: $checked, category: $category) {
+            id
+            name
+            priority
+            checked
+            category
+        }
+    }
+`;
+
+export const UPDATE_ITEM = gql`
+    mutation updateItem($id: Int!, $name: String, $priority: String, $checked: Boolean, $category: String) {
+        updateItem(id: $id, name: $name, priority: $priority, checked: $checked, category: $category) {
+            id
+            name
+            priority
+            checked
+            category
+        }
+    }
+`;
+
 export const DELETE_NOTE = gql`
     mutation deleteNote($id: Int!) {
         deleteNote(id: $id)

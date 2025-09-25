@@ -6,7 +6,7 @@ import FlexContainer from '../layout/FlexContainer';
 
 // GraphQL
 import { getBoardNotes, getBoardItems } from '../../api/queries';
-import { editNote, deleteNote, createUser, addNote } from '../../api/mutations';
+import { editNote, deleteNote, createUser, addNote, editItem } from '../../api/mutations';
 
 
 const Board = ({ boardId, boardType, name, items }) => {
@@ -36,7 +36,7 @@ const Board = ({ boardId, boardType, name, items }) => {
     // if(notesLoading) return <p>Loading...</p>
     // if(notesError) return <p>Error: {notesError.message}</p>
     if(itemsLoading) return <p>Loading...</p>
-    if(itemsError) return <p>Error: {notesError.message}</p>
+    if(itemsError) return <p>Error: {itemsError.message}</p>
 
     return (
         <div>
@@ -63,7 +63,7 @@ const Board = ({ boardId, boardType, name, items }) => {
                                     <h3>{category}</h3>
                                     {
                                         boardItems.filter(item => item.category === category).map(item => (
-                                            <CheckListItem key={item.id} checked={item.checked} text={item.name} />
+                                            <CheckListItem id={item.id} key={item.id} checked={item.checked} text={item.name} onChange={editItem} />
                                             // <div key={item.id}>{item.name}</div>
                                         ))
                                     }

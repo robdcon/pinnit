@@ -130,6 +130,26 @@ const client = {
 
   },
 
+  createItem: async (args) => {
+    const { board, name, priority, checked, category } = args;
+    const {rows} = await pgPool.query(`INSERT INTO public.items(name, priority, checked, category) VALUES ($1, $2, $3, $4) RETURNING *`, [name, priority, checked, category]);
+    const item = rows[0]
+    const itemId = item.id;
+    await pgPool.query(`INSERT INTO public."board_items"("board_id", "item_id") VALUES ($1, $2) RETURNING *`, [board, itemId]);
+    return {
+      data: [item]
+    };
+  },
+
+  updateItem: async (args) => {
+    const { id, name, priority, checked, category } = args;
+    const {rows} = await pgPool.query(`UPDATE public.items SET name = COALESCE($1, name), priority = COALESCE($2, priority), checked = COALESCE($3, checked), category = COALESCE($4, category) WHERE id = $5 RETURNING *`, [name, priority, checked, category, id]);
+    const item = rows[0];
+    return {
+      data: [item]
+    }
+  },
+
   deleteNote: async (args) => {
     const { id } = args;
     const {rowCount: deletedRef} = await pgPool.query('DELETE FROM board_notes WHERE note_id = $1', [id]);

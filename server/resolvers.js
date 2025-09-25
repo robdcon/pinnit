@@ -28,12 +28,7 @@ const resolvers =  {
         },
 
         notes: async (parent, {board}, context, info) => {
-            const response = await api.getNotes(board, context)
-            .then(res => {
-                return res;
-            });
-            console.log(response);
-            
+            const response = await api.getNotes(board, context);
             return response;
         },
 
@@ -43,8 +38,6 @@ const resolvers =  {
         },
 
         board: async (parent, { board }, context, info) => {  
-            console.log(context);
-            
             const response = await api.getBoard(board, context).then(res => {
                 return res;
             });
@@ -115,6 +108,30 @@ const resolvers =  {
             try {
                 const result = await api.shareBoard(user, board, context).then(res => res);
                 return result;
+            } catch (error) {
+                console.log(error)
+                return false
+            }
+        }, 
+        
+        createItem: async (parent, { board, name, priority, checked, category }, context) => {
+            try {
+                const item = await api.createItem({ board, name, priority, checked, category }, context).then(res => res);
+                return item;
+            } catch (error) {
+                console.log(error)
+                return false
+            }
+        },
+
+        updateItem: async (parent, args, context) => {
+            console.log(args);
+            
+            try {
+                const item = await api.updateItem(args, context).then(res => res);
+                console.log(item);
+                
+                return item;
             } catch (error) {
                 console.log(error)
                 return false

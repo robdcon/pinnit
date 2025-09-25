@@ -157,7 +157,19 @@ const api = {
             });
         const items = await Promise.all(itemsPromise)
         return items;
-    }
+    },
+    updateItem: async (args, context) => {
+        try {
+            const updatedItem = context.updateItem(args)
+                .then(res => {
+                    return res.data[0]
+                });
+            return updatedItem;
+        } catch (error) {
+            console.log(error)
+            return false
+        }
+    },
 
 }
 
