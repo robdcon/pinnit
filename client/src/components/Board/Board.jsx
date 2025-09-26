@@ -3,11 +3,12 @@ import { StyledBoard, StyledNoteWrapper } from './Board.styles';
 import Note from '../organisms/Note';
 import CheckListItem from '../organisms/CheckListItem/CheckListItem';
 import FlexContainer from '../layout/FlexContainer';
+import { GET_ITEMS } from '../../graphql/queries';
+import CreateItem from '../CreateItem';
 
 // GraphQL
 import { getBoardNotes, getBoardItems } from '../../api/queries';
 import { editNote, deleteNote, createUser, addNote, editItem } from '../../api/mutations';
-
 
 const Board = ({ boardId, boardType, name, items }) => {
     const [boardItems, setBoardItems] = useState(items || []);
@@ -15,7 +16,6 @@ const Board = ({ boardId, boardType, name, items }) => {
     const { getItems, itemsLoading, itemsData, itemsError } = getBoardItems();
 
     useEffect(() => {
-        // getNotes({ variables: { board: boardId } });
         getItems({ variables: { board: boardId } });
     }, []);
 
@@ -33,8 +33,6 @@ const Board = ({ boardId, boardType, name, items }) => {
         }
     }, [itemsData]);
 
-    // if(notesLoading) return <p>Loading...</p>
-    // if(notesError) return <p>Error: {notesError.message}</p>
     if(itemsLoading) return <p>Loading...</p>
     if(itemsError) return <p>Error: {itemsError.message}</p>
 
@@ -70,6 +68,7 @@ const Board = ({ boardId, boardType, name, items }) => {
                                 </div>
                             ))
                         }
+                        <CreateItem />
                     </StyledNoteWrapper>
                 )}
                 {(boardType === 'PLAIN' || !boardType) && (

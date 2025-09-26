@@ -39,8 +39,8 @@ export const UPDATE_NOTE = gql`
 // Items
 
 export const CREATE_ITEM = gql`
-    mutation createItem($board: Int!, $name: String!, $priority: String, $checked: Boolean, $category: String) {
-        createItem(board: $board, name: $name, priority: $priority, checked: $checked, category: $category) {
+    mutation createItem($name: String!, $priority: String, $checked: Boolean, $category: String) {
+        createItem(name: $name, priority: $priority, checked: $checked, category: $category) {
             id
             name
             priority

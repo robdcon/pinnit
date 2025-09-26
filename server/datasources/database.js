@@ -14,12 +14,12 @@ const client = {
   },
   // PostgresSQL
   addUser: async (args) => {
-      const { username, email } = args;
-      const { rows } = await pgPool.query(`INSERT INTO public.users(username, email) VALUES ($1, $2) RETURNING *`, [username, email])
-      const user = rows[0];
-      return {
-        data: [user]
-      }
+    const { username, email } = args;
+    const { rows } = await pgPool.query(`INSERT INTO public.users(username, email) VALUES ($1, $2) RETURNING *`, [username, email])
+    const user = rows[0];
+    return {
+      data: [user]
+    }
   },
   // PostgresSQL
   getUser: async (args) => {
@@ -31,7 +31,7 @@ const client = {
 
   // PostgresSQL
   getBoard: async (args) => {
-    const boardId = args;    
+    const boardId = args;
     const { rows } = await pgPool.query('SELECT id, name, board_type FROM public.boards WHERE "id" = $1', [boardId]);
     const board = rows[0];
     // Convert id to integer
@@ -49,7 +49,7 @@ const client = {
 
   addUserBoardRef: async (args) => {
     const { user, board } = args;
-    const {rows} = await pgPool.query(`INSERT INTO public."user_boards"("user_id", "board_id") VALUES ($1, $2) RETURNING *`, [user, board]);
+    const { rows } = await pgPool.query(`INSERT INTO public."user_boards"("user_id", "board_id") VALUES ($1, $2) RETURNING *`, [user, board]);
     const res = rows[0];
     return {
       data: [res]
@@ -69,16 +69,16 @@ const client = {
 
   createNote: async (args) => {
     const { json } = args;
-    const {rows} = await pgPool.query(`INSERT INTO public.notes(content) VALUES ($1) RETURNING *`, [json]);
+    const { rows } = await pgPool.query(`INSERT INTO public.notes(content) VALUES ($1) RETURNING *`, [json]);
     const note = rows[0]
-    
+
     return {
       data: [note]
     };
   },
 
   getNote: async (args) => {
-    const id  = args;
+    const id = args;
     const { rows } = await pgPool.query('SELECT * FROM notes WHERE id = $1', [id]);
     const note = rows[0];
     note.content = JSON.stringify(note.content);
@@ -86,7 +86,7 @@ const client = {
   },
 
   getItem: async (args) => {
-    const id  = args;
+    const id = args;
     const { rows } = await pgPool.query('SELECT * FROM items WHERE id = $1', [id]);
     const item = rows[0];
     return item
@@ -94,7 +94,15 @@ const client = {
 
   addBoardNoteRef: async (args) => {
     const { note, board } = args;
-    const {rows} = await pgPool.query(`INSERT INTO public."board_notes"("board_id", "note_id") VALUES ($1, $2) RETURNING *`, [board, note]);
+    const { rows } = await pgPool.query(`INSERT INTO public."board_notes"("board_id", "note_id") VALUES ($1, $2) RETURNING *`, [board, note]);
+    const res = rows[0];
+    const data = [res];
+    return data
+  },
+
+  addBoardItemRef: async (args) => {
+    const { item, board } = args;
+    const { rows } = await pgPool.query(`INSERT INTO public.board_items("board_id", "item_id") VALUES ($1, $2) RETURNING *`, [board, item]);
     const res = rows[0];
     const data = [res];
     return data
@@ -102,26 +110,26 @@ const client = {
 
   getBoardNotes: async (args) => {
     const { board } = args;
-    const {rows} = await pgPool.query('SELECT * FROM board_notes WHERE "board_id" = $1', [board]);
+    const { rows } = await pgPool.query('SELECT * FROM board_notes WHERE "board_id" = $1', [board]);
     const boardNotes = rows.map(note => note.note_id);
     return {
-      data: 
-        [...boardNotes] 
+      data:
+        [...boardNotes]
     }
   },
   getBoardItems: async (args) => {
     const { board } = args;
-    const {rows} = await pgPool.query('SELECT * FROM board_items WHERE "board_id" = $1', [board]);
+    const { rows } = await pgPool.query('SELECT * FROM board_items WHERE "board_id" = $1', [board]);
     const boardNotes = rows.map(item => item.item_id);
     return {
-      data: 
-        [...boardNotes] 
+      data:
+        [...boardNotes]
     }
   },
 
   updateNote: async (args) => {
     const { user, board, id, content, zindex, level } = args;
-    const {rows} = await pgPool.query(`UPDATE public.notes SET content = $1 WHERE id = $2 RETURNING *`, [content, id]);
+    const { rows } = await pgPool.query(`UPDATE public.notes SET content = $1 WHERE id = $2 RETURNING *`, [content, id]);
     const note = rows[0];
     note.content = JSON.stringify(note.content)
     return {
@@ -132,18 +140,17 @@ const client = {
 
   createItem: async (args) => {
     const { board, name, priority, checked, category } = args;
-    const {rows} = await pgPool.query(`INSERT INTO public.items(name, priority, checked, category) VALUES ($1, $2, $3, $4) RETURNING *`, [name, priority, checked, category]);
+    const { rows } = await pgPool.query(`INSERT INTO public.items(name, priority, checked, category) VALUES ($1, $2, $3, $4) RETURNING *`, [name, priority, checked, category]);
     const item = rows[0]
-    const itemId = item.id;
-    await pgPool.query(`INSERT INTO public."board_items"("board_id", "item_id") VALUES ($1, $2) RETURNING *`, [board, itemId]);
     return {
       data: [item]
-    };
+    }
+
   },
 
   updateItem: async (args) => {
     const { id, name, priority, checked, category } = args;
-    const {rows} = await pgPool.query(`UPDATE public.items SET name = COALESCE($1, name), priority = COALESCE($2, priority), checked = COALESCE($3, checked), category = COALESCE($4, category) WHERE id = $5 RETURNING *`, [name, priority, checked, category, id]);
+    const { rows } = await pgPool.query(`UPDATE public.items SET name = COALESCE($1, name), priority = COALESCE($2, priority), checked = COALESCE($3, checked), category = COALESCE($4, category) WHERE id = $5 RETURNING *`, [name, priority, checked, category, id]);
     const item = rows[0];
     return {
       data: [item]
@@ -152,7 +159,7 @@ const client = {
 
   deleteNote: async (args) => {
     const { id } = args;
-    const {rowCount: deletedRef} = await pgPool.query('DELETE FROM board_notes WHERE note_id = $1', [id]);
+    const { rowCount: deletedRef } = await pgPool.query('DELETE FROM board_notes WHERE note_id = $1', [id]);
     return 'true'
   }
 }

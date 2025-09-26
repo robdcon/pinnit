@@ -158,6 +158,22 @@ const api = {
         const items = await Promise.all(itemsPromise)
         return items;
     },
+    createItem: async (args, context) => {
+        try {
+            const item = await context.createItem(args).then(res => {
+                return res.data[0];
+            });
+
+            const itemId = item.id;
+
+            await context.addBoardItemRef({ board: args.board, item: itemId });
+            return item;
+        } catch (error) {
+            console.log(error)
+            return false
+        }
+    },
+
     updateItem: async (args, context) => {
         try {
             const updatedItem = context.updateItem(args)
