@@ -1,8 +1,10 @@
 import { useMutation } from "@apollo/client";
+import { useContext } from "react";
 import { CREATE_NOTE, UPDATE_NOTE, DELETE_NOTE, CREATE_USER, UPDATE_ITEM, CREATE_ITEM } from '../graphql/mutations';
 import { GET_NOTES, GET_ITEMS } from '../graphql/queries';
 import { setToLocalStorage } from '../utils/helpers';
 import { loggedInUserVar } from "../cache";
+import { BoardContext } from "../App";
 
 // Notes 
 
@@ -53,19 +55,21 @@ export const editItem = ({id, board}) => {
 }
 
 // Add item
-export const addItem = ({ boardId }) => {
+export const addItem = () => {
+  const {board} = useContext(BoardContext);
+  console.log('boardId in addItem:', board);
+  
   const [createItem] = useMutation(CREATE_ITEM, {
     refetchQueries: [{
       query: GET_ITEMS,
       variables: {
-        board: boardId
+        board
       }
     }],
     onCompleted: (data) => {
       console.log('addItem:', data)
     }
   });
-  console.log(createItem);
   
   return createItem;
 }

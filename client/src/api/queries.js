@@ -12,41 +12,24 @@ import {
 } from '../graphql/queries';
 
 export const getBoard = (boardId) => {
-    console.log('getBoard called with boardId:', boardId);
-    
     const [getBoard, { loading, data, error, startPolling }] = useLazyQuery(GET_BOARD, {
-        variables: { board: boardId },
-        onCompleted: (data) => {
-            console.log('getBoard:', data);
-        }
+        variables: { board: boardId }
     });
     return { fetchBoard:getBoard , boardLoading:loading, boardData:data, boardError:error, startBoardPolling:startPolling };
 }
 
 export const getBoards = () => {
-    const [getBoardIds, { loading, data, error, startPolling }] = useLazyQuery(GET_BOARDS, {
-        onCompleted: (data) => {
-            console.log('getBoards:', data); 
-        }
-    });
+    const [getBoardIds, { loading, data, error, startPolling }] = useLazyQuery(GET_BOARDS);
     return { getBoardIds, boardIdsLoading:loading, boardIdsData:data, boardIdsError:error, startBoardIdsPolling:startPolling };
 }
 
 export const getBoardNotes = () => {
-    const [getNotes, { loading, data, error, startPolling }] = useLazyQuery(GET_NOTES, {
-        onCompleted: (data) => {
-            console.log('getBoardNotes:', data); 
-        }
-    });
+    const [getNotes, { loading, data, error, startPolling }] = useLazyQuery(GET_NOTES);
     return { getNotes, notesLoading:loading, notesData:data, notesError:error, startNotesPolling:startPolling};
 }
 
 export const getBoardItems = () => {
-    const [getItems, { loading, data, error, startPolling }] = useLazyQuery(GET_ITEMS, {
-        onCompleted: (data) => {
-            console.log('getBoardItems:', data); 
-        }
-    });
+    const [getItems, { loading, data, error, startPolling }] = useLazyQuery(GET_ITEMS);
     return { getItems, itemsLoading:loading, itemsData:data, itemsError:error, startItemsPolling:startPolling};
 }
 

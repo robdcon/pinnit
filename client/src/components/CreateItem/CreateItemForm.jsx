@@ -1,14 +1,18 @@
 // create item form
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { addItem } from '../../api/mutations';
 import { GET_ITEMS } from '../../graphql/queries';
 import { BoardContext } from '../../App';
 import {StyledCreateItemForm} from './CreateItem.styles.js';
 
 const CreateItemForm = () => {
-    const { boardId } = useContext(BoardContext);
+    const {board} = useContext(BoardContext);
+    console.log('board in CreateItemForm:', board);
+
+    let createItem = addItem({board});  
     
     const [item, setItem] = useState({
+        board: board,
         name: '',
         description: '',
         category: '',
@@ -16,16 +20,11 @@ const CreateItemForm = () => {
         checked: false
     });
 
-    
-    
-    const createItem = addItem({ boardId });
-    console.log(createItem);
-    
+    createItem = addItem({ board });
     
     const handleSubmit = (e) => {
         e.preventDefault();
         // Handle form submission logic here
-        console.log('Item:', item);
         createItem({
             variables: item
         })
@@ -56,7 +55,6 @@ const CreateItemForm = () => {
                     id="itemDescription"
                     value={item.description}
                     onChange={(e) => setItem({...item, description: e.target.value})}
-                    required
                 />
                 
                 
@@ -76,7 +74,6 @@ const CreateItemForm = () => {
                     id="itemPriority"
                     value={item.priority}
                     onChange={(e) => setItem({...item, priority: e.target.value})}
-                    required
                 />
                 <button type="submit" >Create Item</button>
             </div>

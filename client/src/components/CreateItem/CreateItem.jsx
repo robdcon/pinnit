@@ -3,13 +3,13 @@ import { StyledCreateItemButton } from './CreateItem.styles';
 import CreateItemForm from './CreateItemForm';
 
 
-const CreateItem = ({boardId, content}) => {
+const CreateItem = ({board, content}) => {
   return (
   <>
     <StyledCreateItemButton className="CreateItemWrapper">
       <button onClick={() => {
         createItem()
-      }} disabled={(typeof(boardId) === 'undefined')}>CREATE Item</button>
+      }} disabled={(typeof(board) === 'undefined')}>CREATE Item</button>
     </StyledCreateItemButton>
     <CreateItemForm />
   </>

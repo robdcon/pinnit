@@ -19,9 +19,7 @@ import { GlobalStyles } from "./themes/global-styles";
 
 export const BoardContext = createContext(null);
 
-<BoardContext.Provider value={null}>
-
-</BoardContext.Provider>
+<BoardContext.Provider value={null} />
 
 import {
   BrowserRouter as Router,
@@ -61,7 +59,6 @@ const Boards = () => {
 
   useEffect(() => {
     if(boardId) {
-      console.log(`Fetching board ${boardId}`);
       fetchBoard();
     }
   }, []);
@@ -74,7 +71,7 @@ const Boards = () => {
   }, [boardData]);
 
   return isAuthenticated && (
-    <BoardContext.Provider value={{ board: boardId }}>
+    <BoardContext.Provider value={{ board: boardId, boardType: board.board_type, boardName: board.name, user: user.email }}>
       <Board boardId={boardId} items={notes} userId={user.email} boardType={board.board_type} name={board.name} />
       <StickyFooter justify={'space-between'}>
         <TabIcon
