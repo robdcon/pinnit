@@ -3,14 +3,29 @@ import React, { useContext, useEffect, useState } from 'react';
 import { addItem } from '../../api/mutations';
 import { GET_ITEMS } from '../../graphql/queries';
 import { BoardContext } from '../../App';
-import {StyledCreateItemForm} from './CreateItem.styles.js';
+import { StyledCreateItemForm } from './CreateItem.styles.js';
+import { StyledCreateItemButton } from './CreateItem.styles';
+import AddCircleIcon from '@mui/icons-material/AddCircle'
+
+const foodCategories = [
+    'fruit',
+    'vegetable',
+    'salad',
+    'baking',
+    'frozen',
+    'dairy',
+    'meat',
+    'rice, pasta, grains',
+    'toiletries',
+    'domestic',
+    'other'
+]
 
 const CreateItemForm = () => {
-    const {board} = useContext(BoardContext);
-    console.log('board in CreateItemForm:', board);
+    const { board } = useContext(BoardContext);
 
-    let createItem = addItem({board});  
-    
+    let createItem = addItem({ board });
+
     const [item, setItem] = useState({
         board: board,
         name: '',
@@ -21,22 +36,27 @@ const CreateItemForm = () => {
     });
 
     createItem = addItem({ board });
-    
+
     const handleSubmit = (e) => {
         e.preventDefault();
         // Handle form submission logic here
-        createItem({
-            variables: item
-        })
-        // // Reset form fields
-        // setItemDetails({
-        //     name: '',
-        //     description: '',
-        //     category: '',
-        //     priority: ''
-        // });
+        try {
+            createItem({
+                variables: item
+            })
+        } catch (error) {
+            alert('Error creating item:', error.message);
+        }
+        // Reset form fields
+        setItem({
+            name: '',
+            description: '',
+            category: '',
+            priority: ''
+        });
     };
-    
+
+
     return (
         <StyledCreateItemForm onSubmit={handleSubmit}>
             <div>
@@ -45,39 +65,29 @@ const CreateItemForm = () => {
                     type="text"
                     id="itemName"
                     value={item.name}
-                    onChange={(e) => setItem({...item, name: e.target.value})}
+                    onChange={(e) => setItem({ ...item, name: e.target.value.toLowerCase() })}
                     required
                 />
-                
-                <label htmlFor="itemDescription">Item Description:</label>
-                <input
-                    type="text"
-                    id="itemDescription"
-                    value={item.description}
-                    onChange={(e) => setItem({...item, description: e.target.value})}
-                />
-                
-                
+
                 <label htmlFor="itemCategory">Item Category:</label>
-                <input
+                <select
                     type="text"
                     id="itemCategory"
                     value={item.category}
-                    onChange={(e) => setItem({...item, category: e.target.value})}
+                    onChange={(e) => setItem({ ...item, category: e.target.value.toLowerCase() })}
                     required
-                />
-                
-                
-                <label htmlFor="itemPriority">Item Priority:</label>
-                <input
-                    type="text"
-                    id="itemPriority"
-                    value={item.priority}
-                    onChange={(e) => setItem({...item, priority: e.target.value})}
-                />
+                >
+                    <option value="">select a category</option>
+                    {foodCategories.map((category) => (
+                        <option key={category} value={category}>
+                            {category}
+                        </option>
+                    ))}
+                </select>
                 <button type="submit" >Create Item</button>
             </div>
         </StyledCreateItemForm>
-    )
+    );
+
 }
 export default CreateItemForm;

@@ -51,6 +51,8 @@ const typeDefs = gql`
         category: String
     }
 
+    union ItemResult = Item | Error
+
     type Board {
         id: Int!
         name: String
@@ -60,6 +62,11 @@ const typeDefs = gql`
     type UserEmail {
         username: Int!
         email: Int!
+    }
+
+    type Error {
+        message: String!
+        code: String
     }
 `;
 

@@ -73,7 +73,7 @@ const Boards = () => {
   return isAuthenticated && (
     <BoardContext.Provider value={{ board: boardId, boardType: board.board_type, boardName: board.name, user: user.email }}>
       <Board boardId={boardId} items={notes} userId={user.email} boardType={board.board_type} name={board.name} />
-      <StickyFooter justify={'space-between'}>
+      {/* <StickyFooter justify={'space-between'}>
         <TabIcon
           color='primary'
           style={{ color: '#ffffff', fontSize: '3em', cursor: 'pointer' }}
@@ -93,7 +93,7 @@ const Boards = () => {
           aria-label="add note"
           size="medium"
         />
-      </StickyFooter>
+      </StickyFooter> */}
     </BoardContext.Provider>
   )
 }

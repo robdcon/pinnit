@@ -57,9 +57,8 @@ export const editItem = ({id, board}) => {
 // Add item
 export const addItem = () => {
   const {board} = useContext(BoardContext);
-  console.log('boardId in addItem:', board);
   
-  const [createItem] = useMutation(CREATE_ITEM, {
+  const [createItem, { data, loading, error }] = useMutation(CREATE_ITEM, {
     refetchQueries: [{
       query: GET_ITEMS,
       variables: {
@@ -68,7 +67,11 @@ export const addItem = () => {
     }],
     onCompleted: (data) => {
       console.log('addItem:', data)
-    }
+    },
+    onError(err) {
+      alert('Error creating item: ' + err.message);
+      console.log(err);
+    },
   });
   
   return createItem;

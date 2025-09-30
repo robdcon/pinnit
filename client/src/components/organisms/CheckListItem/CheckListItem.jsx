@@ -3,6 +3,7 @@ import { StyledCheckListItem } from './CheckListItem.styles.js';
 import { editItem } from '../../../api/mutations';
 import { BoardContext } from '../../../App.js';
 import { use } from 'react';
+import { toTitleCase } from '../../../utils/helpers.js';
 
 const CheckListItem = ({ id, text, checked }) => {
     const [isChecked, setIsChecked] = useState(checked);
@@ -24,7 +25,7 @@ const CheckListItem = ({ id, text, checked }) => {
                 checked={checked}
                 onChange={handleCheckboxChange}
             />
-            <span className={checked ? 'checked' : ''}>{text}</span>
+            <span className={checked ? 'checked' : ''}>{toTitleCase(text)}</span>
             {/* <button onClick={() => onRemove(id)}>Delete</button> */}
         </StyledCheckListItem>
     );

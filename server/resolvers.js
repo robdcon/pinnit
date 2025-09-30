@@ -119,8 +119,10 @@ const resolvers =  {
                 const item = await api.createItem({ board, name, priority, checked, category }, context).then(res => res);
                 return item;
             } catch (error) {
-                console.log(error)
-                return false
+                if (error.code === '23505') {
+                    throw new Error('An item with this name already exists');
+                  }
+                  throw new Error('Failed to create item');
             }
         },
 

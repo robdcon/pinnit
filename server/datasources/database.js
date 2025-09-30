@@ -140,12 +140,18 @@ const client = {
 
   createItem: async (args) => {
     const { board, name, priority, checked, category } = args;
-    const { rows } = await pgPool.query(`INSERT INTO public.items(name, priority, checked, category) VALUES ($1, $2, $3, $4) RETURNING *`, [name, priority, checked, category]);
-    const item = rows[0]
-    return {
-      data: [item]
+
+    try {
+      const { rows } = await pgPool.query(`INSERT INTO public.items(name, priority, checked, category) VALUES ($1, $2, $3, $4) RETURNING *`, [name, priority, checked, category]);
+    } catch (error) {
+      console.error('Error executing query', error.code);
+      if (error.code === '23505') {
+        throw new Error('An item with this name already exists');
+      }
     }
 
+    const item = rows[0]
+    return { item }
   },
 
   updateItem: async (args) => {
