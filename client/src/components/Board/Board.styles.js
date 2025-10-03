@@ -5,8 +5,7 @@ import noticeBoardXs from "../../img/notice-board-xs.jpg"
 
 
 export const StyledBoard = styled.div`
-    height: 100%;
-    height:100vh;
+    display: inline-block;
     overflow: hidden;
     margin: 0;
     padding: 0;
@@ -27,4 +26,16 @@ export const StyledNoteWrapper = styled.div`
     overflow-y: auto;
     height: 100%;
     ${media.handheld`padding: 0;`}
+`;
+
+export const StyledChecklistWrapper = styled.div`
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-rows: max-content;
+    gap: 8px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 1em;
+    overflow-y: auto;
+    height: 100%;
 `;

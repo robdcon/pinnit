@@ -51,13 +51,12 @@ export const editItem = ({id, board}) => {
       }
     }]
   });
-  return ({ updateItem });
+  return { updateItem };
 }
 
 // Add item
 export const addItem = () => {
   const {board} = useContext(BoardContext);
-  
   const [createItem, { data, loading, error }] = useMutation(CREATE_ITEM, {
     refetchQueries: [{
       query: GET_ITEMS,
@@ -69,8 +68,8 @@ export const addItem = () => {
       console.log('addItem:', data)
     },
     onError(err) {
-      alert('Error creating item: ' + err.message);
-      console.log(err);
+      alert(err.message);
+      console.table(err);
     },
   });
   

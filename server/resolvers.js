@@ -96,8 +96,6 @@ const resolvers =  {
         createBoard: async (parent, args, context) => {
             try {
                 const board = await api.createBoard(args, context).then(res => res);
-                console.log(board);
-                
                 return board;
             } catch (error) {
                 console.log(error)
@@ -116,23 +114,17 @@ const resolvers =  {
         
         createItem: async (parent, { board, name, priority, checked, category }, context) => {
             try {
-                const item = await api.createItem({ board, name, priority, checked, category }, context).then(res => res);
+                const {item} = await api.createItem({ board, name, priority, checked, category }, context);
                 return item;
             } catch (error) {
-                if (error.code === '23505') {
-                    throw new Error('An item with this name already exists');
-                  }
-                  throw new Error('Failed to create item');
+                console.log(error);
+                throw new Error(error);
             }
         },
 
         updateItem: async (parent, args, context) => {
-            console.log(args);
-            
             try {
                 const item = await api.updateItem(args, context).then(res => res);
-                console.log(item);
-                
                 return item;
             } catch (error) {
                 console.log(error)

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { StyledBoard, StyledNoteWrapper } from './Board.styles';
+import { StyledBoard, StyledNoteWrapper, StyledChecklistWrapper } from './Board.styles';
 import Note from '../organisms/Note';
 import CheckListItem from '../organisms/CheckListItem/CheckListItem';
 import FlexContainer from '../layout/FlexContainer';
@@ -67,7 +67,7 @@ const Board = () => {
                 )}
                 {boardType === 'CHECKLIST' && (
                     <>
-                        <StyledNoteWrapper>
+                        <StyledChecklistWrapper>
                             {
                                 [...new Set(boardItems.map(item => item.category))].map(category => (
                                     <div key={category}>
@@ -81,7 +81,7 @@ const Board = () => {
                                     </div>
                                 ))
                             }
-                        </StyledNoteWrapper>
+                        </StyledChecklistWrapper>
                         {displayForm && <CreateItemForm />}
                         <StickyFooter justify={'end'}>
                             {!displayForm && <CreateItem displayForm={setDisplayForm} />}

@@ -160,13 +160,13 @@ const api = {
     },
     createItem: async (args, context) => {
         try {
-            const res = await context.createItem(args);
-            const itemId = res.id;
-            if(!itemId) throw new Error(res.error);
-            await context.addBoardItemRef({ board: args.board, item: itemId });
-            return res;
+            const { item } = await context.createItem(args);
+            item && await context.addBoardItemRef({ board: args.board, item: item.id }).then(res => {
+                console.log('Added board-item reference:', res);
+            });
+            return item;
         } catch (error) {
-           return error
+            throw new Error(error);
         }
     },
 

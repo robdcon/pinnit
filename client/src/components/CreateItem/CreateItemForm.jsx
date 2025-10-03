@@ -45,7 +45,7 @@ const CreateItemForm = () => {
                 variables: item
             })
         } catch (error) {
-            alert('Error creating item:', error.message);
+            console.log(error);
         }
         // Reset form fields
         setItem({
