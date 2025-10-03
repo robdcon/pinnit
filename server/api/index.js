@@ -1,10 +1,11 @@
-// require('dotenv').config()
+require('dotenv').config()
 const cors = require('cors')
 const express = require("express");
 const { ApolloServer } = require('apollo-server-express');
 const { ApolloServerPluginDrainHttpServer } = require("apollo-server-core");
 const client = require('../datasources/database');
 const http = require('http');
+const pgPool = require('../datasources/postgres').pgPool;
 
 const resolvers = require('../resolvers');
 const typeDefs = require('../schema');
@@ -32,7 +33,7 @@ app.get('/api/db-test', async (req, res) => {
   console.log('DB test endpoint hit');
   
   try {
-    const client = await pool.connect();
+    const client = await pgPool.connect();
     console.log('Connection acquired after:', Date.now() - startTime, 'ms');
     
     const result = await client.query('SELECT NOW() as current_time, version() as pg_version');
