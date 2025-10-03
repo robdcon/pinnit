@@ -9,10 +9,7 @@ const pgPool = new Pool({
     host: process.env.PGHOST,
     port: process.env.PGPORT,
     database: process.env.PGDATABASE,
-    password: process.env.DB_PASSWORD,
-    connectionTimeoutMillis: 5000,
-    idleTimeoutMillis: 30000,
-    query_timeout: 5000
+    password: process.env.DB_PASSWORD
 });
 
 pgPool.on('error', (err, client) => {
