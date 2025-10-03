@@ -1,13 +1,10 @@
-require('dotenv').config()
-
+// require('dotenv').config()
 const cors = require('cors')
 const express = require("express");
 const { ApolloServer } = require('apollo-server-express');
 const { ApolloServerPluginDrainHttpServer } = require("apollo-server-core");
 const client = require('../datasources/database');
 const http = require('http');
-const { bulkCreateFromJson, readFileFromFolder, } = require('../utils/helpers.js');
-const path = require('path');
 
 const resolvers = require('../resolvers');
 const typeDefs = require('../schema');
@@ -23,13 +20,44 @@ const corsOptions = {
 
 console.log(`CORS: ${corsOptions.origin}`);
 
-
 app.use(cors(corsOptions));
 app.use(express.json());
 
 app.get('/', (req, res) => {
   res.send(`Hey this is my API running 🥳 ${process.env.TEST_TEXT}`)
 })
+
+app.get('/api/db-test', async (req, res) => {
+  const startTime = Date.now();
+  console.log('DB test endpoint hit');
+  
+  try {
+    const client = await pool.connect();
+    console.log('Connection acquired after:', Date.now() - startTime, 'ms');
+    
+    const result = await client.query('SELECT NOW() as current_time, version() as pg_version');
+    client.release();
+    
+    console.log('Query successful after:', Date.now() - startTime, 'ms');
+    
+    res.json({
+      success: true,
+      duration: Date.now() - startTime,
+      data: result.rows[0]
+    });
+  } catch (error) {
+    console.error('DB connection failed after:', Date.now() - startTime, 'ms');
+    console.error('Error:', error.message);
+    console.error('Error code:', error.code);
+    
+    res.status(500).json({
+      success: false,
+      duration: Date.now() - startTime,
+      error: error.message,
+      code: error.code
+    });
+  }
+});
 
 const httpServer = http.createServer(app);
 

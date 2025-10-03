@@ -9,6 +9,35 @@ const pgPool = new Pool({
     host: process.env.PGHOST,
     port: process.env.PGPORT,
     database: process.env.PGDATABASE,
+    password: process.env.DB_PASSWORD,
+    connectionTimeoutMillis: 5000,
+    idleTimeoutMillis: 30000,
+    query_timeout: 5000
+});
+
+pgPool.on('error', (err, client) => {
+    console.error('Unexpected error on idle client', err);
+});
+
+pgPool.connect((err, client, release) => {
+    if (err) {
+        console.error('Error acquiring client', err.stack);
+        return;
+    }
+
+    console.log('Successfully connected to PostgreSQL');
+    console.log('Database host:', process.env.PGHOST);
+
+    client.query('SELECT NOW()', (err, result) => {
+        release(); // Release client back to pool
+
+        if (err) {
+            console.error('Error executing query', err.stack);
+            return;
+        }
+
+        console.log('Connection test query successful:', result.rows[0]);
+    });
 });
 
 
