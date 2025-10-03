@@ -6,6 +6,7 @@ import noticeBoardXs from "../../img/notice-board-xs.jpg"
 
 export const StyledBoard = styled.div`
     display: inline-block;
+    width: 100%;
     overflow: hidden;
     margin: 0;
     padding: 0;

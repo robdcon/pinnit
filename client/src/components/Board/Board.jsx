@@ -51,7 +51,7 @@ const Board = () => {
     return (
         <div>
             <FlexContainer justifyContent="center" alignItems="center" padding="10px">
-                <h1>{name}</h1>
+                <h1>{boardName}</h1>
             </FlexContainer>
             <StyledBoard id={board} className="BoardWrapper" boardType={boardType}>
                 {boardType === 'PIN' && (

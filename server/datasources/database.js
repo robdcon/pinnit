@@ -149,7 +149,6 @@ const client = {
       if(error.code === '23505') {
         throw new Error('Item with this name already exists.');
       }
-      
       throw(error);
     }
   },

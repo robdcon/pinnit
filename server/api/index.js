@@ -9,29 +9,6 @@ const http = require('http');
 const { bulkCreateFromJson, readFileFromFolder, } = require('../utils/helpers.js');
 const path = require('path');
 
-const getJsonData = () => {
-  const folder = process.env.JSON_FOLDER;
-  console.log(__dirname);
-  console.log(process.cwd());
-  const filePath = path.resolve(process.cwd(), folder);
-  console.log(`Reading JSON files from folder: ${filePath}`);
-  let jsonData = readFileFromFolder(folder);
-  jsonData = JSON.parse(jsonData);
-  return jsonData;
-}
-
-const executeBulkCreate = async () => {
-  const data = getJsonData();
-  console.log(`Seeding database with ${data.length} records...`);
-  data.forEach(element => {
-    const category = Object.keys(element)[0];
-    element[category].forEach(element => {
-      element.category = category;
-      console.log('Inserting:', element);
-    })
-  });
-}
-
 const resolvers = require('../resolvers');
 const typeDefs = require('../schema');
 

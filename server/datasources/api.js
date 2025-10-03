@@ -77,7 +77,7 @@ const api = {
             return userBoards
         } catch (error) {
             console.log(error)
-            return false
+            throw new Error(error);
         }
     },
 
