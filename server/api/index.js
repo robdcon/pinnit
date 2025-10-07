@@ -19,12 +19,14 @@ const corsOptions = {
   credentials: true // <-- REQUIRED backend setting
 };
 
-console.log(`CORS: ${corsOptions.origin}`);
 
 app.use(cors(corsOptions));
+
 app.use(express.json());
+
 app.get('/', (req, res) => {
   console.log('Root endpoint hit');
+  console.log(`CORS: ${corsOptions.origin}`);
   res.send(`Hey this is my API running 🥳 ${process.env.TEST_TEXT}`)
 })
 
