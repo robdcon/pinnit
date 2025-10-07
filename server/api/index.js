@@ -24,9 +24,6 @@ console.log(`CORS: ${corsOptions.origin}`);
 app.use(cors(corsOptions));
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.send(`Hey this is my API running 🥳 ${process.env.TEST_TEXT}`)
-})
 
 app.get('/api/db-test', async (req, res) => {
   const startTime = Date.now();
@@ -60,31 +57,36 @@ app.get('/api/db-test', async (req, res) => {
   }
 });
 
+app.get('/', (req, res) => {
+  res.send(`Hey this is my API running 🥳 ${process.env.TEST_TEXT}`)
+})
+
+
 const httpServer = http.createServer(app);
 
-async function startApolloServer(app, httpServer) {
+// async function startApolloServer(app, httpServer) {
 
-  const server = new ApolloServer({
-    typeDefs,
-    resolvers,
-    context: client,
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })]
-  });
+//   const server = new ApolloServer({
+//     typeDefs,
+//     resolvers,
+//     context: client,
+//     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })]
+//   });
 
-  await server.start();
+//   await server.start();
 
-  server.applyMiddleware({ app, path: '/graphiql' });
+//   server.applyMiddleware({ app, path: '/graphiql' });
 
-  await new Promise((resolve) =>
-    httpServer.listen({ port: PORT }, resolve),
-  ).then(() => {
-    console.log('USER:', process.env.PGUSER)
-    console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`);
-  }).then(() => {
+//   await new Promise((resolve) =>
+//     httpServer.listen({ port: PORT }, resolve),
+//   ).then(() => {
+//     console.log('USER:', process.env.PGUSER)
+//     console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`);
+//   }).then(() => {
 
-  });
-}
+//   });
+// }
 
-startApolloServer(app, httpServer);
+// startApolloServer(app, httpServer);
 
 module.exports = app;
