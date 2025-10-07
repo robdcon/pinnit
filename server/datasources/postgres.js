@@ -1,4 +1,4 @@
-require('dotenv').config();
+// require('dotenv').config();
 const pg = require('pg');
 const { Pool } = pg
 // const connectionString = "host=35.214.59.104 port=5432 dbname=dbkvhbnfgnd7qh user=uxcbxdwm5ywui password=xxxxxxx connect_timeout=10 sslmode=prefer";
