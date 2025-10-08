@@ -25,9 +25,24 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 app.get('/db-test', (req, res) => {
- console.log(pgPool);
- 
-  res.send(`Test DB 🥳 ${process.env.TEST_TEXT}`)
+
+  // log error if pg connection fails
+  pgPool.connect((err, client, release) => {
+    if (err) {
+      console.error('Error acquiring client', err.stack);
+      return res.status(500).send('Error acquiring client');
+    }
+    client.query('SELECT NOW()', (err, result) => {
+      release();
+      if (err) {
+        console.error('Error executing query', err.stack);
+        return res.status(500).send('Error executing query');
+      }
+      console.log(result.rows);
+      res.status(200).send(result.rows);
+    });
+    res.send(`Test DB 🥳 ${process.env.TEST_TEXT}`)
+  });
 });
 
 app.get('/', (req, res) => {
