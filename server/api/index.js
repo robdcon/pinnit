@@ -8,6 +8,7 @@ const http = require('http');
 const pgPool = require('../datasources/postgres').pgPool;
 
 const resolvers = require('../resolvers');
+
 const typeDefs = require('../schema');
 
 const PORT = process.env.PORT || 5000;
@@ -19,55 +20,35 @@ const corsOptions = {
   credentials: true // <-- REQUIRED backend setting
 };
 
-
 app.use(cors(corsOptions));
 
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  console.log('Root endpoint hit');
-  console.log(`CORS: ${corsOptions.origin}`);
-  res.send(`Hey this is my API running 🥳 ${process.env.TEST_TEXT}`)
-})
-
-app.get('/api/db-test', async (req, res) => {
-  // const startTime = Date.now();
-  console.log('DB test endpoint hit');
-  
-  // try {
-  //   const client = await pgPool.connect();
-  //   console.log('Connection acquired after:', Date.now() - startTime, 'ms');
-    
-  //   const result = await client.query('SELECT NOW() as current_time, version() as pg_version');
-  //   client.release();
-    
-  //   console.log('Query successful after:', Date.now() - startTime, 'ms');
-    
-  //   res.json({
-  //     success: true,
-  //     duration: Date.now() - startTime,
-  //     data: result.rows[0]
-  //   });
-  // } catch (error) {
-  //   console.error('DB connection failed after:', Date.now() - startTime, 'ms');
-  //   console.error('Error:', error.message);
-  //   console.error('Error code:', error.code);
-    
-  //   res.status(500).json({
-  //     success: false,
-  //     duration: Date.now() - startTime,
-  //     error: error.message,
-  //     code: error.code
-  //   });
-  // }
+app.get('/db-test', (req, res) => {
+ console.log(pgPool);
+ 
+  res.send(`Test DB 🥳 ${process.env.TEST_TEXT}`)
 });
 
-
-
+app.get('/', (req, res) => {
+  console.log(`CORS: ${corsOptions.origin}`);
+  res.send(`Hey this is my API running 🥳 ${process.env.TEST_TEXT}`)
+});
 
 const httpServer = http.createServer(app);
 
 async function startApolloServer(app, httpServer) {
+
+  const pgClient = await pgPool.connect();
+
+  pgClient.on('error', (err) => {
+    console.error('Unexpected error on idle pgClient', err);
+    process.exit(-1);
+  });
+
+  pgClient.on('connection', (pgClient) => {
+    console.log('PostgreSQL client connected');
+  });
 
   const server = new ApolloServer({
     typeDefs,
@@ -83,10 +64,7 @@ async function startApolloServer(app, httpServer) {
   await new Promise((resolve) =>
     httpServer.listen({ port: PORT }, resolve),
   ).then(() => {
-    console.log('USER:', process.env.PGUSER)
     console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`);
-  }).then(() => {
-
   });
 }
 

@@ -1,10 +1,3 @@
-// require('dotenv').config();
-const e = require('express');
-const { genId } = require('../utils/helpers.js')
-const secret = process.env.SECRET;
-
-
-
 const api = {
     // Users
     createUser: async (username, email, context) => {
